@@ -1,0 +1,33 @@
+.contenedor-header-autorizaciones{
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: auto;
+
+    @include adaptar( 0px ){
+        grid-template-columns: repeat(1, 1fr)
+    }
+    @include adaptar( 800px ){
+        grid-template-columns: repeat(3, 1fr)
+    }
+  }
+
+  .contenedor-autorizaciones{
+    display: grid;
+    gap: 1rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: auto;
+
+    @include adaptar( 0px ){
+        grid-template-columns: repeat(1, 1fr)
+    }
+    @include adaptar( 800px ){
+        grid-template-columns: repeat(2, 1fr)
+    }
+
+
+  }
