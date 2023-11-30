@@ -55,53 +55,6 @@ export const usuariosDirectivo = [
   'nperez'
 ]
 
-export const tipoRescate = [
-  {label:'Todos', data: 'todos'},
-  {label:'Local', data: 'local'},
-  {label:'Foraneo', data: 'foraneo'}
-]
-
-export const tipoMecanico = [
-  {label:'Todos', data: 'todos'},
-  {label:'Mecánico', data: 'mecanico'},
-  {label:'Ayudante', data: 'ayudante'}
-]
-
-export const opcionesRescate = [
-  {label:'Local', data: 'local'},
-  {label:'Foraneo', data: 'foraneo'}
-]
-
-export const opcionesMecanico = [
-  {label:'Mecánico', data: 'mecanico'},
-  {label:'Ayudante', data: 'ayudante'}
-]
-
-export const tipoMecanicoMB = [
-  {label:'Mecanico A', data: 'A'},
-  {label:'Mecanico B', data: 'B'},
-  {label:'Ayudante', data: 'Y'},
-  {label:'Lavador', data: 'L'},
-]
-
-export const tipoGratificacion = [
-  {label:'Todos', data: 'todos'},
-  {label:'Dias Capacitación', data: 'capacitacion'},
-  {label:'Dias Vacaciones', data: 'vacaciones'},
-  {label:'Comision', data: 'comision'},
-  {label:'Gratificación', data: 'gratifcicacion'}
-]
-
-export const opcionesComision = [
-  {label:'Comision', data: 'comision'},
-  {label:'Gratificación', data: 'gratifcicacion'}
-]
-
-export const opcionesDias = [
-  {label:'Dias Capacitación', data: 'capacitacion'},
-  {label:'Dias Vacaciones', data: 'vacaciones'},
-]
-
 export const objBusquedaAutorizaciones = [
   'GEADM',
   'GESE'

@@ -8,7 +8,7 @@
           <q-avatar class="logo-inicio">
             <img src="../img/logog.png" />
           </q-avatar>
-           Portal Comisiones Mecánicos
+           Portal Comisiones Unidades
         </q-toolbar-title>
         <q-btn flat @click="logout">Cerrar Sesión</q-btn>
       </q-toolbar>
@@ -50,6 +50,8 @@ import { useAutenticacionStore } from "../stores/autenticaciones";
 import { useRouter } from "vue-router";
 import { useSucursalesStore } from 'src/stores/catalogos/sucursales'
 import { useEmpresasStore } from 'src/stores/catalogos/empresas'
+import {useDepartamentosStore} from 'src/stores/catalogos/departamentos'
+
 //import { useDashboardStore } from "../stores/dashboard";
 
 export default {
@@ -70,10 +72,14 @@ export default {
     const useSucursales = useSucursalesStore()
     const { obtenerSucursales } = useSucursales
 
+    const useDepartamentos = useDepartamentosStore()
+    const { obtenerDepartamentos } = useDepartamentos
+
 
     onMounted(async()=>{
      await obtenerEmpresas()
      await obtenerSucursales()
+     await obtenerDepartamentos()
     })
 
     const logout = () => {

@@ -23,11 +23,11 @@ const routes = [
       {
         path: "",
         icono: "description",
-        label: "Facturas",
+        label: "Panel de Facturas",
         name: "reportesNomina",
         component: () =>
           import(
-            /* webpackChunkName: "dashboard" */ "src/modules/reportes/ReportesNomina.vue"
+            /* webpackChunkName: "dashboard" */ "src/modules/facturas/PanelFacturas.vue"
           ),
       },
 

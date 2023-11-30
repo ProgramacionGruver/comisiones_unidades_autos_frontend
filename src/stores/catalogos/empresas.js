@@ -1,35 +1,31 @@
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { api } from 'src/boot/axios'
 import { apiUsuarios } from 'src/boot/axiosUsuarios.js'
 import { ref } from 'vue'
-import { formatearCapitalCase } from 'src/helpers/formatos'
+import { useAutenticacionStore } from '../autenticaciones'
 
 export const useEmpresasStore = defineStore('empresas', () => {
   const empresaSeleccionada = ref(null)
   const empresas = ref([])
   const opcionesEmpresas = ref([])
-  const todasEmpresasSeleccionadas = ref(true)
-  const grupoEmpresas = ref([])
+
+  const useAutenticacion = useAutenticacionStore()
+  const { usuarioAutenticado } =storeToRefs(useAutenticacion)
 
 
   const obtenerEmpresas = async () => {
     try {
       const { data } = await apiUsuarios.get('/empresas')
-
+      const { data:empresa } = await api.post('/empresas/cargos',{numeroEmpleado: usuarioAutenticado.value.numero_empleado})
       //Empresas
-      const empresasFiltradas = data.filter(empresa => {
-      return empresa.division === "CAMIONES" || empresa.division === "GOMSA DIESEL"
-      })
-      empresas.value = [...empresasFiltradas]
-
-      //Opciones de empresas
-      opcionesEmpresas.value = empresas.value.map((empresa) => {
-        empresa.label = formatearCapitalCase(empresa.division)
-        empresa.value = empresa.claveEmpresa
-        return empresa
+      const empresasFiltradas = data.filter(sucursal => {
+          return empresa.includes(sucursal.claveEmpresa);
       })
 
-      grupoEmpresas.value = empresas.value.map((empresa) => empresa.division)
+      //Eliminar
+      empresas.value = empresasFiltradas.filter(empresa => {
+        return empresa.claveEmpresa === 'CH'
+      })
 
     } catch (error) {
       console.log(error)
@@ -40,8 +36,6 @@ export const useEmpresasStore = defineStore('empresas', () => {
     empresaSeleccionada,
     empresas,
     opcionesEmpresas,
-    todasEmpresasSeleccionadas,
-    grupoEmpresas,
     obtenerEmpresas
   }
 })

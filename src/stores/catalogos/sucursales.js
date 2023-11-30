@@ -1,39 +1,32 @@
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { api } from 'src/boot/axios'
 import { apiUsuarios } from 'src/boot/axiosUsuarios'
 import { ref } from 'vue'
-import { formatearCapitalCase } from 'src/helpers/formatos'
+import { useAutenticacionStore } from '../autenticaciones'
 
 export const useSucursalesStore = defineStore('sucursales', () => {
   const sucursalSeleccionada = ref(null)
   const sucursales = ref([])
   const opcionesSucursales = ref([])
-  const todasSucursalesSeleccionadas = ref(true)
-  const grupoSucursales = ref([])
-  const prefijosSucursal = ref([])
+
+  const useAutenticacion = useAutenticacionStore()
+  const { usuarioAutenticado } =storeToRefs(useAutenticacion)
 
   const obtenerSucursales = async () => {
     try {
       const { data } = await apiUsuarios.get('/todasSucursales')
+      const { data:sucursal } = await api.post('/sucursales/cargos',{numeroEmpleado: usuarioAutenticado.value.numero_empleado})
 
       //Sucursales
-      const sucursalesFiltradas = data.filter(empresa => {
-        return (empresa.claveEmpresa === "MB" || empresa.claveEmpresa === "IS")  &&
-        empresa.abreviacion !== "MBCE" &&
-        empresa.abreviacion !== "MBCECO"
-        })
-
-        sucursales.value = [...sucursalesFiltradas]
-        prefijosSucursal.value = sucursales.value.map(sucursal => sucursal.abreviacion)
-
-      //Opciones Sucursales
-      opcionesSucursales.value = sucursales.value.map((sucursal) => {
-        sucursal.label = formatearCapitalCase(sucursal.nombreSucursal)
-        sucursal.value = sucursal.abreviacion
-        return sucursal
+      const sucursalesFiltradas = data.filter((empresa) => {
+        return sucursal.includes(empresa.abreviacion)
       })
 
-      grupoSucursales.value = sucursales.value.map((sucursal) => sucursal.nombreSucursal)
+      //ELIMINAR
+      sucursales.value = sucursalesFiltradas.filter(sucursal => {
+        return sucursal.claveEmpresa === 'CH'
+      })
+
     } catch (error) {
       console.log(error)
     }
@@ -44,9 +37,6 @@ export const useSucursalesStore = defineStore('sucursales', () => {
     sucursales,
     sucursalSeleccionada,
     opcionesSucursales,
-    todasSucursalesSeleccionadas,
-    grupoSucursales,
-    prefijosSucursal,
     obtenerSucursales,
   }
 })

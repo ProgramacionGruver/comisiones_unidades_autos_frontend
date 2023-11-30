@@ -1,3 +1,3 @@
-export const ID_SERVIDOR = 17
-export const ID_COMISIONESMECANICOS = 2006
+export const ID_SERVIDOR = 19
+export const ID_COMISIONES = 2006
 
