@@ -20,6 +20,23 @@ export const anios = [anio, anio - 1, anio - 2, anio - 3, anio - 4];
 
 export const mes = meses[fecha.getMonth()]
 
+export const dia = fecha.getDay()
+
+export const quincenaCaida = () => {
+    const quincena = dia <= 15? "Segunda Quincena" : "Primera Quincena"
+    return quincena
+  }
+
+export const mesCaido = () => {
+    let mes
+    if(dia <= 15){
+      mes = meses[(fecha.getMonth()-1)]
+    }else{
+      mes = meses[fecha.getMonth()]
+    }
+    return mes
+}
+
 export const obtenerNumeroMes = (mes) => meses.indexOf(mes) + 1
 
 export const obtenerNumerosDeMes = (mes) => {

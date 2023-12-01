@@ -24,10 +24,20 @@ const routes = [
         path: "",
         icono: "description",
         label: "Panel de Facturas",
-        name: "reportesNomina",
+        name: "panelFacturas",
         component: () =>
           import(
             /* webpackChunkName: "dashboard" */ "src/modules/facturas/PanelFacturas.vue"
+          ),
+      },
+      {
+        path: "panelPvas",
+        icono: "assignment",
+        label: "Panel de PVAS",
+        name: "panelPvas",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/pvas/PanelPvas.vue"
           ),
       },
 

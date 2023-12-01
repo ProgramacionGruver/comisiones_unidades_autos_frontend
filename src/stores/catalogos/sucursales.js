@@ -27,6 +27,14 @@ export const useSucursalesStore = defineStore('sucursales', () => {
         return sucursal.claveEmpresa === 'CH'
       })
 
+      //Opciones Sucursales
+      opcionesSucursales.value = sucursales.value.map(sucursal => {
+        return {
+          label: `${sucursal.nombreSucursal}`,
+          value: sucursal
+        }
+      })
+
     } catch (error) {
       console.log(error)
     }

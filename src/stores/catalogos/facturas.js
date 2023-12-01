@@ -1,6 +1,6 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { api } from 'src/boot/axios'
-import { anio, mes, obtenerNumeroMes, obtenerNumerosDeMes, obtenerNumeroQuincena, fecha} from 'src/constant/constantes'
+import { anio, obtenerNumeroMes, obtenerNumerosDeMes, obtenerNumeroQuincena, fecha, mesCaido, quincenaCaida} from 'src/constant/constantes'
 import { ref } from 'vue'
 import { useEmpresasStore } from 'src/stores/catalogos/empresas'
 import { useSucursalesStore } from './sucursales'
@@ -12,9 +12,9 @@ import { useAutenticacionStore } from 'src/stores/autenticaciones'
 
 
 export const useFacturasStore = defineStore('facturas',() => {
-  const mesSeleccionado = ref(mes)
+  const mesSeleccionado = ref(mesCaido())
   const anioSeleccionado = ref(anio)
-  const quincenaSeleccionada = ref('Primera Quincena')
+  const quincenaSeleccionada = ref(quincenaCaida())
 
   const cargando = ref(true)
   const facturaSeleccionada = ref([])
@@ -96,9 +96,7 @@ export const useFacturasStore = defineStore('facturas',() => {
 
       //FILTRAR ELEMENTOS QUE YA ESTEN REGISTRADOS
           registrosEnviados.value =  comisionesUnidades.value.filter(comision => !facturasFiltradas.value.some(factura => factura.factura === comision.factura))
-          const mesActual = obtenerNumeroMes(mes)
-          const mesEscogido = obtenerNumeroMes(mesSeleccionado.value)
-          if(mesEscogido === mesActual && registrosEnviados.value.length > 0){
+          if(registrosEnviados.value.length > 0){
               filtro.value = [
                             ...comisionesUnidades.value.filter(comision => !facturasFiltradas.value.some(factura => factura.factura === comision.factura)),
                             ...facturasFiltradas.value.filter(factura => !comisionesUnidades.value.some(comision => comision.factura === factura.factura))

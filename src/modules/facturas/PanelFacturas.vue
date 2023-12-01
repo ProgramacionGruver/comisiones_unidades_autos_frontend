@@ -16,7 +16,6 @@
         loading-label="Buscando información . . ."
         v-model:selected="facturaSeleccionada"
         selection="single"
-        :rows-per-page-options="[100]"
       >
       <template v-slot:top>
         <div class="fit row q-gutter-sm q-mb-sm justify-end">
@@ -192,6 +191,7 @@ export default {
     const { sucursales, sucursalSeleccionada } = storeToRefs(useSucursales)
 
     const useDepartamentos = useDepartamentosStore()
+    const { obtenerDepartamentos } = useDepartamentos
     const { departamentos, departamentoSeleccionado } = storeToRefs(useDepartamentos)
 
     const useFacturas = useFacturasStore()
@@ -365,6 +365,7 @@ export default {
     ]
 
     onMounted(async () => {
+      await obtenerDepartamentos()
       facturaSeleccionada.value = []
       facturasFiltrada.value = []
 

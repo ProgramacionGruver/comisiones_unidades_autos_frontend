@@ -26,6 +26,12 @@
         </div>
         <q-separator />
       </div>
+      <div v-if="menuItem.name === 'panelFacturas'">
+        <div class="q-px-md q-py-md q-mt-md text-h4">
+          PVAS
+        </div>
+        <q-separator />
+      </div>
 
     </template>
   </q-list>
