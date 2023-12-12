@@ -7,7 +7,7 @@
     >
       <q-card class="full-width">
         <q-card-section class="bg-primary text-white row items-center q-pb-none">
-          <p>Enviar Facturas de Unidades</p>
+          <p>Guardar Facturas de Unidades</p>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -16,7 +16,7 @@
             <div class="col-10 q-px-lg" style="font-size: 1.4rem;">
               <div class="text-center"><strong>{{ quincenaSeleccionada }} de {{ mesSeleccionado }} del {{ anioSeleccionado }}</strong></div>
               <div class="text-center"><strong>{{ sucursalSeleccionada.nombreSucursal }} - UNIDADES {{ departamentoSeleccionado.value.nombreDepartamento }}</strong></div>
-              ¿Seguro que deseas enviar las facturas de unidades?
+              ¿Seguro que deseas guardar las facturas de unidades?
             </div>
           </q-card-section>
         <q-card-section class="q-py-sm">
@@ -45,7 +45,6 @@
 <script>
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useComisionesStore } from 'src/stores/catalogos/comisionesUnidades'
 import { useFacturasStore } from 'src/stores/catalogos/facturas'
 import { useSucursalesStore } from 'src/stores/catalogos/sucursales'
 import { useDepartamentosStore } from 'src/stores/catalogos/departamentos'
@@ -58,10 +57,8 @@ export default {
     const $q = useQuasar()
     let timer
 
-    const useComisiones = useComisionesStore()
-    const { guardarComisionesUnidades } = useComisiones
-
     const useFacturas = useFacturasStore()
+    const { guardarFacturas } = useFacturas
     const {facturas, facturaSeleccionada, facturasFiltrada, quincenaSeleccionada,mesSeleccionado,anioSeleccionado } = storeToRefs(useFacturas)
 
     const useSucursales = useSucursalesStore()
@@ -83,7 +80,7 @@ export default {
       })
 
       try {
-        await guardarComisionesUnidades(facturasFiltrada, quincenaSeleccionada, mesSeleccionado, anioSeleccionado)
+        await guardarFacturas(facturasFiltrada.value)
         await realizarTareaAsincrona()
         $q.loading.hide()
       } catch (error) {

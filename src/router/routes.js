@@ -40,7 +40,26 @@ const routes = [
             /* webpackChunkName: "dashboard" */ "src/modules/pvas/PanelPvas.vue"
           ),
       },
-
+      {
+        path: "descuentosVentas",
+        icono: "payments",
+        label: "Descuentos Ventas",
+        name: "descuentosVentas",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/descuentos/DescuentosVentas.vue"
+          ),
+      },
+      {
+        path: "kpis",
+        icono: "checklist",
+        label: "Panel KPIS",
+        name: "kpis",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/kpis/PanelKpis.vue"
+          ),
+      },
     ],
   },
 

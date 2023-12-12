@@ -76,3 +76,8 @@ export const objBusquedaAutorizaciones = [
   'GEADM',
   'GESE'
 ]
+
+export const tipoPva = [
+  {label: 'Plan Integral', value: 'pi'},
+  {label: 'Garantia Extendida', value: 'ge'}
+]

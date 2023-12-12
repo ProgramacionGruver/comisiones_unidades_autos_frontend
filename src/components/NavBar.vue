@@ -32,7 +32,18 @@
         </div>
         <q-separator />
       </div>
-
+      <div v-if="menuItem.name === 'panelPvas'">
+        <div class="q-px-md q-py-md q-mt-md text-h4">
+          Valor Real y Descuentos
+        </div>
+        <q-separator />
+      </div>
+      <div v-if="menuItem.name === 'descuentosVentas'">
+        <div class="q-px-md q-py-md q-mt-md text-h4">
+          KPIS
+        </div>
+        <q-separator />
+      </div>
     </template>
   </q-list>
 </template>

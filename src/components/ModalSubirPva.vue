@@ -1,5 +1,5 @@
 <template>
-    <q-dialog v-model="modalPolizaAjuste" @hide="resetForm" style="max-width: 200px, color: blue">
+    <q-dialog v-model="modalPva" style="max-width: 200px, color: blue">
       <q-card style="max-width: 200px, color: blue">
         <q-card-section class="bg-primary text-white row items-center q-pb-none">
           <h2 class="text-h4">Subir PVAS</h2>
@@ -7,7 +7,7 @@
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-card-section>
-          <q-form>
+          <q-form ref="formulario" @submit.prevent.stop="obtenerUsuarios">
             <div class="q-my-xs">
               <label>Selecciona la sucursal. </label>
             </div>
@@ -20,62 +20,69 @@
                 />
               </div>
               <div class="q-pt-md q-pb-xs">
-                <label>Selecciona la quincena.</label>
+                <label>Selecciona el asesor.</label>
               </div>
               <div class="row justify-around" style="width: 40rem;">
                 <q-select class="col-12 q-mx-xs"
                   outlined
                   dense
-                  :options="listaQuincenas"
-                  v-model="quincenaSeleccionada"
+                  clearable
+                  use-input
+                  input-debounce="0"
+                  label="Asesor"
+                  v-model="vendedorSeleccionado"
+                  @filter="parametrosFiltradosVendedores"
+                  :options="opcionesEmpleados"
+                  :rules="[val => !!val || 'Se requiere llenar este campo']"
                 />
               </div>
-            <div class="q-my-md">
-              <label>Selecciona el mes y año de los pvas. </label>
-            </div>
-            <div class="row justify-around">
-              <q-select class="col-5 q-mx-xs"
+              <div class="q-pt-md q-pb-xs">
+                <label>Selecciona el cliente.</label>
+              </div>
+              <div class="row justify-around" style="width: 40rem;">
+                <q-select class="col-12 q-mx-xs"
                   outlined
                   dense
-                  :options="anios"
-                  v-model="anioSeleccionado"
-                  label="Año"
-                  map-options
-                  option-value="name"
-                />
-              <q-select class="col-5 q-mx-xs"
-                  outlined
-                  dense
-                  :options="meses"
-                  v-model="mesSeleccionado"
-                  label="Mes"
-                  map-options
-                  option-value="name"
+                  clearable
+                  use-input
+                  input-debounce="0"
+                  label="Cliente"
+                  v-model="clienteSeleccionado"
+                  @filter="parametrosFiltradosClientes"
+                  :options="opcionesCliente"
+                  :rules="[val => !!val || 'Se requiere llenar este campo']"
                 />
               </div>
               <div class="q-my-md">
-                <label>Selecciona el archivo. </label>
+                <label>Selecciona el tipo de pva y la utilidad. </label>
               </div>
-              <q-file
-                      color="teal"
-                      required
-                      outlined
-                      dense
-                      v-model="modelPolizaArchivo"
-                      label="Ingresa la poliza"
-                      accept=".xlsx, .xls, .csv/*"
-                >
+              <div class="row justify-around">
+                <q-select
+                  style="min-width: 18rem;"
+                  label="Tipo PVA"
+                  option-label="label"
+                  option-value="value"
+                  emit-value
+                  map-options
+                  outlined
+                  dense
+                  :options="tipoPva"
+                  v-model="objPva.pva"
+                  :rules="[val => !!val || 'Se requiere llenar este campo']"
+                />
+                <q-input style="max-width: 20rem;" dense filled label="Monto" type="number" color="primary" v-model="objPva.utilidad" :rules="validarDigitos" >
                 <template v-slot:prepend>
-                  <q-icon name="cloud_upload" />
+                  <q-icon name="paid" />
                 </template>
-                </q-file>
-              <q-card-actions align="right">
+              </q-input>
+              </div>
+              <q-card-actions class="q-pt-md" align="right">
                 <q-btn
                 icon-right="save"
                 label="Guardar"
                 color="primary"
                 :loading="cargando"
-                @click="handleFileUpload(modelPolizaArchivo)"
+                @click="guardarPvas()"
                  >
                 <template v-slot:loading>
                   <q-spinner-facebook />
@@ -89,114 +96,113 @@
   </template>
 
   <script>
-  import * as XLSX from 'xlsx'
   import { ref } from 'vue'
   import { storeToRefs } from "pinia"
   import { listaQuincenas } from 'src/helpers/listas'
-  import { meses, anios, mes } from 'src/constant/constantes'
+  import { meses, anios, mes, tipoPva, obtenerNumeroQuincena, obtenerNumerosDeMes } from 'src/constant/constantes'
   import { useSucursalesStore } from 'src/stores/catalogos/sucursales'
   import { useFacturasStore } from 'src/stores/catalogos/facturas'
-
-
+  import { filtradoBusquedaObj } from 'src/helpers/filtradoBusquedaObj'
+  import { useAutenticacionStore } from 'src/stores/autenticaciones'
+  import { usePvaStore } from 'src/stores/catalogos/pvas'
+  import { validarDigitos } from 'src/helpers/inputReglas'
 
   export default {
       setup () {
+        const useAutenticacion = useAutenticacionStore()
+        const { usuarioAutenticado } = storeToRefs(useAutenticacion)
+
         const useFacturas = useFacturasStore()
-        const { mesSeleccionado, anioSeleccionado, quincenaSeleccionada } = storeToRefs(useFacturas)
+        const { mesSeleccionado, anioSeleccionado, quincenaSeleccionada, opcionesClientes, opcionesVendedores } = storeToRefs(useFacturas)
 
         const useSucursales = useSucursalesStore()
         const { opcionesSucursales, sucursalSeleccionada } = storeToRefs(useSucursales)
 
-        const modalPolizaAjuste = ref(false)
-        const modelPolizaArchivo = ref(null)
-        const nombrePropiedad = 'F&I'
+        const usePva = usePvaStore()
+        const {guardarPva} = usePva
 
-        const abrir = () => {
-          modelPolizaArchivo.value = null
-          modalPolizaAjuste.value = true
+        const modalPva = ref(false)
+        const formulario = ref(null)
+
+        const opcionesEmpleados = ref(opcionesVendedores.value)
+        const opcionesCliente= ref(opcionesClientes.value)
+
+        const vendedorSeleccionado = ref(null)
+        const clienteSeleccionado = ref(null)
+
+        const objPvaInit = {
+          numeroEmpleado: '',
+          nombreEmpleado: '',
+          utilidad: '',
+          pva: '',
+          cliente: '',
+          fi: '',
+          usuario: '',
+          quincena: '',
+          mes: '',
+          anio: '',
+        }
+
+        const objPva = ref({...objPvaInit})
+
+        const abrir = async() => {
+          objPva.value = {...objPvaInit}
+          vendedorSeleccionado.value = null
+          clienteSeleccionado.value = null
+          modalPva.value = true
           sucursalSeleccionada.value = opcionesSucursales.value[0]
         }
 
-        //Metodo para manejar ya el Json Convertido
-        const handleFileUpload = (file) => {
-            if (file) {
-              convertExcelToJson(file)
-                .then((jsonData) => {
-                  //Darle estructura al json resultante
-                  const transformedData = jsonData.map((obj) => {
-                      return {
-                        //Los datos que cambiare su nombre
-                        cliente: obj.NOMBRE,
-                        utilidad: obj.UTILIDAD,
-                        pva: obj.PVA,
-                        numeroEmpleado: obj.NUMEROEMPLEADO,
-                        nombreEmpleado: obj.VENDEDOR,
-                        fi: obj[nombrePropiedad]
-                      }
-                    })
-                    console.log(transformedData)
-                })
-                .catch((error) => {
-                  console.error('Error al convertir el archivo de Excel a JSON', error)
-                })
+        const parametrosFiltradosVendedores = (val, update) => {
+             filtradoBusquedaObj(val, update, opcionesVendedores.value, opcionesEmpleados)
+        }
+
+        const parametrosFiltradosClientes = (val, update) => {
+             filtradoBusquedaObj(val, update, opcionesClientes.value, opcionesCliente)
+        }
+
+        const guardarPvas = async() => {
+          if (!await formulario.value.validate()) {
+                return;
             }
-          }
+          objPva.value.nombreEmpleado = vendedorSeleccionado.value.value.nombre
+          objPva.value.numeroEmpleado = vendedorSeleccionado.value.value.id_vendedor
+          objPva.value.cliente = clienteSeleccionado.value.value.cliente
+          objPva.value.fi = sucursalSeleccionada.value.value.abreviacion
+          objPva.value.usuario = usuarioAutenticado.value.usuario
+          objPva.value.quincena = obtenerNumeroQuincena(quincenaSeleccionada.value)
+          objPva.value.mes = obtenerNumerosDeMes(mesSeleccionado.value)
+          objPva.value.anio = anioSeleccionado.value
+          await guardarPva(objPva.value)
+        }
 
-        const convertExcelToJson = (file) => {
-            return new Promise((resolve, reject) => {
-              const reader = new FileReader();
-
-              reader.onload = (e) => {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-                const headers = jsonData[0];
-                const rows = jsonData.slice(1);
-
-                const jsonObjects = rows.map((row) => {
-                  const obj = {};
-
-                  headers.forEach((header, index) => {
-                    const value = row[index];
-                    const trimmedValue = typeof value === 'string' ? value.trim() : value;
-                    obj[header] = trimmedValue !== '' && trimmedValue !== undefined ? trimmedValue : null;
-                  });
-
-                  return obj;
-                });
-
-                const filteredJsonObjects = jsonObjects.filter((obj) => {
-                  return Object.values(obj).some((value) => value !== null);
-                });
-
-                resolve(filteredJsonObjects);
-              };
-
-              reader.onerror = (e) => {
-                reject(e);
-              };
-
-              reader.readAsArrayBuffer(file);
-            });
-          };
-
-          return {
-            abrir,
-            handleFileUpload,
-            modalPolizaAjuste,
-            mesSeleccionado,
-            anioSeleccionado,
-            anios,
-            meses,
-            mes,
-            opcionesSucursales,
-            sucursalSeleccionada,
-            listaQuincenas,
-            quincenaSeleccionada,
-            modelPolizaArchivo,
-          }
+        return {
+          abrir,
+          modalPva,
+          mesSeleccionado,
+          anioSeleccionado,
+          anios,
+          meses,
+          mes,
+          opcionesSucursales,
+          sucursalSeleccionada,
+          listaQuincenas,
+          quincenaSeleccionada,
+          opcionesClientes,
+          opcionesCliente,
+          opcionesVendedores,
+          opcionesEmpleados,
+          vendedorSeleccionado,
+          clienteSeleccionado,
+          objPvaInit,
+          objPva,
+          tipoPva,
+          formulario,
+          parametrosFiltradosVendedores,
+          parametrosFiltradosClientes,
+          guardarPvas,
+          validarDigitos
+        }
       }
   }
 

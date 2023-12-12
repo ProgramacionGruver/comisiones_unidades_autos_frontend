@@ -9,6 +9,7 @@ import { useGastoFinancieroStore } from 'src/stores/catalogos/gastosFinancieros'
 import { useComisionesStore } from 'src/stores/catalogos/comisionesUnidades'
 import { formatoFecha } from 'src/helpers/formatearFecha'
 import { useAutenticacionStore } from 'src/stores/autenticaciones'
+import { notificacion } from 'src/helpers/mensajes'
 
 
 export const useFacturasStore = defineStore('facturas',() => {
@@ -26,6 +27,12 @@ export const useFacturasStore = defineStore('facturas',() => {
   const filtro = ref([])
   const registrosEnviados = ref([])
   const valoresUnicosSucursal = ref([])
+
+  const clientes = ref([])
+  const opcionesClientes = ref([])
+
+  const vendedores = ref([])
+  const opcionesVendedores = ref([])
 
   const useEmpresas = useEmpresasStore()
   const { empresaSeleccionada } = storeToRefs(useEmpresas)
@@ -46,8 +53,6 @@ export const useFacturasStore = defineStore('facturas',() => {
 
   const useUsuario = useAutenticacionStore()
   const { usuarioAutenticado } = storeToRefs(useUsuario)
-
-
 
   const obtenerFacturas = async () => {
     try {
@@ -140,6 +145,60 @@ export const useFacturasStore = defineStore('facturas',() => {
     }
   }
 
+  const guardarFacturas = async (objFacturas) => {
+    try {
+      cargando.value = true
+      const facturasObj = objFacturas.map(factura => {
+        return {
+          ...factura,
+          claveSucursal: sucursalSeleccionada.value.value.abreviacion
+        }
+      })
+      const { data } = await api.post('/facturas/unidades/autos', facturasObj)
+      notificacion('positive', 'Facturas Guardadas', data)
+    } catch (error) {
+      notificacion('negative', error.response.data.message)
+    } finally {
+      cargando.value = false
+    }
+  }
+
+  const obtenerClientes = async () => {
+    try {
+      const { data } = await api.get('/clientes/unidades/autos')
+      clientes.value = [...data]
+
+      //Opciones departamentos
+      opcionesClientes.value = clientes.value.map(cliente => {
+        return {
+          label: `${cliente.cliente}`,
+          value: cliente
+        }
+      })
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const obtenerVendedores = async () => {
+    try {
+      const { data } = await api.get('/vendedores/unidades/autos')
+      vendedores.value = [...data]
+
+      //Opciones departamentos
+      opcionesVendedores.value = vendedores.value.map(vendedor => {
+        return {
+          label: `${vendedor.nombre}`,
+          value: vendedor
+        }
+      })
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return {
         anioSeleccionado,
         mesSeleccionado,
@@ -151,6 +210,13 @@ export const useFacturasStore = defineStore('facturas',() => {
         facturasFiltrada,
         detalleFactura,
         valoresUnicosSucursal,
+        clientes,
+        opcionesClientes,
+        vendedores,
+        opcionesVendedores,
         obtenerFacturas,
+        guardarFacturas,
+        obtenerClientes,
+        obtenerVendedores
     }
 })

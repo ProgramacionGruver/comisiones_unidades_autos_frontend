@@ -51,6 +51,7 @@ import { useRouter } from "vue-router";
 import { useSucursalesStore } from 'src/stores/catalogos/sucursales'
 import { useEmpresasStore } from 'src/stores/catalogos/empresas'
 import {useDepartamentosStore} from 'src/stores/catalogos/departamentos'
+import { useFacturasStore } from "src/stores/catalogos/facturas";
 
 //import { useDashboardStore } from "../stores/dashboard";
 
@@ -75,11 +76,15 @@ export default {
     const useDepartamentos = useDepartamentosStore()
     const { obtenerDepartamentos } = useDepartamentos
 
+    const useFacturas = useFacturasStore()
+    const { obtenerClientes, obtenerVendedores } = useFacturas
 
     onMounted(async()=>{
      await obtenerEmpresas()
      await obtenerSucursales()
      await obtenerDepartamentos()
+     await obtenerClientes()
+     await obtenerVendedores()
     })
 
     const logout = () => {

@@ -1,23 +1,40 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { api } from 'src/boot/axios'
+import { notificacion } from 'src/helpers/mensajes'
 import { ref } from 'vue'
-
- const comisionesUnidades = ref([])
 
 export const useComisionesStore = defineStore('comisiones', () => {
 
+  const comisionesUnidades = ref([])
+  const comisionesFiltradas = ref([])
+  const cargando = ref(false)
 
-  const obtenerComisionesUnidades = async (ObjComisiones) => {
+  const obtenerComisionesUnidades = async (objComisiones) => {
     try {
-      const { data } = await api.post('/autos/comisionesUnidades', ObjComisiones)
+      cargando.value = true
+      const { data } = await api.post('/unidades/autos', objComisiones)
       comisionesUnidades.value = [...data]
     } catch (error) {
       console.log(error)
+    }finally{
+      cargando.value = false
+    }
+  }
+
+  const guardarDescuentos = async (objDescuentos) => {
+    try {
+      const { data } = await api.post('/descuentos/autos', objDescuentos)
+      notificacion('positive', 'Descuentos Agregados', data)
+    } catch (error) {
+      notificacion('negative', error.response.data.message)
     }
   }
 
   return {
       comisionesUnidades,
+      comisionesFiltradas,
+      cargando,
       obtenerComisionesUnidades,
+      guardarDescuentos
     }
 })

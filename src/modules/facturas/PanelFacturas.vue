@@ -35,8 +35,8 @@
           <q-btn
           dense
           color="primary"
-          icon-right="send"
-          label="Envio facturas"
+          icon-right="save"
+          label="Guardar Facturas"
           no-caps
           :disable="cargando || !usuarioAutorizado || facturasFiltrada.length === 0"
           @click="enviarComisiones()"
@@ -345,13 +345,6 @@ export default {
         name: 'anticipos',
         label: 'Anticipos',
         field: row => row.anticipos ? formatearMonto(row.anticipos) : formatearMonto(0),
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'bonificacion',
-        label: 'Bonificacion',
-        field: row => row.bonificacion ? formatearMonto(row.bonificacion) : formatearMonto(0),
         align: 'left',
         sortable: true
       },

@@ -9,13 +9,20 @@
         color="primary"
         :columns="columns"
         :filter="buscar"
-        :rows="[]"
+        :rows="pvas"
         no-data-label="No se encontró información disponible."
         loading-label="Buscando información . . ."
-        selection="single"
       >
       <template v-slot:top>
         <div class="fit row q-gutter-sm q-mb-sm justify-end">
+          <q-btn
+            dense
+            color="primary"
+            icon-right="playlist_add"
+            label="Cargar PVAS"
+            no-caps
+            @click="nuevoPva"
+          />
           <div class="col">
             <q-input
               outlined
@@ -28,32 +35,6 @@
               </template>
             </q-input>
           </div>
-          <q-btn
-          dense
-          color="primary"
-          icon-right="map"
-          label="Cargar PVAS"
-          @click="nuevoPva"
-          no-caps
-          />
-        </div>
-        <div class="fit row q-gutter-sm">
-          <q-btn-dropdown  dense outline  class="col q-ma-sm" color="grey" label="Empresas">
-            <q-separator class="q-mx-md bg-gray"></q-separator>
-            <q-option-group  class="q-pa-md" dense
-            :options="[]"
-            type="radio"
-          />
-          </q-btn-dropdown>
-            <q-btn-dropdown dense outline  class="col q-ma-sm " color="grey" label="Sucursales">
-              <q-separator class="q-mx-sm bg-gray"></q-separator>
-
-              <q-option-group  class="q-pa-md" dense
-              :options="[]"
-              type="radio"
-
-            />
-            </q-btn-dropdown>
         </div>
             <div class="fit row q-gutter-sm">
             <div class="col q-ma-sm">
@@ -64,6 +45,7 @@
                 v-model="anioSeleccionado"
                 map-options
                 option-value="name"
+                @update:model-value="filtrarPvas"
               />
             </div>
             <div class="col q-ma-sm">
@@ -74,6 +56,7 @@
                 v-model="mesSeleccionado"
                 map-options
                 option-value="name"
+                @update:model-value="filtrarPvas"
               />
             </div>
             <div class="col q-ma-sm">
@@ -83,6 +66,7 @@
                 v-model="quincenaSeleccionada"
                 :options="listaQuincenas"
                 option-label="descripcion"
+                @update:model-value="filtrarPvas"
               >
               </q-select>
             </div>
@@ -98,8 +82,12 @@
 import { ref, onMounted } from 'vue'
 import { listaMeses, listaAnios, listaQuincenas} from 'src/helpers/listas'
 import { useFacturasStore } from 'src/stores/catalogos/facturas'
+import { formatearMonto } from 'src/helpers/formatos'
 import { storeToRefs } from 'pinia'
 import ModalSubirPva from 'src/components/ModalSubirPva.vue'
+import { usePvaStore } from 'src/stores/catalogos/pvas'
+import { obtenerNumeroQuincena, obtenerNumerosDeMes } from 'src/constant/constantes'
+import { tipoPva } from 'src/constant/constantes'
 
 export default {
   components: {
@@ -109,6 +97,10 @@ export default {
 
     const useFacturas = useFacturasStore()
     const {anioSeleccionado, mesSeleccionado, quincenaSeleccionada} = storeToRefs(useFacturas)
+
+    const usePva = usePvaStore()
+    const { obtenerPvas } = usePva
+    const { pvas } = storeToRefs(usePva)
 
     const columns = [
       {
@@ -128,21 +120,24 @@ export default {
       {
         name: 'utilidad',
         label: 'Utilidad',
-        field: 'utilidad',
+        field: row => row.utilidad ? formatearMonto(row.utilidad) : formatearMonto(0),
         align: 'left',
         sortable: true
       },
       {
         name: 'pva',
         label: 'PVA',
-        field: 'pva',
+        field: row => {
+          const tipo = tipoPva.find(tipo => tipo.value === row.pva);
+          return tipo ? tipo.label : row.pva;
+        },
         align: 'left',
         sortable: true
       },
       {
-        name: 'vendedor',
-        label: 'Vendedor',
-        field: 'vendedor',
+        name: 'cliente',
+        label: 'Cliente',
+        field: 'cliente',
         align: 'left',
         sortable: true
       },
@@ -157,9 +152,22 @@ export default {
 
     const modalSubirPva = ref(null)
 
-    onMounted(async () => {
-
+    const objPvaInit = ref({
+      quincena : obtenerNumeroQuincena(quincenaSeleccionada.value),
+      mes: obtenerNumerosDeMes(mesSeleccionado.value),
+      anio: anioSeleccionado.value
     })
+
+    onMounted(async () => {
+      await obtenerPvas(objPvaInit.value)
+    })
+
+    const filtrarPvas = async () => {
+      objPvaInit.value.quincena = obtenerNumeroQuincena(quincenaSeleccionada.value)
+      objPvaInit.value.mes = obtenerNumerosDeMes(mesSeleccionado.value)
+      objPvaInit.value.anio = anioSeleccionado.value
+      await obtenerPvas(objPvaInit.value)
+    }
 
     const nuevoPva = async() => {
       modalSubirPva.value.abrir()
@@ -175,8 +183,11 @@ export default {
       mesSeleccionado,
       quincenaSeleccionada,
 
+      pvas,
+
       modalSubirPva,
       nuevoPva,
+      filtrarPvas
     }
   }
 }
