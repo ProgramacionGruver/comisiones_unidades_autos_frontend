@@ -295,14 +295,15 @@ export default {
       })
 
       opcionesSucursales.value = sucursales.value.map((sucursal) => {
-        sucursal.label = formatearCapitalCase(sucursal.nombreSucursal)
-        sucursal.value = sucursal
-        return sucursal
+              return {
+                label: formatearCapitalCase(sucursal.nombreSucursal),
+                value: { ...sucursal },
+              }
       })
 
       //Declaro la primera empresa, sucursal y departamento
       empresaSeleccionada.value = opcionesEmpresas.value[0]
-      sucursalSeleccionada.value = opcionesSucursales.value[0]
+      sucursalSeleccionada.value = opcionesSucursales.value[0].value
       departamentoSeleccionado.value = departamentos.value[0]
       grupoEmpresas.value = [empresaSeleccionada.value.claveEmpresa]
 
@@ -327,9 +328,10 @@ export default {
       grupoEmpresas.value = [empresaSeleccionada.value.claveEmpresa]
       //TODAS LAS SUCURSALES PERTENECIENTES A LA EMPRESA
       opcionesSucursales.value = filtrarElementos(grupoEmpresas, sucursales, 'claveEmpresa').map((sucursal) => {
-        sucursal.label = formatearCapitalCase(sucursal.nombreSucursal)
-        sucursal.value = sucursal
-        return sucursal
+        return {
+                label: formatearCapitalCase(sucursal.nombreSucursal),
+                value: { ...sucursal },
+              }
       })
     }
 

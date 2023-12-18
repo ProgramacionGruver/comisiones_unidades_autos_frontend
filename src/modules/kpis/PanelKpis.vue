@@ -2,27 +2,38 @@
   <q-layout>
     <div class="q-pa-md">
       <div div class="q-pa-md">
-        <h2>Panel de KPIS</h2>
+        <h2>Catalogo de KPIS</h2>
       </div>
       <q-separator color="primary" class="q-my-md"/>
       <q-table
         color="primary"
         :columns="columns"
         :filter="buscar"
-        :rows="pvas"
+        :rows="objetivosKpis"
         no-data-label="No se encontró información disponible."
         loading-label="Buscando información . . ."
       >
-
+      <template v-slot:body-cell-acciones="props">
+          <td>
+            <q-btn
+              dense
+              flat
+              icon="edit"
+              color="primary"
+              @click="editarObjetivo(props.row)">
+              <q-tooltip>Editar Requisicion</q-tooltip>
+            </q-btn>
+          </td>
+      </template>
       <template v-slot:top>
         <div class="fit row q-gutter-sm q-mb-sm justify-end">
           <q-btn
             dense
             color="primary"
             icon-right="playlist_add"
-            label="Nuevo KPI"
+            label="Nuevo Objetivo"
             no-caps
-            @click="nuevoPva"
+            @click="nuevoObjetivo()"
           />
           <div class="col">
             <q-input
@@ -62,6 +73,8 @@
         </template>
       </q-table>
     </div>
+    <modal-objetivo-kpis ref="modalObjetivoKpis"></modal-objetivo-kpis>
+    <modal-editar-objetivo ref="modalEditarObjetivo"></modal-editar-objetivo>
   </q-layout>
 </template>
 
@@ -70,11 +83,16 @@ import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useEmpresasStore } from 'src/stores/catalogos/empresas'
 import { useSucursalesStore } from 'src/stores/catalogos/sucursales'
+import { useKpiStore } from 'src/stores/catalogos/kpis'
 import { formatearCapitalCase } from 'src/helpers/formatos'
-
+import { filtrarElementos } from 'src/helpers/filtros'
+import ModalObjetivoKpis from 'src/components/ModalObjetivoKpis.vue'
+import ModalEditarObjetivo from 'src/components/ModalEditarObjetivo.vue'
 
 export default {
   components: {
+    ModalObjetivoKpis,
+    ModalEditarObjetivo
   },
   setup () {
 
@@ -86,6 +104,9 @@ export default {
     const { obtenerSucursales } = useSucursales
     const { sucursales, sucursalSeleccionada } = storeToRefs(useSucursales)
 
+    const useKpi = useKpiStore()
+    const { obtenerObjetivosKpis } = useKpi
+    const { objetivosKpis } = storeToRefs(useKpi)
 
     const columns = [
       {
@@ -98,7 +119,7 @@ export default {
       {
         name: 'nivel',
         label: 'Nivel',
-        field: 'nivel',
+        field: row => row.nivel.toUpperCase(),
         align: 'left',
         sortable: true
       },
@@ -112,7 +133,14 @@ export default {
       {
         name: 'porcentajeub',
         label: 'Porcentaje U.B.',
-        feld: 'porcentajeub',
+        field: 'porcentajeub',
+        align: 'left',
+        sortable: true
+      },
+      {
+        name: 'peso',
+        label: 'Peso',
+        field: 'peso',
         align: 'left',
         sortable: true
       },
@@ -131,9 +159,7 @@ export default {
         sortable: true
       },
       {
-        name: 'peso',
-        label: 'Peso',
-        field: 'peso',
+        name: 'acciones',
         align: 'left',
         sortable: true
       }
@@ -142,6 +168,9 @@ export default {
     const opcionesEmpresas = ref([])
     const opcionesSucursales = ref([])
     const grupoEmpresas = ref([])
+    const modalObjetivoKpis = ref(null)
+    const modalEditarObjetivo = ref(null)
+
 
 
     onMounted(async () => {
@@ -155,43 +184,59 @@ export default {
       })
 
       opcionesSucursales.value = sucursales.value.map((sucursal) => {
-        sucursal.label = formatearCapitalCase(sucursal.nombreSucursal)
-        sucursal.value = sucursal
-        return sucursal
+        return {
+                label: `${sucursal.nombreSucursal}`,
+                value: { ...sucursal },
+        }
       })
 
       //Declaro la primera empresa, sucursal y departamento
       empresaSeleccionada.value = opcionesEmpresas.value[0]
-      sucursalSeleccionada.value = opcionesSucursales.value[0]
+      sucursalSeleccionada.value = opcionesSucursales.value[0].value
       grupoEmpresas.value = [empresaSeleccionada.value.claveEmpresa]
 
       await filtrarEmpresas()
 
-    //Filtro por sucursal
-      comisionesFiltradas.value = comisionesUnidades.value.filter(comision => comision.id_plaza === sucursalSeleccionada.value.idErp)
-
     })
 
     const filtrarEmpresas = async () => {
-      grupoEmpresas.value = [empresaSeleccionada.value.claveEmpresa]
-      //TODAS LAS SUCURSALES PERTENECIENTES A LA EMPRESA
-      opcionesSucursales.value = filtrarElementos(grupoEmpresas, sucursales, 'claveEmpresa').map((sucursal) => {
-        sucursal.label = formatearCapitalCase(sucursal.nombreSucursal)
-        sucursal.value = sucursal
-        return sucursal
-      })
+        await obtenerObjetivosKpis({claveSucursal: sucursalSeleccionada.value.abreviacion})
+        grupoEmpresas.value = [empresaSeleccionada.value.claveEmpresa]
+        //TODAS LAS SUCURSALES PERTENECIENTES A LA EMPRESA
+        opcionesSucursales.value = filtrarElementos(grupoEmpresas, sucursales, 'claveEmpresa').map((sucursal) => {
+          return {
+                  label: `${sucursal.nombreSucursal}`,
+                  value: { ...sucursal },
+                }
+        })
+        sucursalSeleccionada.value = opcionesSucursales.value[0].value
       }
 
       const filtrarFacturas = async () => {
-          comisionesFiltradas.value = comisionesUnidades.value.filter(factura => factura.id_plaza === sucursalSeleccionada.value.idErp)
+        await obtenerObjetivosKpis({claveSucursal: sucursalSeleccionada.value.abreviacion})
+      }
+
+      const nuevoObjetivo = async () => {
+        modalObjetivoKpis.value.abrir()
+      }
+
+      const editarObjetivo = async (objetivo) => {
+        modalEditarObjetivo.value.abrir(objetivo)
       }
 
     return {
+      buscar: ref(''),
       columns,
+      objetivosKpis,
       opcionesEmpresas,
       opcionesSucursales,
       empresaSeleccionada,
       sucursalSeleccionada,
+      modalObjetivoKpis,
+      modalEditarObjetivo,
+      filtrarFacturas,
+      nuevoObjetivo,
+      editarObjetivo
       }
   }
 }

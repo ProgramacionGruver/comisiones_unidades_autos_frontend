@@ -49,7 +49,7 @@
             :options="opcionesEmpresas"
             v-model="empresaSeleccionada"
             type="radio"
-            @update:model-value="filtrarEmpresas"
+            @update:model-value="filtrarFacturas(true)"
           />
           </q-btn-dropdown>
             <q-btn-dropdown dense outline  class="col q-ma-sm " color="grey" label="Sucursales">
@@ -59,7 +59,7 @@
               :options="opcionesSucursales"
               v-model="sucursalSeleccionada"
               type="radio"
-              @update:model-value="filtrarFacturasSucursal"
+              @update:model-value="filtrarFacturas()"
 
             />
             </q-btn-dropdown>
@@ -72,7 +72,7 @@
                 :disable="cargando"
                 :options="listaAnios"
                 v-model="anioSeleccionado"
-                @update:model-value="filtrarFacturas"
+                @update:model-value="filtrarFacturas(true)"
                 map-options
                 option-value="name"
               />
@@ -84,7 +84,7 @@
                 :disable="cargando"
                 :options="departamentos"
                 v-model="departamentoSeleccionado"
-                @update:model-value="filtrarFacturas"
+                @update:model-value="filtrarFacturas(true)"
                 map-options
                 option-value="name"
               />
@@ -96,7 +96,7 @@
                 :disable="cargando"
                 :options="listaMeses"
                 v-model="mesSeleccionado"
-                @update:model-value="filtrarFacturas"
+                @update:model-value="filtrarFacturas(true)"
                 map-options
                 option-value="name"
               />
@@ -108,7 +108,7 @@
                 :disable="cargando"
                 v-model="quincenaSeleccionada"
                 :options="listaQuincenas"
-                @update:model-value="filtrarFacturas"
+                @update:model-value="filtrarFacturas(true)"
                 option-label="descripcion"
               >
               </q-select>
@@ -185,9 +185,11 @@ export default {
     const { usuarioAutenticado } = storeToRefs(useAutenticacion)
 
     const useEmpresas = useEmpresasStore()
+    const { obtenerEmpresas } = useEmpresas
     const { empresas, empresaSeleccionada } = storeToRefs(useEmpresas)
 
     const useSucursales = useSucursalesStore()
+    const { obtenerSucursales } = useSucursales
     const { sucursales, sucursalSeleccionada } = storeToRefs(useSucursales)
 
     const useDepartamentos = useDepartamentosStore()
@@ -358,6 +360,8 @@ export default {
     ]
 
     onMounted(async () => {
+      await obtenerEmpresas()
+      await obtenerSucursales()
       await obtenerDepartamentos()
       facturaSeleccionada.value = []
       facturasFiltrada.value = []
@@ -369,21 +373,18 @@ export default {
       })
 
       opcionesSucursales.value = sucursales.value.map((sucursal) => {
-        sucursal.label = formatearCapitalCase(sucursal.nombreSucursal)
-        sucursal.value = sucursal
-        return sucursal
+              return {
+                label: formatearCapitalCase(sucursal.nombreSucursal),
+                value: { ...sucursal },
+              }
       })
 
       //Declaro la primera empresa, sucursal y departamento
       empresaSeleccionada.value = opcionesEmpresas.value[0]
-      sucursalSeleccionada.value = opcionesSucursales.value[0]
+      sucursalSeleccionada.value = opcionesSucursales.value[0].value
       departamentoSeleccionado.value = departamentos.value[0]
-      grupoEmpresas.value = [empresaSeleccionada.value.claveEmpresa]
 
-      await filtrarEmpresas()
-
-    //Filtro por sucursal
-     facturasFiltrada.value = facturas.value.filter(factura => factura.id_plaza === sucursalSeleccionada.value.idErp)
+      await filtrarFacturas(true)
 
      //Habilitar boton envio
      if(usuarioAutenticado.value.puesto === 'ASISTENTE DE VENTAS'|| usuarioAutenticado.value.puesto === 'PROGRAMADOR JUNIOR' || usuarioAutenticado.value.puesto === 'ENLACE FINANCIERO'){
@@ -396,42 +397,33 @@ export default {
 
     })
 
-    const filtrarEmpresas = async () => {
+    const filtrarFacturas = async (buscarFacturas) => {
+      facturaSeleccionada.value = []
       facturasFiltrada.value = []
-      await obtenerFacturas()
+      if(buscarFacturas){
+        await obtenerFacturas()
+      }
       grupoEmpresas.value = [empresaSeleccionada.value.claveEmpresa]
       //TODAS LAS SUCURSALES PERTENECIENTES A LA EMPRESA
       opcionesSucursales.value = filtrarElementos(grupoEmpresas, sucursales, 'claveEmpresa').map((sucursal) => {
-        sucursal.label = formatearCapitalCase(sucursal.nombreSucursal)
-        sucursal.value = sucursal
-        return sucursal
+        return {
+                label: formatearCapitalCase(sucursal.nombreSucursal),
+                value: { ...sucursal },
+              }
       })
       //SOLO SUCURSALES CON FACTURAS
-      opcionesSucursales.value = opcionesSucursales.value.filter(sucursal => valoresUnicosSucursal.value.includes(sucursal.idErp))
-                                           .map(sucursal => ({
-                                             label: formatearCapitalCase(sucursal.nombreSucursal),
-                                             value: sucursal
-                                           }))
+      opcionesSucursales.value = opcionesSucursales.value.filter(sucursal => valoresUnicosSucursal.value.includes(sucursal.value.idErp))
 
-    }
+      if(buscarFacturas){
+        sucursalSeleccionada.value = opcionesSucursales.value[0].value
+      }else{
+        sucursalSeleccionada.value = opcionesSucursales.value.find(sucursal => sucursal.value.idErp === sucursalSeleccionada.value.idErp).value
 
-    const filtrarFacturas = async () => {
-      facturaSeleccionada.value = []
-      facturasFiltrada.value = []
-      await obtenerFacturas()
-      await filtrarFacturasSucursal()
-      //SOLO SUCURSALES CON FACTURAS
-      opcionesSucursales.value = sucursales.value.filter(sucursal => valoresUnicosSucursal.value.includes(sucursal.idErp))
-                                           .map(sucursal => ({
-                                             label: formatearCapitalCase(sucursal.nombreSucursal),
-                                             value: sucursal
-                                           }))
-    }
+      }
 
-    const filtrarFacturasSucursal = async () => {
-      facturasFiltrada.value = []
-      facturaSeleccionada.value = []
+      //Filtro por sucursal
       facturasFiltrada.value = facturas.value.filter(factura => factura.id_plaza === sucursalSeleccionada.value.idErp)
+
       if(usuarioAutenticado.value.puesto === 'ASISTENTE DE VENTAS'|| usuarioAutenticado.value.puesto === 'PROGRAMADOR JUNIOR'  || usuarioAutenticado.value.puesto === 'ENLACE FINANCIERO'){
         if( facturasFiltrada.value.length > 0 ){
           usuarioAutorizado.value = true
@@ -439,8 +431,8 @@ export default {
       }else{
         usuarioAutorizado.value = false
       }
-
     }
+
 
     const enviarComisiones = async () => {
       modalConfirmarEnvio.value.abrir()
@@ -460,12 +452,10 @@ export default {
       sucursales,
       sucursalSeleccionada,
       opcionesSucursales,
-      filtrarFacturasSucursal,
 
       empresas,
       empresaSeleccionada,
       opcionesEmpresas,
-      filtrarEmpresas,
 
       departamentos,
       departamentoSeleccionado,

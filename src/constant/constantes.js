@@ -81,3 +81,11 @@ export const tipoPva = [
   {label: 'Plan Integral', value: 'pi'},
   {label: 'Garantia Extendida', value: 'ge'}
 ]
+
+export const nivelKpi = [
+  {label: 'Oro', value: 'oro'},
+  {label: 'Plata', value: 'plata'},
+  {label: 'Bronce', value: 'bronce'},
+  {label: 'Asesor', value: 'asesor'},
+  {label: 'Especial', value: 'especial'}
+]

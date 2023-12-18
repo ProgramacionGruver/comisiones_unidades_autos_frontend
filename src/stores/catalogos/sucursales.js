@@ -7,7 +7,6 @@ import { useAutenticacionStore } from '../autenticaciones'
 export const useSucursalesStore = defineStore('sucursales', () => {
   const sucursalSeleccionada = ref(null)
   const sucursales = ref([])
-  const opcionesSucursales = ref([])
 
   const useAutenticacion = useAutenticacionStore()
   const { usuarioAutenticado } =storeToRefs(useAutenticacion)
@@ -22,18 +21,8 @@ export const useSucursalesStore = defineStore('sucursales', () => {
         return sucursal.includes(empresa.abreviacion)
       })
 
-      //ELIMINAR
-      sucursales.value = sucursalesFiltradas.filter(sucursal => {
-        return sucursal.claveEmpresa === 'CH'
-      })
+      sucursales.value = [...sucursalesFiltradas]
 
-      //Opciones Sucursales
-      opcionesSucursales.value = sucursales.value.map(sucursal => {
-        return {
-          label: `${sucursal.nombreSucursal}`,
-          value: sucursal
-        }
-      })
 
     } catch (error) {
       console.log(error)
@@ -44,7 +33,6 @@ export const useSucursalesStore = defineStore('sucursales', () => {
   return {
     sucursales,
     sucursalSeleccionada,
-    opcionesSucursales,
     obtenerSucursales,
   }
 })

@@ -7,7 +7,7 @@
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-card-section>
-          <q-form ref="formulario" @submit.prevent.stop="obtenerUsuarios">
+          <q-form ref="formulario" >
             <div class="q-my-xs">
               <label>Selecciona la sucursal. </label>
             </div>
@@ -116,13 +116,14 @@
         const { mesSeleccionado, anioSeleccionado, quincenaSeleccionada, opcionesClientes, opcionesVendedores } = storeToRefs(useFacturas)
 
         const useSucursales = useSucursalesStore()
-        const { opcionesSucursales, sucursalSeleccionada } = storeToRefs(useSucursales)
+        const {sucursales ,sucursalSeleccionada } = storeToRefs(useSucursales)
 
         const usePva = usePvaStore()
         const {guardarPva} = usePva
 
         const modalPva = ref(false)
         const formulario = ref(null)
+        const opcionesSucursales = ref([])
 
         const opcionesEmpleados = ref(opcionesVendedores.value)
         const opcionesCliente= ref(opcionesClientes.value)
@@ -146,11 +147,17 @@
         const objPva = ref({...objPvaInit})
 
         const abrir = async() => {
+          opcionesSucursales.value = sucursales.value.map((sucursal) => {
+              return {
+                label: `${sucursal.nombreSucursal}`,
+                value: { ...sucursal },
+              }
+            })
+          sucursalSeleccionada.value = opcionesSucursales.value[0]
           objPva.value = {...objPvaInit}
           vendedorSeleccionado.value = null
           clienteSeleccionado.value = null
           modalPva.value = true
-          sucursalSeleccionada.value = opcionesSucursales.value[0]
         }
 
         const parametrosFiltradosVendedores = (val, update) => {
@@ -184,10 +191,10 @@
           anios,
           meses,
           mes,
-          opcionesSucursales,
           sucursalSeleccionada,
           listaQuincenas,
           quincenaSeleccionada,
+          opcionesSucursales,
           opcionesClientes,
           opcionesCliente,
           opcionesVendedores,

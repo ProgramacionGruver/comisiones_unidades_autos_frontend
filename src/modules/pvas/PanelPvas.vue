@@ -175,6 +175,7 @@ export default {
 
     return {
       columns,
+      buscar: ref(''),
 
       listaAnios,
       listaMeses,

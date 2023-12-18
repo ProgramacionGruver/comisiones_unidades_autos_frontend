@@ -77,13 +77,12 @@ export default {
     const { obtenerDepartamentos } = useDepartamentos
 
     const useFacturas = useFacturasStore()
-    const { obtenerClientes, obtenerVendedores } = useFacturas
+    const { obtenerVendedores } = useFacturas
 
     onMounted(async()=>{
      await obtenerEmpresas()
      await obtenerSucursales()
      await obtenerDepartamentos()
-     await obtenerClientes()
      await obtenerVendedores()
     })
 

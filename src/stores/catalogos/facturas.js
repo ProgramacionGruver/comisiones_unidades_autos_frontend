@@ -62,7 +62,7 @@ export const useFacturasStore = defineStore('facturas',() => {
       //ARMO LOS OBJETOS DE BÚSQUEDA
       const ObjBusquedaGasto = {
         claveEmpresa: empresaSeleccionada.value.value.claveEmpresa,
-        claveSucursal: sucursalSeleccionada.value.value.abreviacion,
+        claveSucursal: sucursalSeleccionada.value.abreviacion,
         claveDepartamento: departamentoSeleccionado.value.value.claveDepartamento,
         fecha: formatoFecha(obtenerNumeroQuincena(quincenaSeleccionada.value), obtenerNumerosDeMes(mesSeleccionado.value), anioSeleccionado.value )
       }

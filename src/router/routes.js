@@ -21,7 +21,7 @@ const routes = [
           ),
       },
       {
-        path: "",
+        path: "panelFacturas",
         icono: "description",
         label: "Panel de Facturas",
         name: "panelFacturas",
@@ -53,7 +53,7 @@ const routes = [
       {
         path: "kpis",
         icono: "checklist",
-        label: "Panel KPIS",
+        label: "Catalogo KPIS",
         name: "kpis",
         component: () =>
           import(

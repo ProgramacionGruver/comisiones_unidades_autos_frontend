@@ -71,12 +71,18 @@ import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { ID_SERVIDOR } from "src/constant/servidor";
+import { useFacturasStore } from "src/stores/catalogos/facturas";
+
 
 export default {
   setup() {
     const useAutenticacion = useAutenticacionStore();
     const { iniciarSesion, autenticarUsuario } = useAutenticacion;
     const { isLogin } = storeToRefs(useAutenticacion);
+
+    const useFacturas = useFacturasStore()
+    const { obtenerClientes, obtenerVendedores } = useFacturas
+
 
     const isPassword = ref(true);
     const formulario = ref(null);
@@ -89,6 +95,7 @@ export default {
     });
 
     onMounted(async () => {
+      await obtenerClientes()
       await autenticarUsuario();
       if (isLogin.value) {
         router.push("/principal");
