@@ -1,9 +1,7 @@
 <template>
   <q-list>
-    <div class="q-px-md q-py-md text-h4">
-
-      </div>
-      <q-separator />
+    <div class="q-px-md q-py-md text-h4"></div>
+    <q-separator />
     <template v-for="(menuItem, index) in menulist" :key="index">
       <q-item
         clickable
@@ -21,27 +19,23 @@
         </q-item-section>
       </q-item>
       <div v-if="menuItem.name === 'dashboard'">
-        <div class="q-px-md q-py-md q-mt-md text-h4">
-          Facturacion
-        </div>
+        <div class="q-px-md q-py-md q-mt-md text-h4">Comisiones</div>
+        <q-separator />
+      </div>
+      <div v-if="menuItem.name === 'calculadorComisiones'">
+        <div class="q-px-md q-py-md q-mt-md text-h4">Facturación</div>
         <q-separator />
       </div>
       <div v-if="menuItem.name === 'panelFacturas'">
-        <div class="q-px-md q-py-md q-mt-md text-h4">
-          PVAS
-        </div>
+        <div class="q-px-md q-py-md q-mt-md text-h4">PVAS</div>
         <q-separator />
       </div>
       <div v-if="menuItem.name === 'panelPvas'">
-        <div class="q-px-md q-py-md q-mt-md text-h4">
-          Valor Real y Descuentos
-        </div>
+        <div class="q-px-md q-py-md q-mt-md text-h4">Descuentos</div>
         <q-separator />
       </div>
-      <div v-if="menuItem.name === 'descuentosVentas'">
-        <div class="q-px-md q-py-md q-mt-md text-h4">
-          KPIS
-        </div>
+      <div v-if="menuItem.name === 'descuentosVendedores'">
+        <div class="q-px-md q-py-md q-mt-md text-h4">Catálogos</div>
         <q-separator />
       </div>
     </template>
@@ -49,26 +43,23 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue"
-import { useRouter } from "vue-router"
-
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const menulist = ref([]);
 const router = useRouter();
 
-
 onMounted(() => {
   menulist.value = router.options.routes
     .find((r) => {
-      return r.name === 'principal'
-    }).children
-    .filter(route => route.label)
+      return r.name === "principal";
+    })
+    .children.filter((route) => route.label);
 
-  if (router.currentRoute.value.name === 'principal') {
-    router.replace({ name: 'dashboard' })
+  if (router.currentRoute.value.name === "principal") {
+    router.replace({ name: "dashboard" });
   }
-
-})
+});
 </script>
 <style lang="sass" scope>
 .my-menu-link

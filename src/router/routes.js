@@ -21,6 +21,26 @@ const routes = [
           ),
       },
       {
+        path: "objetivoValorReal",
+        icono: "trending_up",
+        label: "Valor de objetivo real",
+        name: "objetivoValorReal",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/comisiones/ObjetivoReal.vue"
+          ),
+      },
+      {
+        path: "calculadorComisiones",
+        icono: "calculate",
+        label: "Calculador de Comisiones",
+        name: "calculadorComisiones",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/comisiones/CalculadorComisiones.vue"
+          ),
+      },
+      {
         path: "panelFacturas",
         icono: "description",
         label: "Panel de Facturas",
@@ -51,13 +71,43 @@ const routes = [
           ),
       },
       {
+        path: "descuentosVendedores",
+        icono: "payments",
+        label: "Descuentos/Bonos a Vendedores",
+        name: "descuentosVendedores",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/descuentos/DescuentosVendedores.vue"
+          ),
+      },
+      {
         path: "kpis",
         icono: "checklist",
         label: "Catalogo KPIS",
         name: "kpis",
         component: () =>
           import(
-            /* webpackChunkName: "dashboard" */ "src/modules/kpis/PanelKpis.vue"
+            /* webpackChunkName: "dashboard" */ "src/modules/catalogos/PanelKpis.vue"
+          ),
+      },
+      {
+        path: "catalogoAsesores",
+        icono: "group",
+        label: "Catalogo de Vendedores",
+        name: "catalogoAsesores",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/catalogos/CatalogoAsesores.vue"
+          ),
+      },
+      {
+        path: "catalogoAseguradoras",
+        icono: "shield",
+        label: "Catalogo de Aseguradoras",
+        name: "catalogoAseguradoras",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/catalogos/CatalogoAseguradoras.vue"
           ),
       },
     ],
