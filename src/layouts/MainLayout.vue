@@ -8,7 +8,7 @@
           <q-avatar class="logo-inicio">
             <img src="../img/logog.png" />
           </q-avatar>
-           Portal Comisiones Unidades
+          Portal Comisiones Unidades
         </q-toolbar-title>
         <q-btn flat @click="logout">Cerrar Sesión</q-btn>
       </q-toolbar>
@@ -48,11 +48,12 @@ import NavBar from "../components/NavBar.vue";
 import { storeToRefs } from "pinia";
 import { useAutenticacionStore } from "../stores/autenticaciones";
 import { useRouter } from "vue-router";
-import { useSucursalesStore } from 'src/stores/catalogos/sucursales'
-import { useEmpresasStore } from 'src/stores/catalogos/empresas'
-import {useDepartamentosStore} from 'src/stores/catalogos/departamentos'
+import { useSucursalesStore } from "src/stores/catalogos/sucursales";
+import { useEmpresasStore } from "src/stores/catalogos/empresas";
+import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
-
+import { useAseguradorasStore } from "src/stores/catalogos/aseguradoras";
+import { useKpiStore } from "src/stores/catalogos/kpis";
 //import { useDashboardStore } from "../stores/dashboard";
 
 export default {
@@ -67,24 +68,29 @@ export default {
     const { usuarioAutenticado } = storeToRefs(useUsuario);
     const { cerrarSesion } = useUsuario;
 
-    const useEmpresas = useEmpresasStore()
-    const { obtenerEmpresas } = useEmpresas
+    const useEmpresas = useEmpresasStore();
+    const { obtenerEmpresas } = useEmpresas;
 
-    const useSucursales = useSucursalesStore()
-    const { obtenerSucursales } = useSucursales
+    const useSucursales = useSucursalesStore();
+    const { obtenerSucursales } = useSucursales;
 
-    const useDepartamentos = useDepartamentosStore()
-    const { obtenerDepartamentos } = useDepartamentos
+    const useDepartamentos = useDepartamentosStore();
+    const { obtenerDepartamentos } = useDepartamentos;
 
-    const useFacturas = useFacturasStore()
-    const { obtenerVendedores } = useFacturas
+    const useFacturas = useFacturasStore();
+    const { obtenerVendedores, obtenerClientes } = useFacturas;
 
-    onMounted(async()=>{
-     await obtenerEmpresas()
-     await obtenerSucursales()
-     await obtenerDepartamentos()
-     await obtenerVendedores()
-    })
+    const useAseguradoras = useAseguradorasStore();
+    const { obtenerCatalogoAseguradoras } = useAseguradoras;
+
+    onMounted(async () => {
+      await obtenerEmpresas();
+      await obtenerSucursales();
+      await obtenerDepartamentos();
+      await obtenerVendedores();
+      await obtenerClientes();
+      await obtenerCatalogoAseguradoras();
+    });
 
     const logout = () => {
       router.push("/");
