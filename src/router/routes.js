@@ -1,3 +1,5 @@
+import { name } from "dayjs/locale/es";
+
 const routes = [
   {
     path: "/",
@@ -18,26 +20,6 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "dashboard" */ "src/modules/dashboard/DashBoard.vue"
-          ),
-      },
-      {
-        path: "objetivoValorReal",
-        icono: "trending_up",
-        label: "Valor de objetivo real",
-        name: "objetivoValorReal",
-        component: () =>
-          import(
-            /* webpackChunkName: "dashboard" */ "src/modules/comisiones/ObjetivoReal.vue"
-          ),
-      },
-      {
-        path: "calculadorComisiones",
-        icono: "calculate",
-        label: "Calculador de Comisiones",
-        name: "calculadorComisiones",
-        component: () =>
-          import(
-            /* webpackChunkName: "dashboard" */ "src/modules/comisiones/CalculadorComisiones.vue"
           ),
       },
       {
@@ -81,9 +63,39 @@ const routes = [
           ),
       },
       {
+        path: "objetivoValorReal",
+        icono: "trending_up",
+        label: "Valor de objetivo real",
+        name: "objetivoValorReal",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/comisiones/ObjetivoReal.vue"
+          ),
+      },
+      {
+        path: "calculadorComisiones",
+        icono: "calculate",
+        label: "Calculador de Comisiones",
+        name: "calculadorComisiones",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/comisiones/CalculadorComisiones.vue"
+          ),
+      },
+      {
+        path: "autorizaciones",
+        icono: "checklist",
+        label: "Autorizaciones de comisiones",
+        name: "autorizaciones",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/autorizaciones/AutorizacionesComisiones.vue"
+          ),
+      },
+      {
         path: "kpis",
         icono: "checklist",
-        label: "Catalogo KPIS",
+        label: "Catálogo KPIS",
         name: "kpis",
         component: () =>
           import(
@@ -93,7 +105,7 @@ const routes = [
       {
         path: "catalogoAsesores",
         icono: "group",
-        label: "Catalogo de Vendedores",
+        label: "Catálogo de Vendedores",
         name: "catalogoAsesores",
         component: () =>
           import(
@@ -101,9 +113,19 @@ const routes = [
           ),
       },
       {
+        path: "catalogoAutorizadoresJefes",
+        icono: "group",
+        label: "Catálogo de Autorizadores",
+        name: "catalogoAutorizadoresJefes",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/catalogos/CatalogoAutorizadores.vue"
+          ),
+      },
+      {
         path: "catalogoAseguradoras",
         icono: "shield",
-        label: "Catalogo de Aseguradoras",
+        label: "Catálogo de Aseguradoras",
         name: "catalogoAseguradoras",
         component: () =>
           import(
@@ -112,7 +134,18 @@ const routes = [
       },
     ],
   },
-
+  {
+    path: "/autorizacion/vendedor/:token",
+    name: "autorizacionVendedor",
+    component: () =>
+      import("src/modules/autorizaciones/AutorizacionVendedor.vue"),
+  },
+  {
+    path: "/autorizacion/jefe/:token",
+    name: "autorizacionJefe",
+    component: () =>
+      import("src/modules/autorizaciones/AutorizacionJefeVentas.vue"),
+  },
   {
     path: "/:catchAll(.*)*",
     component: () => import("pages/ErrorNotFound.vue"),

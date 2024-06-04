@@ -19,10 +19,6 @@
         </q-item-section>
       </q-item>
       <div v-if="menuItem.name === 'dashboard'">
-        <div class="q-px-md q-py-md q-mt-md text-h4">Comisiones</div>
-        <q-separator />
-      </div>
-      <div v-if="menuItem.name === 'calculadorComisiones'">
         <div class="q-px-md q-py-md q-mt-md text-h4">Facturación</div>
         <q-separator />
       </div>
@@ -35,6 +31,10 @@
         <q-separator />
       </div>
       <div v-if="menuItem.name === 'descuentosVendedores'">
+        <div class="q-px-md q-py-md q-mt-md text-h4">Comisiones</div>
+        <q-separator />
+      </div>
+      <div v-if="menuItem.name === 'autorizaciones'">
         <div class="q-px-md q-py-md q-mt-md text-h4">Catálogos</div>
         <q-separator />
       </div>
@@ -43,11 +43,16 @@
 </template>
 
 <script setup>
+import { storeToRefs } from "pinia";
+import { useAutenticacionStore } from "src/stores/autenticaciones";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 const menulist = ref([]);
 const router = useRouter();
+
+const useAutenticaciones = useAutenticacionStore();
+const { usuarioAutenticado } = storeToRefs(useAutenticaciones);
 
 onMounted(() => {
   menulist.value = router.options.routes
@@ -55,6 +60,12 @@ onMounted(() => {
       return r.name === "principal";
     })
     .children.filter((route) => route.label);
+
+  if (usuarioAutenticado.value.departamento !== "CENTRALIZADOR SISTEMAS") {
+    menulist.value = menulist.value.filter(
+      (menuItem) => menuItem.name !== "catalogoAutorizadoresJefes"
+    );
+  }
 
   if (router.currentRoute.value.name === "principal") {
     router.replace({ name: "dashboard" });
