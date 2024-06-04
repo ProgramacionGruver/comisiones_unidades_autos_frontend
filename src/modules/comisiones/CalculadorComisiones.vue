@@ -7,7 +7,7 @@
       <q-separator color="primary" class="q-my-md" />
       <q-card>
         <q-card-section class="fit row justify-end q-gutter-md q-mt-md">
-          <div class="col-2">
+          <div class="col-3">
             <label>Seleccione el año</label>
             <q-select
               outlined
@@ -16,9 +16,10 @@
               v-model="anioSeleccionado"
               map-options
               option-value="name"
+              style="width: 100%"
             />
           </div>
-          <div class="col-2">
+          <div class="col-3">
             <label>Seleccione el mes</label>
             <q-select
               outlined
@@ -27,16 +28,7 @@
               v-model="mesSeleccionado"
               map-options
               option-value="name"
-            />
-          </div>
-          <div class="col-2">
-            <label>Seleccione la quincena</label>
-            <q-select
-              outlined
-              dense
-              v-model="quincenaSeleccionada"
-              :options="listaQuincenas"
-              option-label="descripcion"
+              style="width: 100%"
             />
           </div>
           <div class="col-3">
@@ -49,16 +41,25 @@
               :options="opcionesEmpleados"
               option-value="value"
               option-label="label"
+              style="width: 100%"
             />
           </div>
           <div class="col-2">
-            <q-btn
-              color="primary"
-              label="Buscar"
-              icon-right="search"
-              @click="buscarComisiones"
-              class="q-mt-lg"
-            />
+            <div
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              "
+            >
+              <q-btn
+                color="primary"
+                label="Buscar"
+                icon-right="search"
+                @click="buscarComisiones"
+                class="q-mt-lg"
+              />
+            </div>
           </div>
         </q-card-section>
       </q-card>
@@ -70,40 +71,60 @@
         <div v-if="datosCargados && !cargando">
           <q-card class="q-mt-md">
             <q-card-section>
-              <div style="display: block">
-                <div>
-                  <strong>Nombre:</strong>
-                  {{ comisionVendedor.infoVendedor.nombreEmpleado }}
+              <div
+                style="
+                  width: 100%;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                "
+              >
+                <div style="display: block">
+                  <div>
+                    <strong>Nombre:</strong>
+                    {{ comisionVendedor.infoVendedor.nombreEmpleado }}
+                  </div>
+                  <div>
+                    <strong>No. de empleado:</strong>
+                    {{ comisionVendedor.infoVendedor.numeroEmpleado }}
+                  </div>
+                  <div>
+                    <strong>Nivel:</strong>
+                    <q-chip
+                      v-if="comisionVendedor.infoVendedor.nivel === 'oro'"
+                      color="orange"
+                      text-color="white"
+                      label="ORO"
+                    />
+                    <q-chip
+                      v-else-if="
+                        comisionVendedor.infoVendedor.nivel === 'plata'
+                      "
+                      color="grey"
+                      text-color="white"
+                      label="PLATA"
+                    />
+                    <q-chip
+                      v-if="comisionVendedor.infoVendedor.nivel === 'bronce'"
+                      color="brown"
+                      text-color="white"
+                      label="BRONCE"
+                    />
+                    <q-chip
+                      v-if="comisionVendedor.infoVendedor.nivel === 'asesor'"
+                      color="green"
+                      text-color="white"
+                      label="ASESOR"
+                    />
+                  </div>
                 </div>
                 <div>
-                  <strong>No. de empleado:</strong>
-                  {{ comisionVendedor.infoVendedor.numeroEmpleado }}
-                </div>
-                <div>
-                  <strong>Nivel:</strong>
-                  <q-chip
-                    v-if="comisionVendedor.infoVendedor.nivel === 'oro'"
-                    color="orange"
-                    text-color="white"
-                    label="ORO"
-                  />
-                  <q-chip
-                    v-else-if="comisionVendedor.infoVendedor.nivel === 'plata'"
-                    color="grey"
-                    text-color="white"
-                    label="PLATA"
-                  />
-                  <q-chip
-                    v-if="comisionVendedor.infoVendedor.nivel === 'bronce'"
-                    color="brown"
-                    text-color="white"
-                    label="BRONCE"
-                  />
-                  <q-chip
-                    v-if="comisionVendedor.infoVendedor.nivel === 'asesor'"
-                    color="green"
-                    text-color="white"
-                    label="ASESOR"
+                  <q-btn
+                    icon="send"
+                    color="primary"
+                    label="Enviar comisión"
+                    class="q-mr-md"
+                    @click="enviarComision"
                   />
                 </div>
               </div>
@@ -502,7 +523,7 @@
                   dense
                   flat
                   hide-bottom
-                  class="my-sticky-header-column-table q-mt-lg"
+                  class="my-sticky-header-column-table q-mt-lg q-mb-lg"
                   :rows="comisionVendedor.descuentosVendedor"
                   :columns="columnasDescuentosVendedor"
                   no-data-label="No se encontró informacion disponible."
@@ -579,6 +600,7 @@
         </div>
       </div>
     </div>
+    <ModalEnviarComision ref="modalEnviarComision" />
   </q-layout>
 </template>
 
@@ -586,23 +608,20 @@
 import { ref } from "vue";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
 import { storeToRefs } from "pinia";
-import { listaMeses, listaAnios, listaQuincenas } from "src/helpers/listas";
+import { listaMeses, listaAnios } from "src/helpers/listas";
 import { useKpiStore } from "src/stores/catalogos/kpis";
-import {
-  obtenerNumeroQuincena,
-  obtenerNumerosDeMes,
-} from "src/constant/constantes";
+import { obtenerNumerosDeMes } from "src/constant/constantes";
 import { notificacion } from "src/helpers/mensajes";
+import ModalEnviarComision from "src/components/ModalEnviarComision.vue";
 
 export default {
+  components: {
+    ModalEnviarComision,
+  },
   setup() {
     const useFacturas = useFacturasStore();
-    const {
-      opcionesVendedores,
-      anioSeleccionado,
-      mesSeleccionado,
-      quincenaSeleccionada,
-    } = storeToRefs(useFacturas);
+    const { opcionesVendedores, anioSeleccionado, mesSeleccionado } =
+      storeToRefs(useFacturas);
 
     const useKpis = useKpiStore();
     const { obtenerComisionVendedor } = useKpis;
@@ -616,6 +635,8 @@ export default {
 
     const cargando = ref(false);
     const datosCargados = ref(false);
+
+    const modalEnviarComision = ref(null);
 
     const columnasFactuas = [
       {
@@ -800,18 +821,13 @@ export default {
         return;
       }
 
-      if (!quincenaSeleccionada.value) {
-        notificacion("warning", "Seleccione una quincena para continuar");
-        return;
-      }
-
       cargando.value = true;
 
       const objBusqueda = {
         idErp: vendedorSeleccionado.value.value.idErp,
+        idAsesor: vendedorSeleccionado.value.value.idAsesor,
         anio: anioSeleccionado.value,
         mes: obtenerNumerosDeMes(mesSeleccionado.value),
-        quincena: obtenerNumeroQuincena(quincenaSeleccionada.value),
       };
 
       await obtenerComisionVendedor(objBusqueda);
@@ -823,6 +839,10 @@ export default {
         cargando.value = false;
         datosCargados.value = false;
       }
+    };
+
+    const enviarComision = () => {
+      modalEnviarComision.value.abrir(comisionVendedor.value.infoVendedor);
     };
 
     const pagination = ref({
@@ -839,10 +859,8 @@ export default {
       datosCargados,
       listaAnios,
       listaMeses,
-      listaQuincenas,
       anioSeleccionado,
       mesSeleccionado,
-      quincenaSeleccionada,
       comisionVendedor,
       columnasFactuas,
       pagination,
@@ -850,8 +868,10 @@ export default {
       columnasUtilidadBruta,
       columnasKPIs,
       columnasDescuentosVendedor,
+      modalEnviarComision,
       // Methods
       buscarComisiones,
+      enviarComision,
     };
   },
 };
