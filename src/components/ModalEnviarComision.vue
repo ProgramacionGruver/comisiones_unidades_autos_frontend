@@ -23,13 +23,19 @@
         />
       </q-card-section>
       <q-card-actions align="right">
+        <q-btn label="Cancelar" color="red" v-close-popup icon-right="close" />
         <q-btn
-          label="Cancelar"
+          label="Copiar Link"
           color="primary"
           flat
-          v-close-popup
-          icon-right="close"
-        />
+          icon-right="content_copy"
+          @click="copiarLink"
+          :loading="cargandoCopiar"
+        >
+          <template v-slot:loading>
+            <q-spinner-facebook color="primary" />
+          </template>
+        </q-btn>
         <q-btn
           label="Enviar"
           color="primary"
@@ -52,9 +58,10 @@ import { useFormulariosStore } from "src/stores/formularios";
 import { useAutorizacionesStore } from "src/stores/autorizaciones";
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
-import { info } from "autoprefixer";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
 import { obtenerNumerosDeMes } from "src/constant/constantes";
+import { listaMeses } from "src/helpers/listas";
+import { notificacion } from "src/helpers/mensajes";
 
 export default {
   setup() {
@@ -66,13 +73,16 @@ export default {
     const { urlComision } = storeToRefs(useFormularios);
 
     const useAutorizaciones = useAutorizacionesStore();
-    const { enviarCorreo, registrarAutorizaciones } = useAutorizaciones;
+    const { enviarCorreo, registrarAutorizaciones, obtenerUrlPDF } =
+      useAutorizaciones;
+    const { urlPDF } = storeToRefs(useAutorizaciones);
 
     const useFacturas = useFacturasStore();
     const { anioSeleccionado, mesSeleccionado } = storeToRefs(useFacturas);
 
     const abrirModal = ref(false);
     const cargando = ref(false);
+    const cargandoCopiar = ref(false);
 
     const vendedorObj = ref({});
     const fechaPrimerEnvio = ref(null);
@@ -90,30 +100,111 @@ export default {
     const enviarComision = async () => {
       cargando.value = true;
 
+      const mes = Number(obtenerNumerosDeMes(mesSeleccionado.value));
+
+      const folio = `COM-${vendedorObj.value.numeroEmpleado}-${anioSeleccionado.value}-${mes}`;
+
+      const objObtenerPDF = {
+        anio: anioSeleccionado.value,
+        mes: mes,
+        folio,
+        idAsesor: vendedorObj.value.idAsesor,
+        numeroEmpleado: vendedorObj.value.numeroEmpleado,
+        nivel: vendedorObj.value.nivel,
+        id: folio,
+      };
+
+      await obtenerUrlPDF(objObtenerPDF);
+
       const dataAutorizacion = {
         anio: anioSeleccionado.value,
-        mes: Number(obtenerNumerosDeMes(mesSeleccionado.value)),
+        mes: mes,
         fechaPrimerEnvio: fechaPrimerEnvio.value,
-        rutaPDF: "",
+        rutaPDF: `/var/www/backend/html/portalComisiones/${
+          urlPDF.split("/")[urlPDF.split("/").length - 1]
+        }`,
         infoVendedor: vendedorObj.value,
         comentario: "",
+        urlPDF: urlPDF.value,
+        folio,
       };
 
       const autorizaciones = await registrarAutorizaciones(dataAutorizacion);
+
+      if (autorizaciones.length === 0) {
+        cargando.value = false;
+        return;
+      }
 
       comisionVendedor.value.autorizaciones = autorizaciones;
 
       await obtenerUrlComision(comisionVendedor.value, "vendedor");
 
-      // const objData = {
-      //   destinatario: vendedorObj.value.correo,
-      //   link: urlComision.value,
-      //   infoVendedor: vendedorObj.value,
-      // };
+      const mesNombre = listaMeses[mes - 1];
 
-      // await enviarCorreo(objData);
+      const objData = {
+        destinatario: vendedorObj.value.correo,
+        link: urlComision.value,
+        infoVendedor: vendedorObj.value,
+        mes: mesNombre,
+        infoAutorizacion: comisionVendedor.value.autorizaciones,
+      };
+
+      await enviarCorreo(objData);
 
       cargando.value = false;
+      abrirModal.value = false;
+    };
+
+    const copiarLink = async () => {
+      cargandoCopiar.value = true;
+
+      const mes = Number(obtenerNumerosDeMes(mesSeleccionado.value));
+
+      const folio = `COM-${vendedorObj.value.numeroEmpleado}-${anioSeleccionado.value}-${mes}`;
+
+      const objObtenerPDF = {
+        anio: anioSeleccionado.value,
+        mes: mes,
+        folio,
+        idAsesor: vendedorObj.value.idAsesor,
+        numeroEmpleado: vendedorObj.value.numeroEmpleado,
+        nivel: vendedorObj.value.nivel,
+        id: folio,
+      };
+
+      await obtenerUrlPDF(objObtenerPDF);
+
+      const dataAutorizacion = {
+        anio: anioSeleccionado.value,
+        mes: mes,
+        fechaPrimerEnvio: fechaPrimerEnvio.value,
+        rutaPDF: `/var/www/backend/html/portalComisiones/${
+          urlPDF.split("/")[urlPDF.split("/").length - 1]
+        }`,
+        infoVendedor: vendedorObj.value,
+        comentario: "",
+        urlPDF: urlPDF.value,
+        folio,
+      };
+
+      const autorizaciones = await registrarAutorizaciones(dataAutorizacion);
+
+      if (autorizaciones.length === 0) {
+        cargandoCopiar.value = false;
+        return;
+      }
+
+      comisionVendedor.value.autorizaciones = autorizaciones;
+
+      await obtenerUrlComision(comisionVendedor.value, "vendedor");
+
+      await navigator.clipboard.writeText(urlComision.value);
+
+      notificacion("positive", "Link copiado al portapapeles");
+
+      cargandoCopiar.value = false;
+      abrirModal.value = false;
     };
 
     return {
@@ -121,9 +212,11 @@ export default {
       abrirModal,
       vendedorObj,
       cargando,
+      cargandoCopiar,
       // Methods
       abrir,
       enviarComision,
+      copiarLink,
     };
   },
 };
