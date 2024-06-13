@@ -147,6 +147,20 @@
                 ({{ facturaSeleccionada[0]?.tipo_venta }})
               </div>
             </q-card-section>
+            <q-card-section>
+              <div class="text-h5 text-center">
+                Vendedor:
+                <span class="text-weight-medium">{{
+                  facturaSeleccionada[0]?.nombre
+                }}</span>
+              </div>
+              <div class="text-h5 text-center">
+                Número de empleado:
+                <span class="text-weight-medium">{{
+                  Number(facturaSeleccionada[0]?.no_empleado)
+                }}</span>
+              </div>
+            </q-card-section>
             <q-card-section class="row justify-around q-px-lg">
               <div class="text-h5 text-center">
                 Fecha factura:
@@ -192,9 +206,9 @@
                       color="primary"
                       :rows="facturaSeleccionada"
                       :columns="columnsDetalles"
-                      dense
                       no-data-label="No se encontró información disponible."
                       loading-label="Buscando información . . ."
+                      class="q-ma-md"
                     >
                     </q-table>
                   </q-card>
@@ -478,8 +492,6 @@ export default {
       } else {
         usuarioAutorizado.value = false;
       }
-
-      console.log(facturasFiltrada.value);
     });
 
     const filtrarFacturas = async (buscarFacturas) => {
