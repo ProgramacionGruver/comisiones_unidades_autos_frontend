@@ -44,6 +44,7 @@
 
 <script setup>
 import { storeToRefs } from "pinia";
+import { ID_SERVIDOR } from "src/constant/servidor";
 import { useAutenticacionStore } from "src/stores/autenticaciones";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -52,18 +53,59 @@ const menulist = ref([]);
 const router = useRouter();
 
 const useAutenticaciones = useAutenticacionStore();
-const { usuarioAutenticado } = storeToRefs(useAutenticaciones);
+const { obtenerPerfilUsuario } = useAutenticaciones;
+const { usuarioAutenticado, perfilUsuario } = storeToRefs(useAutenticaciones);
 
-onMounted(() => {
+onMounted(async () => {
+  await obtenerPerfilUsuario(usuarioAutenticado.value.idUsuario, ID_SERVIDOR);
+
   menulist.value = router.options.routes
     .find((r) => {
       return r.name === "principal";
     })
     .children.filter((route) => route.label);
 
-  if (usuarioAutenticado.value.departamento !== "CENTRALIZADOR SISTEMAS") {
+  if (perfilUsuario.value === null) {
     menulist.value = menulist.value.filter(
-      (menuItem) => menuItem.name !== "catalogoAutorizadoresJefes"
+      (menuItem) =>
+        menuItem.name !== "catalogoAutorizadoresJefes" &&
+        menuItem.name !== "catalogoAsesores"
+    );
+  } else if (
+    perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+    "GERENTE"
+  ) {
+    menulist.value = menulist.value.filter(
+      (menuItem) =>
+        menuItem.name === "dashboard" ||
+        menuItem.name === "panelPvas" ||
+        menuItem.name === "catalogoAsesores"
+    );
+  } else if (
+    perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+    "AUXILIAR NUEVAS"
+  ) {
+    menulist.value = menulist.value.filter(
+      (menuItem) =>
+        menuItem.name !== "catalogoAutorizadoresJefes" &&
+        menuItem.name !== "catalogoAsesores"
+    );
+  } else if (
+    perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+    "AUXILIAR SEMINUEVAS"
+  ) {
+    menulist.value = menulist.value.filter(
+      (menuItem) =>
+        menuItem.name !== "catalogoAutorizadoresJefes" &&
+        menuItem.name !== "catalogoAsesores"
+    );
+  } else if (
+    perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+    "SISTEMAS"
+  ) {
+    menulist.value = menulist.value.filter(
+      (menuItem) =>
+        menuItem.name === "dashboard" || menuItem.name === "catalogoAsesores"
     );
   }
 
