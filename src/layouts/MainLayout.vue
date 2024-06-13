@@ -54,6 +54,7 @@ import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
 import { useAseguradorasStore } from "src/stores/catalogos/aseguradoras";
 import { useKpiStore } from "src/stores/catalogos/kpis";
+import { useAutorizacionesStore } from "src/stores/autorizaciones";
 //import { useDashboardStore } from "../stores/dashboard";
 
 export default {
@@ -66,7 +67,7 @@ export default {
     const router = useRouter();
 
     const { usuarioAutenticado } = storeToRefs(useUsuario);
-    const { cerrarSesion } = useUsuario;
+    const { cerrarSesion, obtenerPerfilUsuario } = useUsuario;
 
     const useEmpresas = useEmpresasStore();
     const { obtenerEmpresas } = useEmpresas;
@@ -83,6 +84,9 @@ export default {
     const useAseguradoras = useAseguradorasStore();
     const { obtenerCatalogoAseguradoras } = useAseguradoras;
 
+    const useAutorizaciones = useAutorizacionesStore();
+    const { obtenerAutorizadores } = useAutorizaciones;
+
     onMounted(async () => {
       await obtenerEmpresas();
       await obtenerSucursales();
@@ -90,6 +94,7 @@ export default {
       await obtenerVendedores();
       await obtenerClientes();
       await obtenerCatalogoAseguradoras();
+      await obtenerAutorizadores();
     });
 
     const logout = () => {

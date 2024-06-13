@@ -1,0 +1,37 @@
+.botones--div__comision {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.boton--superior {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.botones--inferiores {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  justify-content: space-around;
+}
+
+@media (min-width: 768px) {
+  .botones--div__comision {
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 16px;
+  }
+
+  .boton--superior,
+  .botones--inferiores {
+    width: auto;
+  }
+
+  .botones--inferiores {
+    justify-content: flex-start;
+  }
+}
