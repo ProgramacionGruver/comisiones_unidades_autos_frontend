@@ -151,18 +151,29 @@ export default {
     const factura = ref({});
 
     const abrir = (objFactura) => {
-      if (objFactura.descuentosUnidades.length === 0) {
-        objFactura.descuentosUnidades = [
-          {
-            previa: 0,
-            traslado: 0,
-            descVentas: 0,
-            cortesia: 0,
-            gasolina: 0,
-            bonoub: 0,
-          },
-        ];
-      }
+      objFactura.descuentosUnidades = [
+        {
+          previa: objFactura.descuentosUnidades[0].previa
+            ? objFactura.descuentosUnidades[0].previa
+            : 0,
+          traslado: objFactura.descuentosUnidades[0].traslado
+            ? objFactura.descuentosUnidades[0].traslado
+            : 0,
+          cortesia: objFactura.descuentosUnidades[0].cortesia
+            ? objFactura.descuentosUnidades[0].cortesia
+            : 0,
+          gasolina: objFactura.descuentosUnidades[0].gasolina
+            ? objFactura.descuentosUnidades[0].gasolina
+            : 0,
+          descVentas: objFactura.descuentosUnidades[0].descVentas
+            ? objFactura.descuentosUnidades[0].descVentas
+            : 0,
+          bonoub: objFactura.descuentosUnidades[0].bonoub
+            ? objFactura.descuentosUnidades[0].bonoub
+            : 0,
+        },
+      ];
+
       factura.value = { ...objFactura };
       modalDescuentos.value = true;
     };
