@@ -117,37 +117,44 @@ export const useFacturasStore = defineStore("facturas", () => {
         await obtenerComisionesUnidades(ObjComisiones);
 
         //FILTRAR ELEMENTOS QUE YA ESTEN REGISTRADOS
-        registrosEnviados.value = comisionesUnidades.value.filter(
-          (comision) =>
-            !facturasFiltradas.value.some(
-              (factura) => factura.factura === comision.factura
-            )
-        );
-        if (registrosEnviados.value.length > 0) {
-          filtro.value = [
-            ...comisionesUnidades.value.filter(
-              (comision) =>
-                !facturasFiltradas.value.some(
-                  (factura) => factura.factura === comision.factura
-                )
-            ),
-            ...facturasFiltradas.value.filter(
-              (factura) =>
-                !comisionesUnidades.value.some(
-                  (comision) => comision.factura === factura.factura
-                )
-            ),
-          ];
-        } else {
-          filtro.value = [
-            ...facturasFiltradas.value.filter(
-              (factura) =>
-                !comisionesUnidades.value.some(
-                  (comision) => comision.factura === factura.factura
-                )
-            ),
-          ];
+        filtro.value = facturasFiltradas.value.filter((factura) => {
+          return !comisionesUnidades.value.some(
+            (comision) => comision.factura === factura.factura
+          );
+        });
+
+        if (filtro.value.length === 0) {
+          notificacion("warning", "No hay facturas para registrar");
+          filtro.value = [];
+          facturas.value = [];
+          return;
         }
+
+        // if (registrosEnviados.value.length > 0) {
+        //   filtro.value = [
+        //     ...comisionesUnidades.value.filter(
+        //       (comision) =>
+        //         !facturasFiltradas.value.some(
+        //           (factura) => factura.factura === comision.factura
+        //         )
+        //     ),
+        //     ...facturasFiltradas.value.filter(
+        //       (factura) =>
+        //         !comisionesUnidades.value.some(
+        //           (comision) => comision.factura === factura.factura
+        //         )
+        //     ),
+        //   ];
+        // } else {
+        //   filtro.value = [
+        //     ...facturasFiltradas.value.filter(
+        //       (factura) =>
+        //         !comisionesUnidades.value.some(
+        //           (comision) => comision.factura === factura.factura
+        //         )
+        //     ),
+        //   ];
+        // }
 
         //CALCULO UTILIDAD, GASTO FINANCIERO Y PORCENTAJE
         facturas.value = filtro.value.map((factura) => {

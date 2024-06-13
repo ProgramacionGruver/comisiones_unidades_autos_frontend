@@ -14,13 +14,12 @@ export const useSucursalesStore = defineStore("sucursales", () => {
   const obtenerSucursales = async () => {
     try {
       const { data } = await apiUsuarios.get("/todasSucursales");
-      const { data: sucursal } = await api.post("/sucursales/cargos", {
-        numeroEmpleado: usuarioAutenticado.value.numero_empleado,
-      });
+      // const { data: sucursal } = await api.post("/sucursales/cargos", {
+      //   numeroEmpleado: usuarioAutenticado.value.numero_empleado,
+      // });
 
-      //Sucursales
-      const sucursalesFiltradas = data.filter((empresa) => {
-        return sucursal.includes(empresa.abreviacion);
+      const sucursalesFiltradas = data.filter((sucursal) => {
+        return sucursal.claveEmpresa === "CH";
       });
 
       sucursales.value = [...sucursalesFiltradas];

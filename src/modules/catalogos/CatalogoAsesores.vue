@@ -164,6 +164,12 @@ export default {
         field: "nombreEmpleado",
       },
       {
+        name: "correo",
+        label: "Correo",
+        align: "center",
+        field: "correo",
+      },
+      {
         name: "nivel",
         label: "Nivel",
         align: "center",

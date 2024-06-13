@@ -184,19 +184,17 @@ export const useKpiStore = defineStore("kpi", () => {
       });
 
       let kpis = [];
-      let porcentajeUB = 0;
-
-      if (comisionVendedor.value.infoVendedor.nivel === "asesor") {
-        porcentajeUB = 10;
-      } else if (comisionVendedor.value.infoVendedor.nivel === "bronce") {
-        porcentajeUB = 12;
-      } else if (comisionVendedor.value.infoVendedor.nivel === "plata") {
-        porcentajeUB = 14;
-      } else if (comisionVendedor.value.infoVendedor.nivel === "oro") {
-        porcentajeUB = 16;
-      }
 
       for (const kpi of comisionVendedor.value.kpis) {
+        let porcentajeUB = kpi.objetivosKpi.porcentajeub;
+
+        if (kpi.objetivosKpi.nombreKpi.includes("Penetracion")) {
+          kpi.objetivosKpi.objetivo = Math.floor(
+            (facturas.length - 1) *
+              (kpi.objetivosKpi.objetivoCumplimiento / 100)
+          );
+        }
+
         let desempenio = Math.floor(
           (kpi.valorReal * kpi.objetivosKpi.objetivoCumplimiento) /
             kpi.objetivosKpi.objetivo
@@ -320,7 +318,7 @@ export const useKpiStore = defineStore("kpi", () => {
       );
 
       valoresRealesKpis.value = [...valoresRealesKpis.value, data];
-      notificacion("positive", "Valores reales insertados", data);
+      notificacion("positive", "Valores reales insertados");
     } catch (error) {
       console.log(error);
     }
