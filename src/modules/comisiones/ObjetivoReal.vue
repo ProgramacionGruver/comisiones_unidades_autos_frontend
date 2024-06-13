@@ -54,7 +54,7 @@
                 @update:model-value="filtrarKpis"
               />
             </div>
-            <div class="col q-ma-sm">
+            <!-- <div class="col q-ma-sm">
               <q-select
                 outlined
                 dense
@@ -64,7 +64,7 @@
                 @update:model-value="filtrarKpis"
               >
               </q-select>
-            </div>
+            </div> -->
           </div>
         </template>
 
@@ -156,8 +156,7 @@ export default {
     const { valoresRealesKpis } = storeToRefs(useKpis);
 
     const useFacturas = useFacturasStore();
-    const { anioSeleccionado, mesSeleccionado, quincenaSeleccionada } =
-      storeToRefs(useFacturas);
+    const { anioSeleccionado, mesSeleccionado } = storeToRefs(useFacturas);
 
     const columns = [
       {
@@ -191,7 +190,6 @@ export default {
     ];
 
     const objKpis = ref({
-      quincena: obtenerNumeroQuincena(quincenaSeleccionada.value),
       mes: obtenerNumerosDeMes(mesSeleccionado.value),
       anio: anioSeleccionado.value,
     });
@@ -203,9 +201,6 @@ export default {
     });
 
     const filtrarKpis = async () => {
-      objKpis.value.quincena = obtenerNumeroQuincena(
-        quincenaSeleccionada.value
-      );
       objKpis.value.mes = obtenerNumerosDeMes(mesSeleccionado.value);
       objKpis.value.anio = anioSeleccionado.value;
 
@@ -229,7 +224,6 @@ export default {
       listaQuincenas,
       anioSeleccionado,
       mesSeleccionado,
-      quincenaSeleccionada,
       columns,
       modalValoresKpis,
       // Methods
