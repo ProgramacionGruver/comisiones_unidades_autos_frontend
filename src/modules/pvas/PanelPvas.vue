@@ -12,6 +12,9 @@
         :rows="pvas"
         no-data-label="No se encontró información disponible."
         loading-label="Buscando información . . ."
+        v-model:selected="pvaSeleccionado"
+        selection="single"
+        row-key="idPva"
       >
         <template v-slot:top>
           <div class="fit row q-gutter-sm q-mb-sm justify-end">
@@ -54,7 +57,7 @@
                 @update:model-value="filtrarPvas"
               />
             </div>
-            <div class="col q-ma-sm">
+            <!-- <div class="col q-ma-sm">
               <q-select
                 outlined
                 dense
@@ -64,18 +67,81 @@
                 @update:model-value="filtrarPvas"
               >
               </q-select>
-            </div>
-            <div>
+            </div> -->
+            <!-- <div>
               <q-btn
                 color="green"
                 label="Exportar Excel"
                 icon="get_app"
                 @click="exportarExcel(pvas)"
               />
-            </div>
+            </div> -->
           </div>
         </template>
       </q-table>
+      <div v-if="pvaSeleccionado.length > 0">
+        <div
+          style="
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+          "
+        >
+          <h3>Detalles del contrato</h3>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              column-gap: 16rem;
+              row-gap: 1rem;
+            "
+          >
+            <div style="display: flex; flex-direction: column">
+              <label class="text-bold">Cliente:</label>
+              <span>{{ pvaSeleccionado[0].cliente }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <label class="text-bold">No. Contrato:</label>
+              <span>{{ pvaSeleccionado[0].no_contrato }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <label class="text-bold">Plan Integral:</label>
+              <span>{{ pvaSeleccionado[0].plan_integral }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <label class="text-bold">Fecha de Compra:</label>
+              <span>{{ formatearFecha(pvaSeleccionado[0].fecha_compra) }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <label class="text-bold">Monto:</label>
+              <span>{{ pvaSeleccionado[0].utilidad }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <label class="text-bold">Garantia:</label>
+              <span>{{ pvaSeleccionado[0].garantia }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <label class="text-bold">On Star / GAP:</label>
+              <span>{{ pvaSeleccionado[0].on_star_gap }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <label class="text-bold">Aseguradora:</label>
+              <span>{{ pvaSeleccionado[0].aseguradora }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <label class="text-bold">Vendedor:</label>
+              <span>{{ pvaSeleccionado[0].nombreEmpleado }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <label class="text-bold">F&I:</label>
+              <span>{{ pvaSeleccionado[0].fi }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
       <modal-subir-pva ref="modalSubirPva"></modal-subir-pva>
     </div>
   </q-layout>
@@ -95,6 +161,7 @@ import {
 } from "src/constant/constantes";
 import { tipoPva } from "src/constant/constantes";
 import { convertirTablaCSV } from "src/helpers/generarCSV";
+import { formatearFecha } from "src/helpers/formatearFecha";
 
 export default {
   components: {
@@ -109,12 +176,20 @@ export default {
     const { obtenerPvas } = usePva;
     const { pvas } = storeToRefs(usePva);
 
+    const pvaSeleccionado = ref([]);
+
     const columns = [
       {
+        name: "idPva",
+        label: "#",
+        field: "idPva",
+        align: "center",
+      },
+      {
         name: "numeroEmpleado",
-        label: "ID",
+        label: "No. Empleado",
         field: "numeroEmpleado",
-        align: "left",
+        align: "center",
         sortable: true,
       },
       {
@@ -171,9 +246,9 @@ export default {
     });
 
     const filtrarPvas = async () => {
-      objPvaInit.value.quincena = obtenerNumeroQuincena(
-        quincenaSeleccionada.value
-      );
+      // objPvaInit.value.quincena = obtenerNumeroQuincena(
+      //   quincenaSeleccionada.value
+      // );
       objPvaInit.value.mes = obtenerNumerosDeMes(mesSeleccionado.value);
       objPvaInit.value.anio = anioSeleccionado.value;
       await obtenerPvas(objPvaInit.value);
@@ -248,6 +323,9 @@ export default {
       nuevoPva,
       filtrarPvas,
       exportarExcel,
+      pvaSeleccionado,
+
+      formatearFecha,
     };
   },
 };
