@@ -38,9 +38,7 @@
               icon-right="save"
               label="Guardar Facturas"
               no-caps
-              :disable="
-                cargando || !usuarioAutorizado || facturasFiltrada.length === 0
-              "
+              :disable="cargando"
               @click="enviarComisiones()"
             />
           </div>
@@ -146,6 +144,17 @@
               <div class="text-h6 text-center text-weight-medium">
                 ({{ facturaSeleccionada[0]?.tipo_venta }})
               </div>
+              <div style="display: flex; width: 100%; justify-content: center">
+                <q-chip
+                  :color="
+                    facturaSeleccionada[0]?.estadoFactura === 'FACTURADA'
+                      ? 'green'
+                      : 'red'
+                  "
+                  :label="facturaSeleccionada[0]?.estadoFactura"
+                  class="text-white text-bold"
+                />
+              </div>
             </q-card-section>
             <q-card-section>
               <div class="text-h5 text-center">
@@ -176,14 +185,14 @@
                   {{ formatearMonto(facturaSeleccionada[0]?.utilidad) }}</span
                 >
               </div>
-              <div class="text-h5 text-center">
+              <!-- <div class="text-h5 text-center">
                 Gasto Financiero:
                 <span class="text-weight-medium">
                   {{
                     formatearMonto(facturaSeleccionada[0]?.gastoFinanciero)
                   }}</span
                 >
-              </div>
+              </div> -->
               <div class="text-h5 text-center">
                 Utilidad:
                 <span class="text-weight-medium">
@@ -318,26 +327,26 @@ export default {
         align: "left",
         sortable: true,
       },
-      {
-        name: "gastoFinanciero",
-        label: "Gasto Financiero",
-        field: (row) =>
-          row.gastoFinanciero
-            ? formatearMonto(row.gastoFinanciero)
-            : formatearMonto(0),
-        align: "left",
-        sortable: true,
-      },
-      {
-        name: "utilidadCalculada",
-        label: "Utilidad",
-        field: (row) =>
-          row.utilidadCalculada
-            ? formatearMonto(row.utilidadCalculada)
-            : formatearMonto(0),
-        align: "left",
-        sortable: true,
-      },
+      // {
+      //   name: "gastoFinanciero",
+      //   label: "Gasto Financiero",
+      //   field: (row) =>
+      //     row.gastoFinanciero
+      //       ? formatearMonto(row.gastoFinanciero)
+      //       : formatearMonto(0),
+      //   align: "left",
+      //   sortable: true,
+      // },
+      // {
+      //   name: "utilidadCalculada",
+      //   label: "Utilidad",
+      //   field: (row) =>
+      //     row.utilidadCalculada
+      //       ? formatearMonto(row.utilidadCalculada)
+      //       : formatearMonto(0),
+      //   align: "left",
+      //   sortable: true,
+      // },
       {
         name: "porcentaje",
         label: "Porcentaje",
@@ -456,7 +465,7 @@ export default {
     onMounted(async () => {
       await obtenerEmpresas();
       await obtenerSucursales();
-      await obtenerDepartamentos();
+      // await obtenerDepartamentos();
       facturaSeleccionada.value = [];
       facturasFiltrada.value = [];
 

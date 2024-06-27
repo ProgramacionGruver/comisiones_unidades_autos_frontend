@@ -40,6 +40,7 @@ export const useFacturasStore = defineStore("facturas", () => {
 
   const vendedores = ref([]);
   const opcionesVendedores = ref([]);
+  const opcionesVendedoresInversa = ref([]);
 
   const useEmpresas = useEmpresasStore();
   const { empresaSeleccionada } = storeToRefs(useEmpresas);
@@ -59,7 +60,7 @@ export const useFacturasStore = defineStore("facturas", () => {
   const { comisionesUnidades } = storeToRefs(useComisiones);
 
   const useUsuario = useAutenticacionStore();
-  const { usuarioAutenticado } = storeToRefs(useUsuario);
+  const { usuarioAutenticado, perfilUsuario } = storeToRefs(useUsuario);
 
   const obtenerFacturas = async () => {
     try {
@@ -242,6 +243,22 @@ export const useFacturasStore = defineStore("facturas", () => {
       const { data } = await api.get("/vendedores/unidades/autos");
       vendedores.value = [...data];
 
+      if (
+        perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+        "AUXILIAR NUEVAS"
+      ) {
+        vendedores.value = vendedores.value.filter((vendedor) => {
+          return vendedor.claveDepartamento === "NUE";
+        });
+      } else if (
+        perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+        "AUXILIAR SEMINUEVAS"
+      ) {
+        vendedores.value = vendedores.value.filter((vendedor) => {
+          return vendedor.claveDepartamento === "SEM";
+        });
+      }
+
       //Opciones departamentos
       opcionesVendedores.value = vendedores.value.map((vendedor) => {
         return {
@@ -251,6 +268,42 @@ export const useFacturasStore = defineStore("facturas", () => {
       });
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const obtenerVendedoresInversa = async () => {
+    try {
+      const { data } = await api.get("/vendedores/unidades/autos");
+      vendedores.value = [...data];
+
+      if (
+        perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+        "AUXILIAR NUEVAS"
+      ) {
+        vendedores.value = vendedores.value.filter((vendedor) => {
+          return vendedor.claveDepartamento === "SEM";
+        });
+      } else if (
+        perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+        "AUXILIAR SEMINUEVAS"
+      ) {
+        vendedores.value = vendedores.value.filter((vendedor) => {
+          return vendedor.claveDepartamento === "NUE";
+        });
+      }
+
+      //Opciones departamentos
+      opcionesVendedoresInversa.value = vendedores.value.map((vendedor) => {
+        return {
+          label: `${vendedor.nombreEmpleado}`,
+          value: vendedor,
+        };
+      });
+
+      return;
+    } catch (error) {
+      console.log(error);
+      return;
     }
   };
 
@@ -302,5 +355,7 @@ export const useFacturasStore = defineStore("facturas", () => {
     obtenerVendedores,
     actualizarNivelAsesor,
     altaVendedor,
+    obtenerVendedoresInversa,
+    opcionesVendedoresInversa,
   };
 });
