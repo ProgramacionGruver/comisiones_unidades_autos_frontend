@@ -43,6 +43,16 @@ const routes = [
           ),
       },
       {
+        path: "planPiso",
+        icono: "assignment",
+        label: "Plan Piso",
+        name: "planPiso",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/pvas/PlanPiso.vue"
+          ),
+      },
+      {
         path: "descuentosVentas",
         icono: "payments",
         label: "Descuentos Ventas",
@@ -72,6 +82,16 @@ const routes = [
             /* webpackChunkName: "dashboard" */ "src/modules/comisiones/ObjetivoReal.vue"
           ),
       },
+      // {
+      //   path: "comisionesOtroDepartamento",
+      //   icono: "calculate",
+      //   label: "Calculador de Bono de Otro Departamento",
+      //   name: "comisionesOtroDepartamento",
+      //   component: () =>
+      //     import(
+      //       /* webpackChunkName: "dashboard" */ "src/modules/comisiones/ComisionesOtroDepartamento.vue"
+      //     ),
+      // },
       {
         path: "calculadorComisiones",
         icono: "calculate",
