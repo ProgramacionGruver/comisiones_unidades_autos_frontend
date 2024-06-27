@@ -186,6 +186,7 @@ export default {
         comentario: "",
         urlPDF: urlPDF.value,
         folio,
+        claveDepartamento: vendedorObj.value.claveDepartamento,
       };
 
       const autorizaciones = await registrarAutorizaciones(dataAutorizacion);

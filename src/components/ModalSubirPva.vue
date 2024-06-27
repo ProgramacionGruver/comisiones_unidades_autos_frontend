@@ -324,6 +324,7 @@ export default {
       on_star_gap: "",
       aseguradora: "",
       utilidad_completa: "",
+      claveDepartamento: "",
     };
 
     const objPva = ref({ ...objPvaInit });
@@ -386,7 +387,7 @@ export default {
       objPva.value.anio = anioSeleccionado.value;
       objPva.value.garantia = objPva.value.garantia ? "SI" : "NO";
       objPva.value.claveDepartamento =
-        departamentoSeleccionado.value.value.claveDepartamento;
+        vendedorSeleccionado.value.value.claveDepartamento;
 
       if (objPva.value.pva === "pi") {
         objPva.value.utilidad = Number(

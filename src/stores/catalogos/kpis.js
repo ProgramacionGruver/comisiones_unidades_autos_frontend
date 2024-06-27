@@ -465,8 +465,6 @@ export const useKpiStore = defineStore("kpi", () => {
       comisionVendedor.value.totalUtilidadBruta = totalUtilidadBruta;
       comisionVendedor.value.kpis = kpis;
       comisionVendedor.value.descuentosVendedor = descuentosVendedor;
-
-      console.log(comisionVendedor.value);
     } catch (error) {
       console.log(error);
     }
