@@ -10,11 +10,15 @@
         :columns="columns"
         :rows="descuentos"
         :filter="buscar"
-        no-data-label="No se encontró información disponible."
+        :no-data-label="
+          datosCargados
+            ? 'No se encontraron datos'
+            : 'Seleccione un rango de fechas para buscar'
+        "
         loading-label="Buscando información . . ."
       >
         <template v-slot:body-cell-fechaDescuento="props">
-          <td style="text-align: right">
+          <td style="text-align: center">
             {{ formatearFecha(props.row.fechaDescuento) }}
           </td>
         </template>
@@ -72,6 +76,15 @@
               label="Fecha de fin"
               type="date"
             />
+            <q-select
+              outlined
+              dense
+              :options="departamentos"
+              v-model="departamentoSeleccionado"
+              map-options
+              option-value="name"
+              style="min-width: 20rem; max-width: 40rem"
+            />
             <q-btn
               dense
               color="primary"
@@ -101,6 +114,7 @@ import { onMounted, ref } from "vue";
 import ModalCrearNuevoDescuento from "src/components/ModalCrearNuevoDescuento.vue";
 import ModalDescuentosVendedor from "src/components/ModalDescuentosVendedor.vue";
 import { formatearFecha } from "src/helpers/formatearFecha";
+import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
 
 export default {
   components: {
@@ -117,6 +131,10 @@ export default {
       obtenerDetalleDescuentoVendedor,
     } = useDescuentos;
     const { descuentos } = storeToRefs(useDescuentos);
+
+    const useDepartamentos = useDepartamentosStore();
+    const { departamentos, departamentoSeleccionado } =
+      storeToRefs(useDepartamentos);
 
     const columns = [
       {
@@ -157,18 +175,27 @@ export default {
     const modalDescuentosVendedor = ref(null);
     const cargando = ref(false);
     const cargandoDescuentos = ref(false);
+    const datosCargados = ref(false);
 
-    onMounted(async () => {
-      await obtenerTodosDescuentosVendedores();
+    onMounted(() => {
+      departamentoSeleccionado.value = departamentos.value[0];
     });
 
     const obtenerDescuentos = async () => {
       cargandoDescuentos.value = true;
 
+      const claveDepartamento =
+        departamentoSeleccionado.value.value.claveDepartamento;
+
       await obtenerDescuentosVendedoresByFechas(
         fechaInicio.value,
-        fechaFin.value
+        fechaFin.value,
+        claveDepartamento
       );
+
+      if (descuentos.value.length === 0) {
+        datosCargados.value = true;
+      }
 
       cargandoDescuentos.value = false;
     };
@@ -176,7 +203,6 @@ export default {
     const nuevoDescuento = async () => {
       cargando.value = true;
 
-      await obtenerFormularioDescuento();
       modalCrearNuevoDescuento.value.abrir();
 
       cargando.value = false;
@@ -185,7 +211,7 @@ export default {
     const editarDescuento = async (descuento) => {
       await obtenerDetalleDescuentoVendedor(descuento.idDescuentoVendedor);
 
-      modalDescuentosVendedor.value.abrirModalDescuento("editar", descuento);
+      modalDescuentosVendedor.value.abrirModalDescuento(descuento);
     };
 
     return {
@@ -199,6 +225,9 @@ export default {
       cargando,
       cargandoDescuentos,
       modalDescuentosVendedor,
+      datosCargados,
+      departamentos,
+      departamentoSeleccionado,
       // Methods
       obtenerDescuentos,
       nuevoDescuento,
