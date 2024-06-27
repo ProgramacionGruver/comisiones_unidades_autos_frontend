@@ -9,6 +9,8 @@ export const useDescuentosStore = defineStore("descuentos", () => {
   const formularioDescuento = ref([]);
   const descuentoCreado = ref(null);
 
+  const planPisoRegistrados = ref([]);
+
   const obtenerTodosDescuentosVendedores = async () => {
     try {
       const { data } = await api.get("/descuentos/vendedores");
@@ -19,11 +21,16 @@ export const useDescuentosStore = defineStore("descuentos", () => {
     }
   };
 
-  const obtenerDescuentosVendedoresByFechas = async (fechaInicio, fechaFin) => {
+  const obtenerDescuentosVendedoresByFechas = async (
+    fechaInicio,
+    fechaFin,
+    claveDepartamento
+  ) => {
     try {
       const { data } = await api.post("/descuentos/vendedores/fecha", {
         fechaInicio,
         fechaFin,
+        claveDepartamento,
       });
 
       descuentos.value = [...data];
@@ -51,9 +58,11 @@ export const useDescuentosStore = defineStore("descuentos", () => {
       descuentoCreado.value = data;
       descuentos.value = [...descuentos.value, data];
 
+      notificacion("positive", "Descuento guardado correctamente");
       return;
     } catch (error) {
       console.log(error);
+      notificacion("negative", error.response.data.message);
     }
   };
 
@@ -67,11 +76,34 @@ export const useDescuentosStore = defineStore("descuentos", () => {
     }
   };
 
-  const obtenerFormularioDescuento = async () => {
+  const obtenerFormularioDescuento = async (claveDepartamento) => {
     try {
-      const { data } = await api.get("/descuentos/vendedores/formularios");
+      const { data } = await api.get(
+        `/descuentos/vendedores/formularios/${claveDepartamento}`
+      );
 
       formularioDescuento.value = [...data];
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const obtenerPlanPisoRegistrados = async (objBusqueda) => {
+    try {
+      const { data } = await api.post("/plan/piso", objBusqueda);
+
+      planPisoRegistrados.value = [...data];
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const guardarPlanPiso = async (planPiso) => {
+    try {
+      const { data } = await api.post("/plan/piso/guardar", planPiso);
+
+      planPisoRegistrados.value = [...planPisoRegistrados.value, data];
+      notificacion("positive", "Plan Piso guardado correctamente");
     } catch (error) {
       console.log(error);
     }
@@ -83,6 +115,7 @@ export const useDescuentosStore = defineStore("descuentos", () => {
     detalleDescuento,
     formularioDescuento,
     descuentoCreado,
+    planPisoRegistrados,
     // Methods
     obtenerTodosDescuentosVendedores,
     obtenerDescuentosVendedoresByFechas,
@@ -90,5 +123,7 @@ export const useDescuentosStore = defineStore("descuentos", () => {
     guardarNuevoDescuentoVendedor,
     actualizarDescuentoVendedor,
     obtenerFormularioDescuento,
+    obtenerPlanPisoRegistrados,
+    guardarPlanPiso,
   };
 });

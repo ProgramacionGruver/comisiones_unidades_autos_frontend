@@ -87,8 +87,11 @@ export default {
     const abrirModal = ref(false);
 
     const useDescuentos = useDescuentosStore();
-    const { guardarNuevoDescuentoVendedor, obtenerDetalleDescuentoVendedor } =
-      useDescuentos;
+    const {
+      guardarNuevoDescuentoVendedor,
+      obtenerDetalleDescuentoVendedor,
+      obtenerFormularioDescuento,
+    } = useDescuentos;
     const { formularioDescuento, descuentoCreado } = storeToRefs(useDescuentos);
 
     const useFacturas = useFacturasStore();
@@ -121,6 +124,12 @@ export default {
     const guardarDescuento = async () => {
       cargando.value = true;
 
+      const claveDepartamento = vendedorSeleccionado.value.value
+        ? vendedorSeleccionado.value.value.claveDepartamento
+        : vendedorSeleccionado.value.claveDepartamento;
+
+      await obtenerFormularioDescuento(claveDepartamento);
+
       const dataDescuento = {
         no_empleado: vendedorSeleccionado.value.value
           ? vendedorSeleccionado.value.value.numeroEmpleado
@@ -129,14 +138,15 @@ export default {
           ? vendedorSeleccionado.value.value.nombreEmpleado
           : vendedorSeleccionado.value.nombreEmpleado,
         fechaDescuento: formatearFechaGuiones(fechaDescuento.value),
+        claveDepartamento,
         descuentos: formularioDescuento.value,
       };
 
       await guardarNuevoDescuentoVendedor(dataDescuento);
 
-      await obtenerDetalleDescuentoVendedor(
-        descuentoCreado.value.idDescuentoVendedor
-      );
+      // await obtenerDetalleDescuentoVendedor(
+      //   descuentoCreado.value.idDescuentoVendedor
+      // );
 
       // await modalDescuentosVendedor.value.abrirModalDescuento("nuevo");
 

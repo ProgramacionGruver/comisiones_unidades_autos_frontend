@@ -46,7 +46,8 @@
               <q-input
                 v-model="descuento.valor"
                 outlined
-                label="Valor del descuento"
+                label="Valor"
+                type="number"
               />
             </div>
             <div class="renglon--hijo">
@@ -111,38 +112,16 @@ export default {
 
     const objDescuentos = ref({});
 
-    const abrirModalDescuento = (desde, data = "") => {
-      origen.value = desde;
+    const abrirModalDescuento = (data) => {
+      objDescuentos.value = {
+        idDescuentoVendedor: data.idDescuentoVendedor,
+        no_empleado: data.no_empleado,
+        nombre: data.nombre,
+        fechaDescuento: formatearFecha(data.fechaDescuento),
+        descuentos: detalleDescuento.value,
+      };
 
-      if (origen.value === "nuevo") {
-        objDescuentos.value = {
-          descuentos: detalleDescuento.value,
-          idDescuentoVendedor: descuentoCreado.value.idDescuentoVendedor,
-          no_empleado: descuentoCreado.value.numeroEmpleado,
-          nombre: descuentoCreado.value.nombreEmpleado,
-          fechaDescuento: formatearFecha(descuentoCreado.value.fechaDescuento),
-        };
-
-        abrirModal.value = true;
-
-        return new Promise((resolve, reject) => {
-          watch(abrirModal, (value) => {
-            if (!value) {
-              resolve();
-            }
-          });
-        });
-      } else {
-        objDescuentos.value = {
-          idDescuentoVendedor: data.idDescuentoVendedor,
-          no_empleado: data.no_empleado,
-          nombre: data.nombre,
-          fechaDescuento: formatearFecha(data.fechaDescuento),
-          descuentos: detalleDescuento.value,
-        };
-
-        abrirModal.value = true;
-      }
+      abrirModal.value = true;
     };
 
     const guardarDescuento = async () => {
