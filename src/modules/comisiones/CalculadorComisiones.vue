@@ -32,7 +32,7 @@
             />
           </div>
           <div class="col-3">
-            <label>Seleccione el vendedor</label>
+            <label>Seleccione un vendedor</label>
             <q-select
               v-model="vendedorSeleccionado"
               outlined
@@ -42,6 +42,10 @@
               option-value="value"
               option-label="label"
               style="width: 100%"
+              @filter="parametrosFiltradosVendedores"
+              clearable
+              use-input
+              input-debounce="0"
             />
           </div>
           <div class="col-2">
@@ -142,6 +146,9 @@
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
+                  v-if="
+                    comisionVendedor.infoVendedor.claveDepartamento === 'NUE'
+                  "
                 >
                   <template v-slot:body="props">
                     <q-tr
@@ -343,6 +350,101 @@
                   dense
                   flat
                   hide-bottom
+                  class="my-sticky-header-column-table"
+                  :rows="comisionVendedor.facturas"
+                  :columns="columnasFacturasSeminuevas"
+                  no-data-label="No se encontró informacion disponible."
+                  no-results-label="No se encontraron coincidencias."
+                  :pagination="pagination"
+                  v-else-if="
+                    comisionVendedor.infoVendedor.claveDepartamento === 'SEM'
+                  "
+                >
+                  <template v-slot:body="props">
+                    <q-tr
+                      v-if="props.row.tipoRenglon === 'dato'"
+                      :props="props"
+                    >
+                      <q-td style="text-align: center">
+                        {{ props.row.folioFactura }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{ props.row.fechaFactura }}
+                      </q-td>
+                      <q-td>
+                        {{ props.row.tasaCredito }}
+                      </q-td>
+                      <q-td>
+                        {{ props.row.modelo }}
+                      </q-td>
+                      <q-td>
+                        {{ props.row.serie }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.utilidad.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.garantia_extendida.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.acondicionamiento.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.gestorias.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.toma_unidad.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.cortesias.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.baseComision.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                    </q-tr>
+                  </template>
+                </q-table>
+
+                <q-table
+                  square
+                  dense
+                  flat
+                  hide-bottom
                   class="my-sticky-header-column-table q-mt-lg"
                   :rows="comisionVendedor.pvas"
                   :columns="columnasPvas"
@@ -412,6 +514,9 @@
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
+                  v-if="
+                    comisionVendedor.infoVendedor.claveDepartamento === 'NUE'
+                  "
                 >
                   <template v-slot:body="props">
                     <q-tr>
@@ -426,6 +531,59 @@
                       <q-td style="text-align: center">
                         {{
                           props.row.totalPvas.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.totalUtilidadBruta.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                    </q-tr>
+                  </template>
+                </q-table>
+
+                <q-table
+                  square
+                  dense
+                  flat
+                  hide-bottom
+                  class="my-sticky-header-column-table q-mt-lg"
+                  :rows="comisionVendedor.totalUtilidadBruta"
+                  :columns="columnasUtilidadBrutaSeminuevos"
+                  no-data-label="No se encontró informacion disponible."
+                  no-results-label="No se encontraron coincidencias."
+                  :pagination="pagination"
+                  v-if="
+                    comisionVendedor.infoVendedor.claveDepartamento === 'SEM'
+                  "
+                >
+                  <template v-slot:body="props">
+                    <q-tr>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.totalBaseComision.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.totalPvas.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.totalPlanPiso.toLocaleString("es-MX", {
                             style: "currency",
                             currency: "MXN",
                           })
@@ -529,6 +687,9 @@
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
+                  v-if="
+                    comisionVendedor.infoVendedor.claveDepartamento === 'NUE'
+                  "
                 >
                   <template v-slot:body="props">
                     <q-tr>
@@ -594,6 +755,70 @@
                     </q-tr>
                   </template>
                 </q-table>
+
+                <q-table
+                  square
+                  dense
+                  flat
+                  hide-bottom
+                  class="my-sticky-header-column-table q-mt-lg q-mb-lg"
+                  :rows="comisionVendedor.descuentosVendedor"
+                  :columns="columnasDescuentosVendedorSeminuevos"
+                  no-data-label="No se encontró informacion disponible."
+                  no-results-label="No se encontraron coincidencias."
+                  :pagination="pagination"
+                  v-else-if="
+                    comisionVendedor.infoVendedor.claveDepartamento === 'SEM'
+                  "
+                >
+                  <template v-slot:body="props">
+                    <q-tr>
+                      <q-td style="text-align: center">
+                        {{
+                          Number(props.row.bono).toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          Number(props.row.descuento).toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          Number(props.row.accesorios).toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          Number(props.row.nuevos).toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          Number(props.row.totalAPagar).toLocaleString(
+                            "es-MX",
+                            {
+                              style: "currency",
+                              currency: "MXN",
+                            }
+                          )
+                        }}
+                      </q-td>
+                    </q-tr>
+                  </template>
+                </q-table>
               </q-scroll-area>
             </q-card-section>
           </q-card>
@@ -613,6 +838,7 @@ import { useKpiStore } from "src/stores/catalogos/kpis";
 import { obtenerNumerosDeMes } from "src/constant/constantes";
 import { notificacion } from "src/helpers/mensajes";
 import ModalEnviarComision from "src/components/ModalEnviarComision.vue";
+import { filtradoBusquedaObj } from "src/helpers/filtradoBusquedaObj";
 
 export default {
   components: {
@@ -693,6 +919,57 @@ export default {
       },
     ];
 
+    const columnasFacturasSeminuevas = [
+      {
+        name: "folioFactura",
+        label: "Folio",
+      },
+      {
+        name: "fechaFactura",
+        label: "Fecha",
+      },
+      {
+        name: "tasaCredito",
+        label: "Tasa de crédito",
+      },
+      {
+        name: "modelo",
+        label: "Modelo",
+      },
+      {
+        name: "serie",
+        label: "Serie",
+      },
+      {
+        name: "utilidad",
+        label: "Utilidad",
+      },
+      {
+        name: "garantia_extendida",
+        label: "Garantía extendida",
+      },
+      {
+        name: "acondicionamiento",
+        label: "Acondicionamiento",
+      },
+      {
+        name: "gestorias",
+        label: "Gestorías",
+      },
+      {
+        name: "toma_unidad",
+        label: "Toma unidad",
+      },
+      {
+        name: "cortesias",
+        label: "Cortesías",
+      },
+      {
+        name: "baseComision",
+        label: "Base comisión",
+      },
+    ];
+
     const columnasPvas = [
       {
         name: "nombreCliente",
@@ -720,6 +997,25 @@ export default {
       {
         name: "totalPvas",
         label: "Total PVA's",
+      },
+      {
+        name: "totalUtilidadBruta",
+        label: "Total utilidad bruta",
+      },
+    ];
+
+    const columnasUtilidadBrutaSeminuevos = [
+      {
+        name: "totalBaseComision",
+        label: "Total base comisión",
+      },
+      {
+        name: "totalPvas",
+        label: "Total PVA's",
+      },
+      {
+        name: "totalPlanPiso",
+        label: "Plan piso",
       },
       {
         name: "totalUtilidadBruta",
@@ -805,6 +1101,36 @@ export default {
       },
     ];
 
+    const columnasDescuentosVendedorSeminuevos = [
+      {
+        name: "bono",
+        label: "Bono",
+      },
+      {
+        name: "descuento",
+        label: "Descuento",
+      },
+      {
+        name: "accesorios",
+        label: "Accesorios",
+      },
+      {
+        name: "nuevos",
+        label: "Nuevos",
+      },
+      {
+        name: "totalAPagar",
+        label: "Total a pagar",
+      },
+    ];
+
+    const columansDescuentosNoExisten = [
+      {
+        name: "totalAPagar",
+        label: "Total a pagar",
+      },
+    ];
+
     const buscarComisiones = async () => {
       if (!vendedorSeleccionado.value) {
         notificacion("warning", "Seleccione un vendedor para continuar");
@@ -849,6 +1175,15 @@ export default {
       rowsPerPage: 10000,
     });
 
+    const parametrosFiltradosVendedores = (val, update) => {
+      filtradoBusquedaObj(
+        val,
+        update,
+        opcionesVendedores.value,
+        opcionesEmpleados
+      );
+    };
+
     return {
       // States
       fechaInicio,
@@ -869,9 +1204,14 @@ export default {
       columnasKPIs,
       columnasDescuentosVendedor,
       modalEnviarComision,
+      columnasFacturasSeminuevas,
+      columnasDescuentosVendedorSeminuevos,
+      columnasUtilidadBrutaSeminuevos,
+      columansDescuentosNoExisten,
       // Methods
       buscarComisiones,
       enviarComision,
+      parametrosFiltradosVendedores,
     };
   },
 };
