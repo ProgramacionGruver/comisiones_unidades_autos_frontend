@@ -217,7 +217,7 @@
               label="Monto"
               type="number"
               color="primary"
-              v-model="objPva.utilidad"
+              v-model="objPva.utilidad_completa"
               :rules="validarDigitos"
             >
               <template v-slot:prepend>
@@ -263,6 +263,7 @@ import { useAutenticacionStore } from "src/stores/autenticaciones";
 import { usePvaStore } from "src/stores/catalogos/pvas";
 import { validarDigitos } from "src/helpers/inputReglas";
 import { useAseguradorasStore } from "src/stores/catalogos/aseguradoras";
+import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
 
 export default {
   setup() {
@@ -286,6 +287,9 @@ export default {
 
     const usePva = usePvaStore();
     const { guardarPva } = usePva;
+
+    const useDepartamentos = useDepartamentosStore();
+    const { departamentoSeleccionado } = storeToRefs(useDepartamentos);
 
     const modalPva = ref(false);
     const formulario = ref(null);
@@ -319,6 +323,7 @@ export default {
       garantia: false,
       on_star_gap: "",
       aseguradora: "",
+      utilidad_completa: "",
     };
 
     const objPva = ref({ ...objPvaInit });
@@ -380,6 +385,16 @@ export default {
       objPva.value.mes = obtenerNumerosDeMes(mesSeleccionado.value);
       objPva.value.anio = anioSeleccionado.value;
       objPva.value.garantia = objPva.value.garantia ? "SI" : "NO";
+      objPva.value.claveDepartamento =
+        departamentoSeleccionado.value.value.claveDepartamento;
+
+      if (objPva.value.pva === "pi") {
+        objPva.value.utilidad = Number(
+          (objPva.value.utilidad_completa * 0.025) / 2
+        ).toFixed(2);
+      } else {
+        objPva.value.utilidad = objPva.value.utilidad_completa;
+      }
 
       await guardarPva(objPva.value);
 

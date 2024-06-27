@@ -57,6 +57,17 @@
                 @update:model-value="filtrarPvas"
               />
             </div>
+            <div class="col q-ma-sm">
+              <q-select
+                outlined
+                dense
+                :options="departamentos"
+                v-model="departamentoSeleccionado"
+                @update:model-value="filtrarPvas"
+                map-options
+                option-value="name"
+              />
+            </div>
             <!-- <div class="col q-ma-sm">
               <q-select
                 outlined
@@ -68,14 +79,14 @@
               >
               </q-select>
             </div> -->
-            <!-- <div>
+            <div>
               <q-btn
                 color="green"
                 label="Exportar Excel"
                 icon="get_app"
                 @click="exportarExcel(pvas)"
               />
-            </div> -->
+            </div>
           </div>
         </template>
       </q-table>
@@ -117,11 +128,17 @@
             </div>
             <div style="display: flex; flex-direction: column">
               <label class="text-bold">Monto:</label>
-              <span>{{ pvaSeleccionado[0].utilidad }}</span>
+              <span>{{
+                formatearMonto(pvaSeleccionado[0].utilidad_completa)
+              }}</span>
             </div>
             <div style="display: flex; flex-direction: column">
               <label class="text-bold">Garantia:</label>
               <span>{{ pvaSeleccionado[0].garantia }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <label class="text-bold">Monto financiado:</label>
+              <span>{{ formatearMonto(pvaSeleccionado[0].utilidad) }}</span>
             </div>
             <div style="display: flex; flex-direction: column">
               <label class="text-bold">On Star / GAP:</label>
@@ -162,6 +179,7 @@ import {
 import { tipoPva } from "src/constant/constantes";
 import { convertirTablaCSV } from "src/helpers/generarCSV";
 import { formatearFecha } from "src/helpers/formatearFecha";
+import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
 
 export default {
   components: {
@@ -177,6 +195,10 @@ export default {
     const { pvas } = storeToRefs(usePva);
 
     const pvaSeleccionado = ref([]);
+
+    const useDepartamentos = useDepartamentosStore();
+    const { departamentos, departamentoSeleccionado } =
+      storeToRefs(useDepartamentos);
 
     const columns = [
       {
@@ -242,7 +264,8 @@ export default {
     });
 
     onMounted(async () => {
-      await obtenerPvas(objPvaInit.value);
+      departamentoSeleccionado.value = departamentos.value[0];
+      await filtrarPvas();
     });
 
     const filtrarPvas = async () => {
@@ -251,6 +274,9 @@ export default {
       // );
       objPvaInit.value.mes = obtenerNumerosDeMes(mesSeleccionado.value);
       objPvaInit.value.anio = anioSeleccionado.value;
+      objPvaInit.value.departamento =
+        departamentoSeleccionado.value.value.claveDepartamento;
+
       await obtenerPvas(objPvaInit.value);
     };
 
@@ -277,8 +303,12 @@ export default {
           label: "Fecha de Compra",
         },
         {
-          name: "utilidad",
+          name: "utilidad_completa",
           label: "Monto",
+        },
+        {
+          name: "utilidad",
+          label: "Monto financiado",
         },
         {
           name: "garantia",
@@ -326,6 +356,10 @@ export default {
       pvaSeleccionado,
 
       formatearFecha,
+
+      departamentos,
+      departamentoSeleccionado,
+      formatearMonto,
     };
   },
 };
