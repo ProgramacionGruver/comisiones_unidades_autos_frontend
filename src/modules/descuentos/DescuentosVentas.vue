@@ -9,6 +9,7 @@
         :loading="cargando"
         color="primary"
         :columns="columns"
+        :visible-columns="columnasVisibles"
         :filter="buscar"
         :rows="comisionesFiltradas"
         binary-state-sort
@@ -60,10 +61,20 @@
         </template>
 
         <template v-slot:body-cell-cortesia="props">
-          <td>
+          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
             {{
               props.row.descuentosUnidades[0]?.cortesia
                 ? formatearMonto(props.row.descuentosUnidades[0]?.cortesia)
+                : formatearMonto(0)
+            }}
+          </td>
+          <!-- Honestamente, esta es una solucion de Copilot jeje -->
+          <td v-else>
+            {{
+              (props.row.descuentosUnidadesSeminuevos || [])[0]?.cortesias
+                ? formatearMonto(
+                    (props.row.descuentosUnidadesSeminuevos || [])[0]?.cortesias
+                  )
                 : formatearMonto(0)
             }}
           </td>
@@ -84,6 +95,55 @@
             {{
               props.row.descuentosUnidades[0]?.bonoub
                 ? formatearMonto(props.row.descuentosUnidades[0]?.bonoub)
+                : formatearMonto(0)
+            }}
+          </td>
+        </template>
+
+        <template v-slot:body-cell-garantia_extendida="props">
+          <td>
+            {{
+              props.row.descuentosUnidadesSeminuevos[0]?.garantia_extendida
+                ? formatearMonto(
+                    props.row.descuentosUnidadesSeminuevos[0]
+                      ?.garantia_extendida
+                  )
+                : formatearMonto(0)
+            }}
+          </td>
+        </template>
+
+        <template v-slot:body-cell-acondicionamiento="props">
+          <td>
+            {{
+              props.row.descuentosUnidadesSeminuevos[0]?.acondicionamiento
+                ? formatearMonto(
+                    props.row.descuentosUnidadesSeminuevos[0]?.acondicionamiento
+                  )
+                : formatearMonto(0)
+            }}
+          </td>
+        </template>
+
+        <template v-slot:body-cell-gestorias="props">
+          <td>
+            {{
+              props.row.descuentosUnidadesSeminuevos[0]?.gestorias
+                ? formatearMonto(
+                    props.row.descuentosUnidadesSeminuevos[0]?.gestorias
+                  )
+                : formatearMonto(0)
+            }}
+          </td>
+        </template>
+
+        <template v-slot:body-cell-toma_unidad="props">
+          <td>
+            {{
+              props.row.descuentosUnidadesSeminuevos[0]?.toma_unidad
+                ? formatearMonto(
+                    props.row.descuentosUnidadesSeminuevos[0]?.toma_unidad
+                  )
                 : formatearMonto(0)
             }}
           </td>
@@ -217,6 +277,7 @@ import {
   obtenerNumerosDeMes,
 } from "src/constant/constantes";
 import ModalDescuentos from "src/components/ModalDescuentos.vue";
+import { de } from "date-fns/locale";
 
 export default {
   components: {
@@ -302,12 +363,6 @@ export default {
         sortable: true,
       },
       {
-        name: "cortesia",
-        label: "Cortesia",
-        align: "left",
-        sortable: true,
-      },
-      {
         name: "gasolina",
         label: "Gasolina",
         align: "left",
@@ -320,16 +375,48 @@ export default {
         sortable: true,
       },
       {
+        name: "garantia_extendida",
+        label: "Garantía Extendida",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "acondicionamiento",
+        label: "Acondicionamiento",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "gestorias",
+        label: "Gestorías",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "toma_unidad",
+        label: "Toma Unidad",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "cortesia",
+        label: "Cortesia",
+        align: "left",
+        sortable: true,
+      },
+      {
         name: "acciones",
         align: "left",
         sortable: true,
       },
     ];
 
+    const columnasVisibles = ref([]);
+
     onMounted(async () => {
       await obtenerEmpresas();
       await obtenerSucursales();
-      await obtenerDepartamentos();
+      // await obtenerDepartamentos();
 
       opcionesEmpresas.value = empresas.value.map((empresa) => {
         empresa.label = formatearCapitalCase(empresa.razonSocial);
@@ -356,6 +443,8 @@ export default {
       comisionesFiltradas.value = comisionesUnidades.value.filter(
         (comision) => comision.id_plaza === sucursalSeleccionada.value.idErp
       );
+
+      await filtrarFacturas();
     });
 
     const filtrarEmpresas = async () => {
@@ -394,6 +483,34 @@ export default {
       comisionesFiltradas.value = comisionesUnidades.value.filter(
         (factura) => factura.id_plaza === sucursalSeleccionada.value.idErp
       );
+
+      columnasVisibles.value =
+        departamentoSeleccionado.value.label === "NUEVAS"
+          ? [
+              "factura",
+              "fecha_facturacion",
+              "modelo",
+              "vin",
+              "previa",
+              "traslado",
+              "descVentas",
+              "cortesia",
+              "gasolina",
+              "bonou",
+              "acciones",
+            ]
+          : [
+              "factura",
+              "fecha_facturacion",
+              "modelo",
+              "vin",
+              "garantia_extendida",
+              "acondicionamiento",
+              "gestorias",
+              "toma_unidad",
+              "cortesia",
+              "acciones",
+            ];
     };
 
     const agregarDescuentos = async (objFactura) => {
@@ -405,6 +522,7 @@ export default {
       filtrarFacturas,
 
       columns,
+      columnasVisibles,
       buscar: ref(""),
       usuarioAutenticado,
 
