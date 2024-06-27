@@ -54,17 +54,17 @@
                 @update:model-value="filtrarKpis"
               />
             </div>
-            <!-- <div class="col q-ma-sm">
+            <div class="col q-ma-sm">
               <q-select
                 outlined
                 dense
-                v-model="quincenaSeleccionada"
-                :options="listaQuincenas"
-                option-label="descripcion"
+                :options="departamentos"
+                v-model="departamentoSeleccionado"
                 @update:model-value="filtrarKpis"
-              >
-              </q-select>
-            </div> -->
+                map-options
+                option-value="name"
+              />
+            </div>
           </div>
         </template>
 
@@ -145,6 +145,7 @@ import {
   obtenerNumerosDeMes,
 } from "src/constant/constantes";
 import ModalValoresKpis from "./../../components/ModalValoresKpis.vue";
+import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
 
 export default {
   components: {
@@ -157,6 +158,10 @@ export default {
 
     const useFacturas = useFacturasStore();
     const { anioSeleccionado, mesSeleccionado } = storeToRefs(useFacturas);
+
+    const useDepartamentos = useDepartamentosStore();
+    const { departamentos, departamentoSeleccionado } =
+      storeToRefs(useDepartamentos);
 
     const columns = [
       {
@@ -197,12 +202,16 @@ export default {
     const modalValoresKpis = ref(null);
 
     onMounted(async () => {
-      await obtenerValoresRealesKpis(objKpis.value);
+      departamentoSeleccionado.value = departamentos.value[0];
+
+      await filtrarKpis();
     });
 
     const filtrarKpis = async () => {
       objKpis.value.mes = obtenerNumerosDeMes(mesSeleccionado.value);
       objKpis.value.anio = anioSeleccionado.value;
+      objKpis.value.claveDepartamento =
+        departamentoSeleccionado.value?.value?.claveDepartamento;
 
       await obtenerValoresRealesKpis(objKpis.value);
     };
@@ -226,6 +235,8 @@ export default {
       mesSeleccionado,
       columns,
       modalValoresKpis,
+      departamentos,
+      departamentoSeleccionado,
       // Methods
       filtrarKpis,
       nuevoValorKpi,

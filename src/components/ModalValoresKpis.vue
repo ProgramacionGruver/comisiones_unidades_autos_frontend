@@ -7,14 +7,8 @@
         <q-btn icon="close" flat round dense v-close-popup class="q-mb-md" />
       </q-card-section>
       <q-card-section>
-        <div
-          style="
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            column-gap: 2rem;
-          "
-        >
-          <div>
+        <div style="width: 100%">
+          <div style="width: 100%">
             <label>Seleccione el vendedor</label>
             <q-select
               v-model="empleadoSeleccionado"
@@ -27,9 +21,14 @@
               dense
               outlined
               @update:model-value="obtenerFormulario"
+              @filter="parametrosFiltradosVendedores"
+              clearable
+              use-input
+              input-debounce="0"
+              style="width: 100%"
             />
           </div>
-          <div>
+          <!-- <div>
             <label>Seleccione una sucursal</label>
             <q-select
               v-model="sucursalSeleccionada"
@@ -43,7 +42,7 @@
               outlined
               @update:model-value="obtenerFormulario"
             />
-          </div>
+          </div> -->
         </div>
         <div
           v-if="!habilitarFormulario"
@@ -58,7 +57,7 @@
         >
           <q-icon name="help" size="10rem" color="primary" class="q-mb-sm" />
           <p class="text-h4 text-center">
-            Seleccione un vendedor y una sucursal para llenar el formulario
+            Seleccione un vendedor para llenar el formulario
           </p>
         </div>
         <div
@@ -123,6 +122,7 @@ import {
   obtenerNumeroQuincena,
   obtenerNumerosDeMes,
 } from "src/constant/constantes";
+import { filtradoBusquedaObj } from "src/helpers/filtradoBusquedaObj";
 
 export default {
   setup() {
@@ -152,7 +152,7 @@ export default {
     const cargando = ref(false);
 
     const abrir = () => {
-      abrirModal.value = true;
+      empleadoSeleccionado.value = null;
 
       sucursales.value = sucursales.value.filter(
         (sucursal) => sucursal.claveEmpresa === "CH"
@@ -164,13 +164,14 @@ export default {
           value: { ...sucursal },
         };
       });
+      abrirModal.value = true;
     };
 
     const obtenerFormulario = async () => {
-      if (empleadoSeleccionado.value && sucursalSeleccionada.value) {
+      if (empleadoSeleccionado.value) {
         const obj = {
           nivel: empleadoSeleccionado.value.nivel,
-          claveSucursal: sucursalSeleccionada.value.abreviacion,
+          claveDepartamento: empleadoSeleccionado.value.claveDepartamento,
         };
 
         await obtenerObjetivosFormulario(obj);
@@ -181,6 +182,15 @@ export default {
 
         habilitarFormulario.value = true;
       }
+    };
+
+    const parametrosFiltradosVendedores = (val, update) => {
+      filtradoBusquedaObj(
+        val,
+        update,
+        opcionesVendedores.value,
+        opcionesEmpleados
+      );
     };
 
     const guardarValores = async () => {
@@ -214,6 +224,7 @@ export default {
       abrir,
       obtenerFormulario,
       guardarValores,
+      parametrosFiltradosVendedores,
     };
   },
 };
