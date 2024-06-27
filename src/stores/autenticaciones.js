@@ -2,11 +2,15 @@ import { defineStore } from "pinia";
 import { apiUsuarios } from "src/boot/axiosUsuarios";
 import { ref } from "vue";
 import { notificacion } from "src/helpers/mensajes";
+import { useDepartamentosStore } from "./catalogos/departamentos";
 
 export const useAutenticacionStore = defineStore("autenticaciones", () => {
   const usuarioAutenticado = ref(null);
   const isLogin = ref(false);
   const perfilUsuario = ref(null);
+
+  const useDepartamentos = useDepartamentosStore();
+  const { obtenerDepartamentos } = useDepartamentos;
 
   const iniciarSesion = async (usuario) => {
     try {
@@ -59,6 +63,17 @@ export const useAutenticacionStore = defineStore("autenticaciones", () => {
         `/perfil/comisiones/${idUsuario}/${idPortal}`
       );
       perfilUsuario.value = data;
+
+      if (
+        perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+          "AUXILIAR NUEVAS" ||
+        perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+          "AUXILIAR SEMINUEVAS"
+      ) {
+        await obtenerDepartamentos(perfilUsuario.value);
+      } else {
+        await obtenerDepartamentos();
+      }
     } catch (error) {
       console.log(error);
       perfilUsuario.value = null;

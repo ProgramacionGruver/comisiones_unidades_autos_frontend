@@ -90,7 +90,7 @@ export default {
     onMounted(async () => {
       await obtenerEmpresas();
       await obtenerSucursales();
-      await obtenerDepartamentos();
+      // await obtenerDepartamentos();
       await obtenerVendedores();
       await obtenerClientes();
       await obtenerCatalogoAseguradoras();

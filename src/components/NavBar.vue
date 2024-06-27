@@ -26,7 +26,7 @@
         <div class="q-px-md q-py-md q-mt-md text-h4">PVAS</div>
         <q-separator />
       </div>
-      <div v-if="menuItem.name === 'panelPvas'">
+      <div v-if="menuItem.name === 'planPiso'">
         <div class="q-px-md q-py-md q-mt-md text-h4">Descuentos</div>
         <q-separator />
       </div>
@@ -69,7 +69,8 @@ onMounted(async () => {
     menulist.value = menulist.value.filter(
       (menuItem) =>
         menuItem.name !== "catalogoAutorizadoresJefes" &&
-        menuItem.name !== "catalogoAsesores"
+        menuItem.name !== "catalogoAsesores" &&
+        menuItem.name !== "planPiso"
     );
   } else if (
     perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
@@ -88,7 +89,8 @@ onMounted(async () => {
     menulist.value = menulist.value.filter(
       (menuItem) =>
         menuItem.name !== "catalogoAutorizadoresJefes" &&
-        menuItem.name !== "catalogoAsesores"
+        menuItem.name !== "catalogoAsesores" &&
+        menuItem.name !== "planPiso"
     );
   } else if (
     perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
