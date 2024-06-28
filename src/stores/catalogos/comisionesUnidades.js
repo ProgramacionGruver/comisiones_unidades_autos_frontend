@@ -14,11 +14,18 @@ export const useComisionesStore = defineStore("comisiones", () => {
       const { data } = await api.post("/unidades/autos", objComisiones);
       comisionesUnidades.value = [...data];
 
+      console.log(data);
+
       if (objComisiones.condicion === "NUEVAS") {
         for (const comision of comisionesUnidades.value) {
           if (comision.modelo.includes("AVEO")) {
             comision.descuentosUnidades[0] = {
               previa: 1242,
+              traslado: comision.descuentosUnidades[0].traslado,
+              descVentas: comision.descuentosUnidades[0].descVentas,
+              cortesia: comision.descuentosUnidades[0].cortesia,
+              gasolina: comision.descuentosUnidades[0].gasolina,
+              bonoub: comision.descuentosUnidades[0].bonoub,
             };
           } else if (
             comision.modelo.includes("S10") ||
@@ -28,10 +35,20 @@ export const useComisionesStore = defineStore("comisiones", () => {
           ) {
             comision.descuentosUnidades[0] = {
               previa: 1142,
+              traslado: comision.descuentosUnidades[0].traslado,
+              descVentas: comision.descuentosUnidades[0].descVentas,
+              cortesia: comision.descuentosUnidades[0].cortesia,
+              gasolina: comision.descuentosUnidades[0].gasolina,
+              bonoub: comision.descuentosUnidades[0].bonoub,
             };
           } else {
             comision.descuentosUnidades[0] = {
               previa: 693,
+              traslado: comision.descuentosUnidades[0].traslado,
+              descVentas: comision.descuentosUnidades[0].descVentas,
+              cortesia: comision.descuentosUnidades[0].cortesia,
+              gasolina: comision.descuentosUnidades[0].gasolina,
+              bonoub: comision.descuentosUnidades[0].bonoub,
             };
           }
         }

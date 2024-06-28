@@ -212,7 +212,7 @@ export const useFacturasStore = defineStore("facturas", () => {
         };
       });
       const { data } = await api.post("/facturas/unidades/autos", facturasObj);
-      notificacion("positive", "Facturas Guardadas", data);
+      notificacion("positive", "Facturas Guardadas");
     } catch (error) {
       console.log(error);
       notificacion("negative", error.response.data.message);

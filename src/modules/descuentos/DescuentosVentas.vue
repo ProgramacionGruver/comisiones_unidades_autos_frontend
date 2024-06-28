@@ -496,7 +496,7 @@ export default {
               "descVentas",
               "cortesia",
               "gasolina",
-              "bonou",
+              "bonoub",
               "acciones",
             ]
           : [
