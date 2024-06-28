@@ -411,9 +411,7 @@ export default {
         objPva.value.utilidad = objPva.value.utilidad_completa;
       }
 
-      console.log(objPva.value);
-
-      // await guardarPva(objPva.value);
+      await guardarPva(objPva.value);
 
       cargando.value = false;
       modalPva.value = false;
