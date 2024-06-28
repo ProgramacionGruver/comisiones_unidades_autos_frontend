@@ -14,42 +14,100 @@ export const useComisionesStore = defineStore("comisiones", () => {
       const { data } = await api.post("/unidades/autos", objComisiones);
       comisionesUnidades.value = [...data];
 
-      console.log(data);
-
       if (objComisiones.condicion === "NUEVAS") {
         for (const comision of comisionesUnidades.value) {
-          if (comision.modelo.includes("AVEO")) {
-            comision.descuentosUnidades[0] = {
-              previa: 1242,
-              traslado: comision.descuentosUnidades[0].traslado,
-              descVentas: comision.descuentosUnidades[0].descVentas,
-              cortesia: comision.descuentosUnidades[0].cortesia,
-              gasolina: comision.descuentosUnidades[0].gasolina,
-              bonoub: comision.descuentosUnidades[0].bonoub,
-            };
-          } else if (
-            comision.modelo.includes("S10") ||
-            comision.modelo.includes("CAPTIVA") ||
-            comision.modelo.includes("GROOVE") ||
-            comision.modelo.includes("TORNADO")
+          if (
+            comision.modelo.includes("AVEO") &&
+            comision.estadoFactura === "FACTURADA"
           ) {
             comision.descuentosUnidades[0] = {
-              previa: 1142,
-              traslado: comision.descuentosUnidades[0].traslado,
-              descVentas: comision.descuentosUnidades[0].descVentas,
-              cortesia: comision.descuentosUnidades[0].cortesia,
-              gasolina: comision.descuentosUnidades[0].gasolina,
-              bonoub: comision.descuentosUnidades[0].bonoub,
+              previa:
+                comision.descuentosUnidades.length > 0
+                  ? comision.descuentosUnidades[0].previa
+                  : 1242,
+              traslado:
+                comision.descuentosUnidades.length > 0
+                  ? comision.descuentosUnidades[0].traslado
+                  : 0,
+              descVentas:
+                comision.descuentosUnidades.length > 0
+                  ? comision.descuentosUnidades[0].descVentas
+                  : 0,
+              cortesia:
+                comision.descuentosUnidades.length > 0
+                  ? comision.descuentosUnidades[0].cortesia
+                  : 0,
+              gasolina:
+                comision.descuentosUnidades.length > 0
+                  ? comision.descuentosUnidades[0].gasolina
+                  : 0,
+              bonoub:
+                comision.descuentosUnidades.length > 0
+                  ? comision.descuentosUnidades[0].bonoub
+                  : 0,
+            };
+          } else if (
+            (comision.modelo.includes("S10") ||
+              comision.modelo.includes("CAPTIVA") ||
+              comision.modelo.includes("GROOVE") ||
+              comision.modelo.includes("TORNADO")) &&
+            comision.estadoFactura === "FACTURADA"
+          ) {
+            comision.descuentosUnidades[0] = {
+              previa:
+                comision.descuentosUnidades.length > 0
+                  ? comision.descuentosUnidades[0].previa
+                  : 1142,
+              traslado:
+                comision.descuentosUnidades.length > 0
+                  ? comision.descuentosUnidades[0].traslado
+                  : 0,
+              descVentas:
+                comision.descuentosUnidades.length > 0
+                  ? comision.descuentosUnidades[0].descVentas
+                  : 0,
+              cortesia:
+                comision.descuentosUnidades.length > 0
+                  ? comision.descuentosUnidades[0].cortesia
+                  : 0,
+              gasolina:
+                comision.descuentosUnidades.length > 0
+                  ? comision.descuentosUnidades[0].gasolina
+                  : 0,
+              bonoub:
+                comision.descuentosUnidades.length > 0
+                  ? comision.descuentosUnidades[0].bonoub
+                  : 0,
             };
           } else {
-            comision.descuentosUnidades[0] = {
-              previa: 693,
-              traslado: comision.descuentosUnidades[0].traslado,
-              descVentas: comision.descuentosUnidades[0].descVentas,
-              cortesia: comision.descuentosUnidades[0].cortesia,
-              gasolina: comision.descuentosUnidades[0].gasolina,
-              bonoub: comision.descuentosUnidades[0].bonoub,
-            };
+            if (comision.estadoFactura === "FACTURADA") {
+              comision.descuentosUnidades[0] = {
+                previa:
+                  comision.descuentosUnidades.length > 0
+                    ? comision.descuentosUnidades[0].previa
+                    : 693,
+                traslado:
+                  comision.descuentosUnidades.length > 0
+                    ? comision.descuentosUnidades[0].traslado
+                    : 0,
+                descVentas:
+                  comision.descuentosUnidades.length > 0
+                    ? comision.descuentosUnidades[0].descVentas
+                    : 0,
+                cortesia:
+                  comision.descuentosUnidades.length > 0
+                    ? comision.descuentosUnidades[0].cortesia
+                    : 0,
+                gasolina:
+                  comision.descuentosUnidades.length > 0
+                    ? comision.descuentosUnidades[0].gasolina
+                    : 0,
+                bonoub:
+                  comision.descuentosUnidades.length > 0
+                    ? comision.descuentosUnidades[0].bonoub
+                    : 0,
+              };
+            }
           }
         }
       }
