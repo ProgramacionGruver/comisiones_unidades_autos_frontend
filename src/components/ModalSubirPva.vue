@@ -176,22 +176,34 @@
             />
           </div>
           <div>
-            <label> Selecciona el vendedor </label>
+            <label> Selecciona el vendedor y el departamento </label>
           </div>
-          <div class="row justify-around">
-            <q-select
-              outlined
-              dense
-              clearable
-              use-input
-              input-debounce="0"
-              label="Vendedor"
-              v-model="vendedorSeleccionado"
-              @filter="parametrosFiltradosVendedores"
-              :options="opcionesEmpleados"
-              :rules="[(val) => !!val || 'Se requiere llenar este campo']"
-              style="width: 100%"
-            />
+          <div class="row justify-around q-gutter-sm">
+            <div class="col">
+              <q-select
+                outlined
+                dense
+                clearable
+                use-input
+                input-debounce="0"
+                label="Vendedor"
+                v-model="vendedorSeleccionado"
+                @filter="parametrosFiltradosVendedores"
+                :options="opcionesEmpleados"
+                :rules="[(val) => !!val || 'Se requiere llenar este campo']"
+                style="width: 100%"
+              />
+            </div>
+            <div class="col">
+              <q-select
+                outlined
+                dense
+                :options="departamentos"
+                v-model="departamentoSeleccionado"
+                map-options
+                option-value="name"
+              />
+            </div>
           </div>
           <div>
             <label>Selecciona el tipo de pva y la utilidad. </label>
@@ -289,7 +301,8 @@ export default {
     const { guardarPva } = usePva;
 
     const useDepartamentos = useDepartamentosStore();
-    const { departamentoSeleccionado } = storeToRefs(useDepartamentos);
+    const { departamentoSeleccionado, departamentos } =
+      storeToRefs(useDepartamentos);
 
     const modalPva = ref(false);
     const formulario = ref(null);
@@ -344,6 +357,7 @@ export default {
         .filter((sucursal) => sucursal.value.claveEmpresa === "CH");
 
       sucursalSeleccionada.value = opcionesSucursales.value[0];
+      departamentoSeleccionado.value = departamentos.value[0];
       objPva.value = { ...objPvaInit };
       vendedorSeleccionado.value = null;
       clienteSeleccionado.value = null;
@@ -387,7 +401,7 @@ export default {
       objPva.value.anio = anioSeleccionado.value;
       objPva.value.garantia = objPva.value.garantia ? "SI" : "NO";
       objPva.value.claveDepartamento =
-        vendedorSeleccionado.value.value.claveDepartamento;
+        departamentoSeleccionado.value.value.claveDepartamento;
 
       if (objPva.value.pva === "pi") {
         objPva.value.utilidad = Number(
@@ -397,7 +411,9 @@ export default {
         objPva.value.utilidad = objPva.value.utilidad_completa;
       }
 
-      await guardarPva(objPva.value);
+      console.log(objPva.value);
+
+      // await guardarPva(objPva.value);
 
       cargando.value = false;
       modalPva.value = false;
@@ -432,6 +448,8 @@ export default {
       cargando,
       opcionesAseguradoras,
       gapsSeleccionados,
+      departamentos,
+      departamentoSeleccionado,
     };
   },
 };
