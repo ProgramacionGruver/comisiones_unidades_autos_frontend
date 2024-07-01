@@ -171,7 +171,6 @@
               label="Aseguradora"
               v-model="objPva.aseguradora"
               :options="opcionesAseguradoras"
-              :rules="[(val) => !!val || 'Se requiere llenar este campo']"
               style="width: 100%"
             />
           </div>
