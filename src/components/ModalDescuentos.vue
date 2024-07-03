@@ -121,7 +121,9 @@
                 dense
                 filled
                 label="Garantia Extendida"
-                v-model="factura.descuentosUnidades[0].garantia_extendida"
+                v-model="
+                  factura.descuentosUnidadesSeminuevos[0].garantia_extendida
+                "
                 type="number"
                 color="primary"
                 tabindex="1"
@@ -138,7 +140,9 @@
                 dense
                 filled
                 label="Acondicionamiento"
-                v-model="factura.descuentosUnidades[0].acondicionamiento"
+                v-model="
+                  factura.descuentosUnidadesSeminuevos[0].acondicionamiento
+                "
                 type="number"
                 color="primary"
                 tabindex="2"
@@ -155,7 +159,7 @@
                 dense
                 filled
                 label="Gestorias"
-                v-model="factura.descuentosUnidades[0].gestorias"
+                v-model="factura.descuentosUnidadesSeminuevos[0].gestorias"
                 type="number"
                 color="primary"
                 tabindex="3"
@@ -172,7 +176,7 @@
                 dense
                 filled
                 label="Toma Unidad"
-                v-model="factura.descuentosUnidades[0].toma_unidad"
+                v-model="factura.descuentosUnidadesSeminuevos[0].toma_unidad"
                 type="number"
                 color="primary"
                 tabindex="4"
@@ -189,10 +193,27 @@
                 dense
                 filled
                 label="Cortesia"
-                v-model="factura.descuentosUnidades[0].cortesia"
+                v-model="factura.descuentosUnidadesSeminuevos[0].cortesia"
                 type="number"
                 color="primary"
                 tabindex="5"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="paid" />
+                </template>
+              </q-input>
+            </div>
+
+            <div class="q-ma-md">
+              <label>Agregar Bono U.B.</label>
+              <q-input
+                dense
+                filled
+                label="Bono U.B."
+                v-model="factura.descuentosUnidadesSeminuevos[0].bonoub"
+                type="number"
+                color="primary"
+                tabindex="6"
               >
                 <template v-slot:prepend>
                   <q-icon name="paid" />
@@ -237,28 +258,60 @@ export default {
 
     const abrir = (objFactura) => {
       if (objFactura.condicion === "nuevas") {
-        objFactura.descuentosUnidades = [
-          {
-            previa: objFactura.descuentosUnidades[0]?.previa ?? 0,
-            traslado: objFactura.descuentosUnidades[0]?.traslado ?? 0,
-            cortesia: objFactura.descuentosUnidades[0]?.cortesia ?? 0,
-            gasolina: objFactura.descuentosUnidades[0]?.gasolina ?? 0,
-            descVentas: objFactura.descuentosUnidades[0]?.descVentas ?? 0,
-            bonoub: objFactura.descuentosUnidades[0]?.bonoub ?? 0,
-          },
-        ];
+        if (objFactura.descuentosUnidades) {
+          objFactura.descuentosUnidades = [
+            {
+              previa: 0,
+              traslado: 0,
+              cortesia: 0,
+              gasolina: 0,
+              descVentas: 0,
+              bonoub: 0,
+            },
+          ];
+        } else {
+          objFactura.descuentosUnidades = [
+            {
+              previa: objFactura.descuentosUnidades[0]?.previa ?? 0,
+              traslado: objFactura.descuentosUnidades[0]?.traslado ?? 0,
+              cortesia: objFactura.descuentosUnidades[0]?.cortesia ?? 0,
+              gasolina: objFactura.descuentosUnidades[0]?.gasolina ?? 0,
+              descVentas: objFactura.descuentosUnidades[0]?.descVentas ?? 0,
+              bonoub: objFactura.descuentosUnidades[0]?.bonoub ?? 0,
+            },
+          ];
+        }
       } else {
-        objFactura.descuentosUnidades = [
-          {
-            garantia_extendida:
-              objFactura.descuentosUnidades[0]?.garantia_extendida ?? 0,
-            acondicionamiento:
-              objFactura.descuentosUnidades[0]?.acondicionamiento ?? 0,
-            gestorias: objFactura.descuentosUnidades[0]?.gestorias ?? 0,
-            toma_unidad: objFactura.descuentosUnidades[0]?.toma_unidad ?? 0,
-            cortesia: objFactura.descuentosUnidades[0]?.cortesia ?? 0,
-          },
-        ];
+        if (objFactura.descuentosUnidadesSeminuevos) {
+          objFactura.descuentosUnidadesSeminuevos = [
+            {
+              garantia_extendida: 0,
+              acondicionamiento: 0,
+              gestorias: 0,
+              toma_unidad: 0,
+              cortesia: 0,
+              bonoub: 0,
+            },
+          ];
+        } else {
+          objFactura.descuentosUnidadesSeminuevos = [
+            {
+              garantia_extendida:
+                objFactura.descuentosUnidadesSeminuevos[0]
+                  ?.garantia_extendida ?? 0,
+              acondicionamiento:
+                objFactura.descuentosUnidadesSeminuevos[0]?.acondicionamiento ??
+                0,
+              gestorias:
+                objFactura.descuentosUnidadesSeminuevos[0]?.gestorias ?? 0,
+              toma_unidad:
+                objFactura.descuentosUnidadesSeminuevos[0]?.toma_unidad ?? 0,
+              cortesia:
+                objFactura.descuentosUnidadesSeminuevos[0]?.cortesia ?? 0,
+              bonoub: objFactura.descuentosUnidadesSeminuevos[0]?.bonoub ?? 0,
+            },
+          ];
+        }
       }
 
       factura.value = { ...objFactura };
@@ -267,19 +320,28 @@ export default {
 
     const guardarDescuento = async () => {
       try {
-        factura.value.descuentosUnidades.forEach((descuento) => {
-          descuento.idFactura = factura.value.idFactura;
-          descuento.usuario = usuarioAutenticado.value.usuario;
-        });
+        if (factura.value.condicion === "nuevas") {
+          factura.value.descuentosUnidades.forEach((descuento) => {
+            descuento.idFactura = factura.value.idFactura;
+            descuento.usuario = usuarioAutenticado.value.usuario;
+          });
+        } else {
+          factura.value.descuentosUnidadesSeminuevos.forEach((descuento) => {
+            descuento.idFactura = factura.value.idFactura;
+            descuento.usuario = usuarioAutenticado.value.usuario;
+          });
+        }
 
         // Me equivoque al poner el nombre de la columna en la BD, para ya no mover todo, lo dejo asi
         if (factura.value.condicion === "SEM") {
-          factura.value.descuentosUnidades[0].cortesias =
-            factura.value.descuentosUnidades[0].cortesia;
+          factura.value.descuentosUnidadesSeminuevos[0].cortesias =
+            factura.value.descuentosUnidadesSeminuevos[0].cortesia;
         }
 
         await guardarDescuentos(
-          factura.value.descuentosUnidades[0],
+          factura.value.condicion === "nuevas"
+            ? factura.value.descuentosUnidades[0]
+            : factura.value.descuentosUnidadesSeminuevos[0],
           factura.value.condicion
         );
 

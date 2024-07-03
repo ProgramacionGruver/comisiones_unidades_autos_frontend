@@ -131,6 +131,7 @@ export const useKpiStore = defineStore("kpi", () => {
             acondicionamiento: factura.descuentos.acondicionamiento,
             gestorias: factura.descuentos.gestorias,
             cortesias: factura.descuentos.cortesias,
+            bono: factura.descuentos.bonoub,
             baseComision: baseComision,
             tipoRenglon: "dato",
           });
@@ -208,6 +209,9 @@ export const useKpiStore = defineStore("kpi", () => {
             .toFixed(2),
           cortesias: comisionVendedor.value.facturas
             .reduce((acc, cortesias) => acc + cortesias.descuentos.cortesias, 0)
+            .toFixed(2),
+          bono: comisionVendedor.value.facturas
+            .reduce((acc, bono) => acc + bono.descuentos.bonoub, 0)
             .toFixed(2),
           baseComision: facturas
             .filter((factura) => factura.tipoRenglon === "dato")
@@ -465,8 +469,10 @@ export const useKpiStore = defineStore("kpi", () => {
       comisionVendedor.value.totalUtilidadBruta = totalUtilidadBruta;
       comisionVendedor.value.kpis = kpis;
       comisionVendedor.value.descuentosVendedor = descuentosVendedor;
+      return;
     } catch (error) {
       console.log(error);
+      return;
     }
   };
 

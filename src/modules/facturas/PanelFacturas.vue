@@ -147,11 +147,12 @@
               <div style="display: flex; width: 100%; justify-content: center">
                 <q-chip
                   :color="
-                    facturaSeleccionada[0]?.estadoFactura === 'FACTURADA'
+                    facturaSeleccionada[0]?.estadoFactura.toUpperCase() ===
+                    'FACTURADA'
                       ? 'green'
                       : 'red'
                   "
-                  :label="facturaSeleccionada[0]?.estadoFactura"
+                  :label="facturaSeleccionada[0]?.estadoFactura.toUpperCase()"
                   class="text-white text-bold"
                 />
               </div>

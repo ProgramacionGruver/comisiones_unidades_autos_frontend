@@ -243,21 +243,21 @@ export const useFacturasStore = defineStore("facturas", () => {
       const { data } = await api.get("/vendedores/unidades/autos");
       vendedores.value = [...data];
 
-      if (
-        perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
-        "AUXILIAR NUEVAS"
-      ) {
-        vendedores.value = vendedores.value.filter((vendedor) => {
-          return vendedor.claveDepartamento === "NUE";
-        });
-      } else if (
-        perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
-        "AUXILIAR SEMINUEVAS"
-      ) {
-        vendedores.value = vendedores.value.filter((vendedor) => {
-          return vendedor.claveDepartamento === "SEM";
-        });
-      }
+      // if (
+      //   perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+      //   "AUXILIAR NUEVAS"
+      // ) {
+      //   vendedores.value = vendedores.value.filter((vendedor) => {
+      //     return vendedor.claveDepartamento === "NUE";
+      //   });
+      // } else if (
+      //   perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+      //   "AUXILIAR SEMINUEVAS"
+      // ) {
+      //   vendedores.value = vendedores.value.filter((vendedor) => {
+      //     return vendedor.claveDepartamento === "SEM";
+      //   });
+      // }
 
       //Opciones departamentos
       opcionesVendedores.value = vendedores.value.map((vendedor) => {
