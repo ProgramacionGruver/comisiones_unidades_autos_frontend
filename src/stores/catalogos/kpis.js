@@ -294,10 +294,11 @@ export const useKpiStore = defineStore("kpi", () => {
         let porcentajeUB = kpi.objetivosKpi.porcentajeub;
 
         if (kpi.objetivosKpi.nombreKpi.includes("Penetracion")) {
-          kpi.objetivosKpi.objetivo = Math.floor(
+          const numero =
             (facturas.length - 1) *
-              (kpi.objetivosKpi.objetivoCumplimiento / 100)
-          );
+            (kpi.objetivosKpi.objetivoCumplimiento / 100);
+
+          kpi.objetivosKpi.objetivo = redondear(numero);
         }
 
         let desempenio = Math.floor(
@@ -487,6 +488,19 @@ export const useKpiStore = defineStore("kpi", () => {
       notificacion("positive", "Valores reales insertados");
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const redondear = (numero) => {
+    console.log(numero);
+
+    const integerPart = Math.floor(numero);
+    const decimalPart = numero - integerPart;
+
+    if (decimalPart >= 0.5) {
+      return integerPart + 1;
+    } else {
+      return integerPart;
     }
   };
 
