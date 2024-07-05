@@ -11,6 +11,8 @@ export const useKpiStore = defineStore("kpi", () => {
   const obtjetivosFormulario = ref([]);
   const comisionVendedor = ref(null);
   const configuracionTablaComision = ref(null);
+  const comisionBonoVendedor = ref(null);
+  const bonoAprobado = ref(null);
 
   const obtenerObjetivosKpis = async (objKpi, nivel) => {
     try {
@@ -131,6 +133,7 @@ export const useKpiStore = defineStore("kpi", () => {
             acondicionamiento: factura.descuentos.acondicionamiento,
             gestorias: factura.descuentos.gestorias,
             cortesias: factura.descuentos.cortesias,
+            bono: factura.descuentos.bonoub,
             baseComision: baseComision,
             tipoRenglon: "dato",
           });
@@ -208,6 +211,9 @@ export const useKpiStore = defineStore("kpi", () => {
             .toFixed(2),
           cortesias: comisionVendedor.value.facturas
             .reduce((acc, cortesias) => acc + cortesias.descuentos.cortesias, 0)
+            .toFixed(2),
+          bono: comisionVendedor.value.facturas
+            .reduce((acc, bono) => acc + bono.descuentos.bonoub, 0)
             .toFixed(2),
           baseComision: facturas
             .filter((factura) => factura.tipoRenglon === "dato")
@@ -465,8 +471,10 @@ export const useKpiStore = defineStore("kpi", () => {
       comisionVendedor.value.totalUtilidadBruta = totalUtilidadBruta;
       comisionVendedor.value.kpis = kpis;
       comisionVendedor.value.descuentosVendedor = descuentosVendedor;
+      return;
     } catch (error) {
       console.log(error);
+      return;
     }
   };
 
@@ -484,6 +492,274 @@ export const useKpiStore = defineStore("kpi", () => {
     }
   };
 
+  const obtenerComisionBonoVendedor = async (objBusqueda) => {
+    try {
+      const { data } = await api.get("/bono/vendedor", objBusqueda);
+      comisionBonoVendedor.value = data;
+
+      await configurarTablaComisionBono();
+    } catch (error) {
+      if (error.response.status === 404) {
+        notificacion("negative", "No se encontraron registros");
+        comisionBonoVendedor.value = null;
+      } else {
+        notificacion("negative", error.response.data.message);
+        comisionBonoVendedor.value = null;
+      }
+    }
+  };
+
+  const configurarTablaComisionBono = async () => {
+    try {
+      let facturas = [];
+
+      for (const factura of comisionBonoVendedor.value.facturas) {
+        if (
+          comisionBonoVendedor.value.infoVendedor.claveDepartamento === "NUE"
+        ) {
+          let baseComision =
+            factura.utilidad -
+            factura.descuentos.previa -
+            factura.descuentos.traslado -
+            factura.descuentos.descVentas -
+            factura.descuentos.cortesia -
+            factura.descuentos.gasolina;
+
+          facturas.push({
+            folioFactura: factura.factura,
+            fechaFactura: formatearFecha(factura.fecha_facturacion),
+            tasaCredito: factura.tipo_venta,
+            modelo: factura.modelo,
+            serie: factura.vin,
+            utilidad: factura.utilidad,
+            previa: factura.descuentos.previa,
+            traslado: factura.descuentos.traslado,
+            descuentoVentas: factura.descuentos.descVentas,
+            cortesias: factura.descuentos.cortesia,
+            gasolina: factura.descuentos.gasolina,
+            bono: factura.descuentos.bonoub,
+            baseComision: baseComision,
+            tipoRenglon: "dato",
+          });
+        } else {
+          let baseComision =
+            factura.utilidad -
+            factura.descuentos.garantia_extendida -
+            factura.descuentos.acondicionamiento -
+            factura.descuentos.gestorias -
+            factura.descuentos.toma_unidad -
+            factura.descuentos.cortesias;
+
+          facturas.push({
+            folioFactura: factura.factura,
+            fechaFactura: formatearFecha(factura.fecha_facturacion),
+            tasaCredito: factura.tipo_venta,
+            modelo: factura.modelo,
+            serie: factura.vin,
+            utilidad: factura.utilidad,
+            garantia_extendida: factura.descuentos.garantia_extendida,
+            toma_unidad: factura.descuentos.toma_unidad,
+            acondicionamiento: factura.descuentos.acondicionamiento,
+            gestorias: factura.descuentos.gestorias,
+            cortesias: factura.descuentos.cortesias,
+            bono: factura.descuentos.bonoub,
+            baseComision: baseComision,
+            tipoRenglon: "dato",
+          });
+        }
+      }
+
+      if (comisionBonoVendedor.value.infoVendedor.claveDepartamento === "NUE") {
+        facturas.push({
+          folioFactura: "",
+          fechaFactura: "",
+          tasaCredito: "",
+          modelo: "",
+          serie: "Total",
+          utilidad: comisionBonoVendedor.value.facturas
+            .reduce((acc, utilidad) => acc + utilidad.utilidad, 0)
+            .toFixed(2),
+          previa: comisionBonoVendedor.value.facturas
+            .reduce((acc, previa) => acc + previa.descuentos.previa, 0)
+            .toFixed(2),
+          traslado: comisionBonoVendedor.value.facturas
+            .reduce((acc, traslado) => acc + traslado.descuentos.traslado, 0)
+            .toFixed(2),
+          descuentoVentas: comisionBonoVendedor.value.facturas
+            .reduce(
+              (acc, descVentas) => acc + descVentas.descuentos.descVentas,
+              0
+            )
+            .toFixed(2),
+          cortesias: comisionBonoVendedor.value.facturas
+            .reduce((acc, cortesia) => acc + cortesia.descuentos.cortesia, 0)
+            .toFixed(2),
+          gasolina: comisionBonoVendedor.value.facturas
+            .reduce((acc, gasolina) => acc + gasolina.descuentos.gasolina, 0)
+            .toFixed(2),
+          bono: comisionBonoVendedor.value.facturas
+            .reduce((acc, bono) => acc + bono.descuentos.bonoub, 0)
+            .toFixed(2),
+          baseComision: facturas
+            .filter((factura) => factura.tipoRenglon === "dato")
+            .reduce((acc, baseComision) => acc + baseComision.baseComision, 0)
+            .toFixed(2),
+          tipoRenglon: "total",
+        });
+      } else {
+        facturas.push({
+          folioFactura: "",
+          fechaFactura: "",
+          tasaCredito: "",
+          modelo: "",
+          serie: "Total",
+          utilidad: comisionBonoVendedor.value.facturas
+            .reduce((acc, utilidad) => acc + utilidad.utilidad, 0)
+            .toFixed(2),
+          garantia_extendida: comisionBonoVendedor.value.facturas
+            .reduce(
+              (acc, garantia) => acc + garantia.descuentos.garantia_extendida,
+              0
+            )
+            .toFixed(2),
+          acondicionamiento: comisionBonoVendedor.value.facturas
+            .reduce(
+              (acc, acondicionamiento) =>
+                acc + acondicionamiento.descuentos.acondicionamiento,
+              0
+            )
+            .toFixed(2),
+          gestorias: comisionBonoVendedor.value.facturas
+            .reduce((acc, gestorias) => acc + gestorias.descuentos.gestorias, 0)
+            .toFixed(2),
+          toma_unidad: comisionBonoVendedor.value.facturas
+            .reduce(
+              (acc, tomaUnidad) => acc + tomaUnidad.descuentos.toma_unidad,
+              0
+            )
+            .toFixed(2),
+          cortesias: comisionBonoVendedor.value.facturas
+            .reduce((acc, cortesias) => acc + cortesias.descuentos.cortesias, 0)
+            .toFixed(2),
+          bono: comisionBonoVendedor.value.facturas
+            .reduce((acc, bono) => acc + bono.descuentos.bonoub, 0)
+            .toFixed(2),
+          baseComision: facturas
+            .filter((factura) => factura.tipoRenglon === "dato")
+            .reduce((acc, baseComision) => acc + baseComision.baseComision, 0)
+            .toFixed(2),
+          tipoRenglon: "total",
+        });
+      }
+
+      let pvas = [];
+
+      if (comisionBonoVendedor.value.pvas.length > 0) {
+        for (const pva of comisionBonoVendedor.value.pvas) {
+          pvas.push({
+            nombreCliente: pva.cliente,
+            utilidad: pva.utilidad,
+            pva: pva.pva,
+            fi: pva.fi,
+            tipoRenglon: "dato",
+          });
+        }
+      } else {
+        pvas.push({
+          nombreCliente: "Sin PVA",
+          utilidad: 0,
+          pva: "N/A",
+          fi: "N/A",
+          tipoRenglon: "dato",
+        });
+      }
+
+      if (comisionBonoVendedor.value.pvas.length > 0) {
+        pvas.push({
+          nombreCliente: "Totales",
+          utilidad: comisionBonoVendedor.value.pvas
+            .reduce((acc, utilidad) => acc + utilidad.utilidad, 0)
+            .toFixed(2),
+          pva: "",
+          fi: "",
+          tipoRenglon: "total",
+        });
+      } else {
+        pvas.push({
+          nombreCliente: "Totales",
+          utilidad: 0,
+          pva: "",
+          fi: "",
+          tipoRenglon: "total",
+        });
+      }
+
+      let totalUtilidadBruta = [];
+
+      const totalBaseComision = Number(
+        facturas[facturas.length - 1].baseComision
+      );
+      const totalPvas = Number(pvas[pvas.length - 1].utilidad);
+
+      const totalBonos = Number(facturas[facturas.length - 1].bono);
+
+      if (comisionBonoVendedor.value.infoVendedor.claveDepartamento === "SEM") {
+        totalUtilidadBruta.push({
+          totalBaseComision,
+          totalPvas,
+          totalPlanPiso: comisionBonoVendedor.value.planPiso.monto,
+          totalBonos,
+          totalUtilidadBruta:
+            (totalBaseComision +
+              totalPvas -
+              comisionBonoVendedor.value.planPiso.monto) *
+              Number(
+                comisionBonoVendedor.value.infoVendedor.porcentajeUB / 100
+              ) +
+            totalBonos,
+        });
+      } else {
+        totalUtilidadBruta.push({
+          totalBaseComision,
+          totalPvas,
+          totalUtilidadBruta: totalBaseComision + totalPvas,
+        });
+      }
+
+      return;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  };
+
+  const aprobarBono = async (objBono) => {
+    try {
+      await api.put("/bono/vendedor", objBono);
+      notificacion("positive", "Bono Aprobado");
+    } catch (error) {
+      notificacion("negative", error.response.data.message);
+    }
+  };
+
+  const obtenerBonoAprobado = async (objBusqueda) => {
+    try {
+      const { data } = await api.get("/bono/vendedor/aprobado", objBusqueda);
+      bonoAprobado.value = data;
+    } catch (error) {
+      if (error.response.status === 404) {
+        notificacion(
+          "negative",
+          "No se ha aprobado el bono del otro departamento"
+        );
+        bonoAprobado.value = null;
+      } else {
+        notificacion("negative", error.response.data.message);
+        bonoAprobado.value = null;
+      }
+    }
+  };
+
   return {
     objetivosKpis,
     valoresRealesKpis,
@@ -497,5 +773,11 @@ export const useKpiStore = defineStore("kpi", () => {
     obtenerComisionVendedor,
     configuracionTablaComision,
     insertarValoresReales,
+    comisionBonoVendedor,
+    obtenerComisionBonoVendedor,
+    configurarTablaComisionBono,
+    aprobarBono,
+    bonoAprobado,
+    obtenerBonoAprobado,
   };
 });
