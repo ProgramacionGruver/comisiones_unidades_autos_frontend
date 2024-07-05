@@ -32,6 +32,20 @@
           type="date"
           class="q-mt-md"
         />
+        <div style="width: 100%; display: block" class="q-mt-md">
+          <label
+            >Seleccione el departamento donde se aplicara el descuento</label
+          >
+          <q-select
+            outlined
+            dense
+            :options="departamentos"
+            v-model="departamentoSeleccionado"
+            map-options
+            option-value="name"
+            style="width: 100%"
+          />
+        </div>
       </q-card-section>
       <q-card-actions>
         <div style="width: 100%">
@@ -78,6 +92,7 @@ import { filtradoBusquedaObj } from "src/helpers/filtradoBusquedaObj";
 import { ref } from "vue";
 import { formatearFechaGuiones } from "src/helpers/formatearFecha";
 import ModalDescuentosVendedor from "./ModalDescuentosVendedor.vue";
+import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
 
 export default {
   components: {
@@ -96,6 +111,10 @@ export default {
 
     const useFacturas = useFacturasStore();
     const { opcionesVendedores } = storeToRefs(useFacturas);
+
+    const useDepartamentos = useDepartamentosStore();
+    const { departamentos, departamentoSeleccionado } =
+      storeToRefs(useDepartamentos);
 
     const vendedorSeleccionado = ref(null);
     const opcionesEmpleados = ref(opcionesVendedores.value);
@@ -124,9 +143,8 @@ export default {
     const guardarDescuento = async () => {
       cargando.value = true;
 
-      const claveDepartamento = vendedorSeleccionado.value.value
-        ? vendedorSeleccionado.value.value.claveDepartamento
-        : vendedorSeleccionado.value.claveDepartamento;
+      const claveDepartamento =
+        departamentoSeleccionado.value.value.claveDepartamento;
 
       await obtenerFormularioDescuento(claveDepartamento);
 
@@ -165,6 +183,8 @@ export default {
       fechaDescuento,
       cargando,
       modalDescuentosVendedor,
+      departamentos,
+      departamentoSeleccionado,
       // Methods
       abrir,
       parametrosFiltradosVendedores,

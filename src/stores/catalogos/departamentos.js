@@ -19,25 +19,25 @@ export const useDepartamentosStore = defineStore("departamentos", () => {
         );
       });
 
-      if (perfilUsuario) {
-        let claveDepartamento = "";
+      // if (perfilUsuario) {
+      //   let claveDepartamento = "";
 
-        if (
-          perfilUsuario.catalogo_perfiles_comisiones_auto.nombrePerfil ===
-          "AUXILIAR NUEVAS"
-        ) {
-          claveDepartamento = "NUE";
-        } else if (
-          perfilUsuario.catalogo_perfiles_comisiones_auto.nombrePerfil ===
-          "AUXILIAR SEMINUEVAS"
-        ) {
-          claveDepartamento = "SEM";
-        }
+      //   if (
+      //     perfilUsuario.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+      //     "AUXILIAR NUEVAS"
+      //   ) {
+      //     claveDepartamento = "NUE";
+      //   } else if (
+      //     perfilUsuario.catalogo_perfiles_comisiones_auto.nombrePerfil ===
+      //     "AUXILIAR SEMINUEVAS"
+      //   ) {
+      //     claveDepartamento = "SEM";
+      //   }
 
-        departamento = departamento.filter((departamento) => {
-          return departamento.claveDepartamento === claveDepartamento;
-        });
-      }
+      //   departamento = departamento.filter((departamento) => {
+      //     return departamento.claveDepartamento === claveDepartamento;
+      //   });
+      // }
 
       departamentosFiltrados.value = [...departamento];
 
