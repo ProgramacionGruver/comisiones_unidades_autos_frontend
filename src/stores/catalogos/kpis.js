@@ -503,16 +503,20 @@ export const useKpiStore = defineStore("kpi", () => {
 
   const obtenerComisionBonoVendedor = async (objBusqueda) => {
     try {
-      const { data } = await api.get("/bono/vendedor", objBusqueda);
+      const { data } = await api.post("/bono/vendedor", objBusqueda);
       comisionBonoVendedor.value = data;
 
       await configurarTablaComisionBono();
     } catch (error) {
       if (error.response.status === 404) {
-        notificacion("negative", "No se encontraron registros");
+        if (!objBusqueda.desdeCalculador) {
+          notificacion("negative", "No se encontraron registros");
+        }
         comisionBonoVendedor.value = null;
       } else {
-        notificacion("negative", error.response.data.message);
+        if (!objBusqueda.desdeCalculador) {
+          notificacion("negative", error.response.data.message);
+        }
         comisionBonoVendedor.value = null;
       }
     }
@@ -753,7 +757,7 @@ export const useKpiStore = defineStore("kpi", () => {
 
   const obtenerBonoAprobado = async (objBusqueda) => {
     try {
-      const { data } = await api.get("/bono/vendedor/aprobado", objBusqueda);
+      const { data } = await api.post("/bono/vendedor/aprobado", objBusqueda);
       bonoAprobado.value = data;
     } catch (error) {
       if (error.response.status === 404) {
@@ -766,6 +770,17 @@ export const useKpiStore = defineStore("kpi", () => {
         notificacion("negative", error.response.data.message);
         bonoAprobado.value = null;
       }
+    }
+  };
+
+  const redondear = (numero) => {
+    const integerPart = Math.floor(numero);
+    const decimalPart = numero - integerPart;
+
+    if (decimalPart >= 0.5) {
+      return integerPart + 1;
+    } else {
+      return integerPart;
     }
   };
 

@@ -4,7 +4,14 @@
       <q-card-section class="bg-primary text-white row items-center q-pb-none">
         <p>Registrar valor de objetivos</p>
         <q-space />
-        <q-btn icon="close" flat round dense v-close-popup class="q-mb-md" />
+        <q-btn
+          icon="close"
+          flat
+          round
+          dense
+          @click="cerrarModal"
+          class="q-mb-md"
+        />
       </q-card-section>
       <q-card-section>
         <div style="width: 100%">
@@ -92,7 +99,7 @@
           color="primary"
           label="Cancelar"
           flat
-          @click="abrirModal = false"
+          @click="cerrarModal"
           icon="close"
         />
         <q-btn
@@ -170,8 +177,10 @@ export default {
     const obtenerFormulario = async () => {
       if (empleadoSeleccionado.value) {
         const obj = {
-          nivel: empleadoSeleccionado.value.nivel,
           claveDepartamento: empleadoSeleccionado.value.claveDepartamento,
+          idAsesor: empleadoSeleccionado.value.idAsesor,
+          anio: anioSeleccionado.value,
+          mes: obtenerNumerosDeMes(mesSeleccionado.value),
         };
 
         await obtenerObjetivosFormulario(obj);
@@ -210,6 +219,11 @@ export default {
       abrirModal.value = false;
     };
 
+    const cerrarModal = () => {
+      habilitarFormulario.value = false;
+      abrirModal.value = false;
+    };
+
     return {
       // States
       abrirModal,
@@ -225,6 +239,7 @@ export default {
       obtenerFormulario,
       guardarValores,
       parametrosFiltradosVendedores,
+      cerrarModal,
     };
   },
 };
