@@ -83,8 +83,10 @@ export const useDescuentosStore = defineStore("descuentos", () => {
       );
 
       formularioDescuento.value = [...data];
+      return;
     } catch (error) {
       console.log(error);
+      return;
     }
   };
 
