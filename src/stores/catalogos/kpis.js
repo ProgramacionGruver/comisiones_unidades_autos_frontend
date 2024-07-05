@@ -292,18 +292,19 @@ export const useKpiStore = defineStore("kpi", () => {
 
       for (const kpi of comisionVendedor.value.kpis) {
         let porcentajeUB = kpi.objetivosKpi.porcentajeub;
-        let objetivoVentas = 0;
+        let totalFacturas = facturas.filter(
+          (factura) => factura.utilidad > 0 && factura.serie !== "Total"
+        ).length;
 
         if (kpi.objetivosKpi.nombreKpi.includes("Penetracion")) {
           const numero =
-            (facturas.length - 1) *
-            (kpi.objetivosKpi.objetivoCumplimiento / 100);
+            totalFacturas * (kpi.objetivosKpi.objetivoCumplimiento / 100);
 
           kpi.objetivosKpi.objetivo = redondear(numero);
         }
 
         if (kpi.objetivosKpi.nombreKpi.includes("entregas")) {
-          const numero = (facturas.length - 1) * 0.9;
+          const numero = totalFacturas * 0.9;
 
           kpi.objetivosKpi.objetivo = Math.floor(numero);
         }
@@ -499,8 +500,6 @@ export const useKpiStore = defineStore("kpi", () => {
   };
 
   const redondear = (numero) => {
-    console.log(numero);
-
     const integerPart = Math.floor(numero);
     const decimalPart = numero - integerPart;
 
