@@ -6,7 +6,6 @@
       </div>
       <q-separator color="primary" class="q-my-md" />
       <q-table
-        row-key="factura"
         :loading="cargando"
         color="primary"
         :columns="columns"
@@ -16,6 +15,7 @@
         loading-label="Buscando información . . ."
         v-model:selected="facturaSeleccionada"
         selection="single"
+        row-key="indice"
       >
         <template v-slot:top>
           <div class="fit row q-gutter-sm q-mb-sm justify-end">
@@ -348,16 +348,16 @@ export default {
       //   align: "left",
       //   sortable: true,
       // },
-      {
-        name: "porcentaje",
-        label: "Porcentaje",
-        field: (row) =>
-          row.porcentaje
-            ? formatearPorcentajeDecimal(row.porcentaje)
-            : formatearPorcentajeDecimal(0),
-        align: "left",
-        sortable: true,
-      },
+      // {
+      //   name: "porcentaje",
+      //   label: "Porcentaje",
+      //   field: (row) =>
+      //     row.porcentaje
+      //       ? formatearPorcentajeDecimal(row.porcentaje)
+      //       : formatearPorcentajeDecimal(0),
+      //   align: "left",
+      //   sortable: true,
+      // },
     ];
 
     const columnsDetalles = [
@@ -540,6 +540,14 @@ export default {
       facturasFiltrada.value = facturas.value.filter(
         (factura) => factura.id_plaza === sucursalSeleccionada.value.idErp
       );
+
+      let indice = 0;
+      facturasFiltrada.value = facturasFiltrada.value.map((factura) => {
+        return {
+          ...factura,
+          indice: indice++,
+        };
+      });
 
       if (
         usuarioAutenticado.value.puesto === "ASISTENTE DE VENTAS" ||
