@@ -63,12 +63,13 @@
         <template v-slot:body-cell-cortesia="props">
           <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
             {{
-              props.row.descuentosUnidades[0]?.cortesia
-                ? formatearMonto(props.row.descuentosUnidades[0]?.cortesia)
+              (props.row.descuentosUnidades || [])[0]?.cortesia
+                ? formatearMonto(
+                    (props.row.descuentosUnidades || [])[0]?.cortesia
+                  )
                 : formatearMonto(0)
             }}
           </td>
-          <!-- Honestamente, esta es una solucion de Copilot jeje -->
           <td v-else>
             {{
               (props.row.descuentosUnidadesSeminuevos || [])[0]?.cortesias
