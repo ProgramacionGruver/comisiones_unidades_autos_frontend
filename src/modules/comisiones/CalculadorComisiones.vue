@@ -1805,7 +1805,7 @@ export default {
 
       if (!bonoAprobado.value) {
         notificacion(
-          "negative",
+          "warning",
           "No se puede calcular la comision debido a que el bono de venta de unidades no ha sido validado por el otro departamento"
         );
         cargando.value = false;
@@ -1830,7 +1830,7 @@ export default {
         desdeCalculador: true,
       };
 
-      // await obtenerComisionBonoVendedor(busquedaBonoObj);
+      await obtenerComisionBonoVendedor(busquedaBonoObj);
 
       if (comisionVendedor.value) {
         cargando.value = false;
@@ -1850,7 +1850,10 @@ export default {
     };
 
     const enviarComision = () => {
-      modalEnviarComision.value.abrir(comisionVendedor.value.infoVendedor);
+      modalEnviarComision.value.abrir(
+        comisionVendedor.value.infoVendedor,
+        comisionVendedor.value
+      );
     };
 
     const pagination = ref({
@@ -1911,9 +1914,7 @@ export default {
   align-items: center;
   row-gap: 3rem;
 }
-</style>
 
-<style>
 .my-sticky-header-column-table tr th {
   position: sticky;
   z-index: 2;

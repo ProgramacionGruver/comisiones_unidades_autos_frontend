@@ -510,12 +510,12 @@ export const useKpiStore = defineStore("kpi", () => {
     } catch (error) {
       if (error.response.status === 404) {
         if (!objBusqueda.desdeCalculador) {
-          notificacion("negative", "No se encontraron registros");
+          notificacion("warning", "No se encontraron registros");
         }
         comisionBonoVendedor.value = null;
       } else {
         if (!objBusqueda.desdeCalculador) {
-          notificacion("negative", error.response.data.message);
+          notificacion("warning", error.response.data.message);
         }
         comisionBonoVendedor.value = null;
       }
@@ -526,9 +526,11 @@ export const useKpiStore = defineStore("kpi", () => {
     try {
       let facturas = [];
 
+      console.log(comisionBonoVendedor.value.infoVendedor);
+
       for (const factura of comisionBonoVendedor.value.facturas) {
         if (
-          comisionBonoVendedor.value.infoVendedor.claveDepartamento === "NUE"
+          comisionBonoVendedor.value.infoVendedor.claveDepartamento === "SEM"
         ) {
           let baseComision =
             factura.utilidad -
@@ -582,7 +584,7 @@ export const useKpiStore = defineStore("kpi", () => {
         }
       }
 
-      if (comisionBonoVendedor.value.infoVendedor.claveDepartamento === "NUE") {
+      if (comisionBonoVendedor.value.infoVendedor.claveDepartamento === "SEM") {
         facturas.push({
           folioFactura: "",
           fechaFactura: "",
@@ -716,7 +718,7 @@ export const useKpiStore = defineStore("kpi", () => {
 
       const totalBonos = Number(facturas[facturas.length - 1].bono);
 
-      if (comisionBonoVendedor.value.infoVendedor.claveDepartamento === "SEM") {
+      if (comisionBonoVendedor.value.infoVendedor.claveDepartamento === "NUE") {
         totalUtilidadBruta.push({
           totalBaseComision,
           totalPvas,
@@ -739,6 +741,10 @@ export const useKpiStore = defineStore("kpi", () => {
         });
       }
 
+      comisionBonoVendedor.value.facturas = facturas;
+      comisionBonoVendedor.value.pvas = pvas;
+      comisionBonoVendedor.value.totalUtilidadBruta = totalUtilidadBruta;
+
       return;
     } catch (error) {
       console.log(error);
@@ -751,7 +757,7 @@ export const useKpiStore = defineStore("kpi", () => {
       await api.put("/bono/vendedor", objBono);
       notificacion("positive", "Bono Aprobado");
     } catch (error) {
-      notificacion("negative", error.response.data.message);
+      notificacion("warning", error.response.data.message);
     }
   };
 

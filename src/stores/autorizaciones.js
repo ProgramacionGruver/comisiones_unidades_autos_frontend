@@ -140,11 +140,9 @@ export const useAutorizacionesStore = defineStore("autorizaciones", () => {
     }
   };
 
-  const obtenerInfoVendedorByNumeroEmpleado = async (numeroEmpleado) => {
+  const obtenerInfoVendedorByID = async (idAsesor) => {
     try {
-      const { data } = await api.get(
-        `/autorizaciones/vendedor/${numeroEmpleado}`
-      );
+      const { data } = await api.get(`/autorizaciones/vendedor/${idAsesor}`);
 
       return data;
     } catch (error) {
@@ -179,7 +177,7 @@ export const useAutorizacionesStore = defineStore("autorizaciones", () => {
     enviarComisionJefe,
     rechazarComision,
     enviarComisionRechazo,
-    obtenerInfoVendedorByNumeroEmpleado,
+    obtenerInfoVendedorByID,
     obtenerUrlPDF,
   };
 });

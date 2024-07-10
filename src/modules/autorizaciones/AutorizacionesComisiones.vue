@@ -59,6 +59,17 @@
           </div>
         </template>
 
+        <template v-slot:body-cell-monto="props">
+          <td class="text-center">
+            {{
+              props.row.monto.toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              })
+            }}
+          </td>
+        </template>
+
         <template v-slot:body-cell-estatus="props">
           <q-td class="text-center">
             <div>
@@ -236,7 +247,7 @@ export default {
     const { anioSeleccionado, mesSeleccionado } = storeToRefs(useFacturas);
 
     const useAutorizaciones = useAutorizacionesStore();
-    const { obtenerAutorizacionesByMes, obtenerInfoVendedorByNumeroEmpleado } =
+    const { obtenerAutorizacionesByMes, obtenerInfoVendedorByID } =
       useAutorizaciones;
     const { autorizaciones } = storeToRefs(useAutorizaciones);
 
@@ -275,6 +286,12 @@ export default {
         label: "Fecha de envío",
         align: "center",
         field: "fechaPrimerEnvio",
+      },
+      {
+        name: "monto",
+        label: "Monto a pagar",
+        align: "center",
+        field: "monto",
       },
       {
         name: "estatus",
@@ -368,7 +385,7 @@ export default {
           (empleado) => empleado.tipoEmpleado === "VENDEDOR"
         );
 
-      const infoEmpleado = await obtenerInfoVendedorByNumeroEmpleado(
+      const infoEmpleado = await obtenerInfoVendedorByID(
         empleado.numeroEmpleado
       );
 

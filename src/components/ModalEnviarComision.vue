@@ -86,9 +86,13 @@ export default {
 
     const vendedorObj = ref({});
     const fechaPrimerEnvio = ref(null);
+    const comision = ref(null);
 
-    const abrir = (infoVendedor) => {
+    const abrir = (infoVendedor, infoComision) => {
       vendedorObj.value = infoVendedor;
+      comision.value = infoComision;
+
+      console.log(comision.value.descuentosVendedor[0].totalAPagar);
 
       fechaPrimerEnvio.value = new Date();
       fechaPrimerEnvio.value =
@@ -102,31 +106,30 @@ export default {
 
       const mes = Number(obtenerNumerosDeMes(mesSeleccionado.value));
 
-      const folio = `COM-${vendedorObj.value.numeroEmpleado}-${anioSeleccionado.value}-${mes}`;
+      const folio = `COM-${vendedorObj.value.claveDepartamento}-${vendedorObj.value.numeroEmpleado}-${anioSeleccionado.value}-${mes}`;
 
-      const objObtenerPDF = {
-        anio: anioSeleccionado.value,
-        mes: mes,
-        folio,
-        idAsesor: vendedorObj.value.idAsesor,
-        numeroEmpleado: vendedorObj.value.numeroEmpleado,
-        nivel: vendedorObj.value.nivel,
-        id: folio,
-      };
+      // const objObtenerPDF = {
+      //   anio: anioSeleccionado.value,
+      //   mes: mes,
+      //   folio,
+      //   idAsesor: vendedorObj.value.idAsesor,
+      //   numeroEmpleado: vendedorObj.value.numeroEmpleado,
+      //   nivel: vendedorObj.value.nivel,
+      //   id: folio,
+      // };
 
-      await obtenerUrlPDF(objObtenerPDF);
+      // await obtenerUrlPDF(objObtenerPDF);
 
       const dataAutorizacion = {
         anio: anioSeleccionado.value,
         mes: mes,
         fechaPrimerEnvio: fechaPrimerEnvio.value,
-        rutaPDF: `/var/www/backend/html/portalComisiones/${
-          urlPDF.split("/")[urlPDF.split("/").length - 1]
-        }`,
+        rutaPDF: "",
         infoVendedor: vendedorObj.value,
         comentario: "",
-        urlPDF: urlPDF.value,
+        urlPDF: "",
         folio,
+        monto: comision.value.descuentosVendedor[0].totalAPagar,
       };
 
       const autorizaciones = await registrarAutorizaciones(dataAutorizacion);
@@ -138,13 +141,15 @@ export default {
 
       comisionVendedor.value.autorizaciones = autorizaciones;
 
-      await obtenerUrlComision(comisionVendedor.value, "vendedor");
+      // await obtenerUrlComision(comisionVendedor.value, "vendedor");
+      const linkComision = `http://localhost:9000/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}`;
+      // const linkComision = `` // <--------- Cambiar a productivo
 
       const mesNombre = listaMeses[mes - 1];
 
       const objData = {
         destinatario: vendedorObj.value.correo,
-        link: urlComision.value,
+        link: linkComision,
         infoVendedor: vendedorObj.value,
         mes: mesNombre,
         infoAutorizacion: comisionVendedor.value.autorizaciones,
@@ -161,46 +166,47 @@ export default {
 
       const mes = Number(obtenerNumerosDeMes(mesSeleccionado.value));
 
-      const folio = `COM-${vendedorObj.value.numeroEmpleado}-${anioSeleccionado.value}-${mes}`;
+      const folio = `COM-${vendedorObj.value.claveDepartamento}-${vendedorObj.value.numeroEmpleado}-${anioSeleccionado.value}-${mes}`;
 
-      const objObtenerPDF = {
-        anio: anioSeleccionado.value,
-        mes: mes,
-        folio,
-        idAsesor: vendedorObj.value.idAsesor,
-        numeroEmpleado: vendedorObj.value.numeroEmpleado,
-        nivel: vendedorObj.value.nivel,
-        id: folio,
-      };
+      // const objObtenerPDF = {
+      //   anio: anioSeleccionado.value,
+      //   mes: mes,
+      //   folio,
+      //   idAsesor: vendedorObj.value.idAsesor,
+      //   numeroEmpleado: vendedorObj.value.numeroEmpleado,
+      //   nivel: vendedorObj.value.nivel,
+      //   id: folio,
+      // };
 
-      await obtenerUrlPDF(objObtenerPDF);
+      // await obtenerUrlPDF(objObtenerPDF);
 
       const dataAutorizacion = {
         anio: anioSeleccionado.value,
         mes: mes,
         fechaPrimerEnvio: fechaPrimerEnvio.value,
-        rutaPDF: `/var/www/backend/html/portalComisiones/${
-          urlPDF.split("/")[urlPDF.split("/").length - 1]
-        }`,
+        rutaPDF: "",
         infoVendedor: vendedorObj.value,
         comentario: "",
-        urlPDF: urlPDF.value,
+        urlPDF: "",
         folio,
-        claveDepartamento: vendedorObj.value.claveDepartamento,
+        monto: comision.value.descuentosVendedor[0].totalAPagar,
       };
 
       const autorizaciones = await registrarAutorizaciones(dataAutorizacion);
 
       if (autorizaciones.length === 0) {
-        cargandoCopiar.value = false;
+        cargando.value = false;
         return;
       }
 
       comisionVendedor.value.autorizaciones = autorizaciones;
 
-      await obtenerUrlComision(comisionVendedor.value, "vendedor");
+      // await obtenerUrlComision(comisionVendedor.value, "vendedor");
 
-      await navigator.clipboard.writeText(urlComision.value);
+      const linkComision = `http://localhost:9000/portal_comisiones_unidades_autos/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}`;
+      // const linkComision = `` // <--------- Cambiar a productivo
+
+      await navigator.clipboard.writeText(linkComision);
 
       notificacion("positive", "Link copiado al portapapeles");
 
