@@ -169,13 +169,13 @@
                   hide-bottom
                   class="my-sticky-header-column-table"
                   :rows="comisionBonoVendedor.facturas"
-                  :columns="columnasFactuas"
+                  :columns="columnasFacturas"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
                   v-if="
                     comisionBonoVendedor.infoVendedor.claveDepartamento ===
-                    'NUE'
+                    'SEM'
                   "
                 >
                   <template v-slot:body="props">
@@ -386,7 +386,7 @@
                   :pagination="pagination"
                   v-else-if="
                     comisionBonoVendedor.infoVendedor.claveDepartamento ===
-                    'SEM'
+                    'NUE'
                   "
                 >
                   <template v-slot:body="props">
@@ -459,7 +459,7 @@
                       </q-td>
                       <q-td style="text-align: center">
                         {{
-                          props.row.bonoub.toLocaleString("es-MX", {
+                          props.row.bono.toLocaleString("es-MX", {
                             style: "currency",
                             currency: "MXN",
                           })
@@ -553,7 +553,7 @@
                   :pagination="pagination"
                   v-if="
                     comisionBonoVendedor.infoVendedor.claveDepartamento ===
-                    'NUE'
+                    'SEM'
                   "
                 >
                   <template v-slot:body="props">
@@ -599,7 +599,7 @@
                   :pagination="pagination"
                   v-if="
                     comisionBonoVendedor.infoVendedor.claveDepartamento ===
-                    'SEM'
+                    'NUE'
                   "
                 >
                   <template v-slot:body="props">
@@ -690,7 +690,7 @@ export default {
 
     const modalAprobarBono = ref(null);
 
-    const columnasFactuas = [
+    const columnasFacturas = [
       {
         name: "folioFactura",
         label: "Folio",
@@ -848,10 +848,6 @@ export default {
         label: "Plan piso",
       },
       {
-        name: "totalBonos",
-        label: "Total bonos",
-      },
-      {
         name: "totalUtilidadBruta",
         label: "Total utilidad bruta",
       },
@@ -891,14 +887,14 @@ export default {
 
       if (!vendedorSeleccionado.value) {
         cargando_2.value = false;
-        notificacion("negative", "Debe seleccionar un vendedor para continuar");
+        notificacion("warning", "Debe seleccionar un vendedor para continuar");
         return;
       }
 
       if (!anioSeleccionado.value || !mesSeleccionado.value) {
         cargando_2.value = false;
         notificacion(
-          "negative",
+          "warning",
           "Debe seleccionar un año y un mes para continuar"
         );
         return;
@@ -954,7 +950,7 @@ export default {
       cargando_1,
       cargando_2,
       cargando_3,
-      columnasFactuas,
+      columnasFacturas,
       columnasFacturasSeminuevas,
       columnasPvas,
       columnasUtilidadBruta,
