@@ -926,7 +926,7 @@ export default {
         data = {
           infoVendedor: comisionBonoVendedor.value.infoVendedor,
           monto:
-            comisionBonoVendedor.value.totalUtilidadBruta[0].totalBaseComision,
+            comisionBonoVendedor.value.totalUtilidadBruta[0].totalUtilidadBruta,
         };
       } else {
         data = {

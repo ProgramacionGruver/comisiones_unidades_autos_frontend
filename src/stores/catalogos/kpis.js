@@ -526,8 +526,6 @@ export const useKpiStore = defineStore("kpi", () => {
     try {
       let facturas = [];
 
-      console.log(comisionBonoVendedor.value.infoVendedor);
-
       for (const factura of comisionBonoVendedor.value.facturas) {
         if (
           comisionBonoVendedor.value.infoVendedor.claveDepartamento === "SEM"
