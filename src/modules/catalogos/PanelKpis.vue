@@ -91,6 +91,14 @@
             />
           </div>
         </template>
+
+        <template v-slot:body-cell-claveDepartamento="props">
+          <td class="text-center">
+            {{
+              (props.row.claveDepartamento = "NUE" ? "NUEVOS" : "SEMINUEVOS")
+            }}
+          </td>
+        </template>
       </q-table>
     </div>
     <modal-objetivo-kpis ref="modalObjetivoKpis"></modal-objetivo-kpis>
@@ -169,6 +177,11 @@ export default {
         field: "objetivoCumplimiento",
         align: "left",
         sortable: true,
+      },
+      {
+        name: "claveDepartamento",
+        label: "Departamento",
+        align: "center",
       },
       {
         name: "acciones",
