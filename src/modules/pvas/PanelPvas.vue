@@ -187,6 +187,7 @@ export default {
   },
   setup() {
     const useFacturas = useFacturasStore();
+    const { obtenerVendedoresYJefes } = useFacturas;
     const { anioSeleccionado, mesSeleccionado, quincenaSeleccionada } =
       storeToRefs(useFacturas);
 
@@ -265,6 +266,8 @@ export default {
 
     onMounted(async () => {
       departamentoSeleccionado.value = departamentos.value[0];
+
+      await obtenerVendedoresYJefes();
       await filtrarPvas();
     });
 

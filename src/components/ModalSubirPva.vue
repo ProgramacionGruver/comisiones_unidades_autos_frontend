@@ -288,6 +288,7 @@ export default {
       quincenaSeleccionada,
       opcionesClientes,
       opcionesVendedores,
+      opcionesVendedoresJefes,
     } = storeToRefs(useFacturas);
 
     const useSucursales = useSucursalesStore();
@@ -307,7 +308,7 @@ export default {
     const formulario = ref(null);
     const opcionesSucursales = ref([]);
 
-    const opcionesEmpleados = ref(opcionesVendedores.value);
+    const opcionesEmpleados = ref(opcionesVendedoresJefes.value);
     const opcionesCliente = ref(opcionesClientes.value);
     const opcionesAseguradoras = ref(
       aseguradoras.value.map((aseguradora) => {
@@ -367,7 +368,7 @@ export default {
       filtradoBusquedaObj(
         val,
         update,
-        opcionesVendedores.value,
+        opcionesVendedoresJefes.value,
         opcionesEmpleados
       );
     };
@@ -385,11 +386,11 @@ export default {
       if (gapsSeleccionados.value.length === 4) {
         objPva.value.on_star_gap = "TODOS";
       } else {
-        objPva.value.on_star_gap = gapsSeleccionados.value.join("/ ");
+        objPva.value.on_star_gap = gapsSeleccionados.value.join(" / ");
       }
 
       objPva.value.nombreEmpleado =
-        vendedorSeleccionado.value.value.nombreEmpleado;
+        vendedorSeleccionado.value.value.nombre.toUpperCase();
       objPva.value.numeroEmpleado =
         vendedorSeleccionado.value.value.numeroEmpleado;
       objPva.value.cliente = clienteSeleccionado.value.value.cliente;

@@ -92,8 +92,8 @@ export default {
       await obtenerSucursales();
       // await obtenerDepartamentos();
       await obtenerVendedores();
-      await obtenerClientes();
       await obtenerCatalogoAseguradoras();
+      await obtenerClientes();
       await obtenerAutorizadores();
     });
 

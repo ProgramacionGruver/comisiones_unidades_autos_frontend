@@ -39,8 +39,10 @@ export const useFacturasStore = defineStore("facturas", () => {
   const opcionesClientes = ref([]);
 
   const vendedores = ref([]);
+  const vendedoresAlt = ref([]);
   const opcionesVendedores = ref([]);
   const opcionesVendedoresInversa = ref([]);
+  const opcionesVendedoresJefes = ref([]);
 
   const useEmpresas = useEmpresasStore();
   const { empresaSeleccionada } = storeToRefs(useEmpresas);
@@ -334,6 +336,22 @@ export const useFacturasStore = defineStore("facturas", () => {
     }
   };
 
+  const obtenerVendedoresYJefes = async () => {
+    try {
+      const { data } = await api.get("/vendedores/jefes/unidades");
+      vendedoresAlt.value = [...data];
+
+      opcionesVendedoresJefes.value = vendedoresAlt.value.map((vendedor) => {
+        return {
+          label: `${vendedor.nombre}`,
+          value: vendedor,
+        };
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     anioSeleccionado,
     mesSeleccionado,
@@ -357,5 +375,8 @@ export const useFacturasStore = defineStore("facturas", () => {
     altaVendedor,
     obtenerVendedoresInversa,
     opcionesVendedoresInversa,
+    opcionesVendedoresJefes,
+    obtenerVendedoresYJefes,
+    vendedoresAlt,
   };
 });
