@@ -830,7 +830,7 @@ export default {
       },
       {
         name: "totalUtilidadBruta",
-        label: "Total utilidad bruta",
+        label: "Total bono a pagar",
       },
     ];
 
@@ -849,7 +849,7 @@ export default {
       },
       {
         name: "totalUtilidadBruta",
-        label: "Total utilidad bruta",
+        label: "Total bono a pagar",
       },
     ];
 

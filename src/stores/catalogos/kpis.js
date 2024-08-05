@@ -298,7 +298,10 @@ export const useKpiStore = defineStore("kpi", () => {
           (factura) => factura.utilidad > 0 && factura.serie !== "Total"
         ).length;
 
-        if (kpi.objetivosKpi.nombreKpi.includes("Penetracion")) {
+        if (
+          kpi.objetivosKpi.nombreKpi.includes("Penetracion") &&
+          comisionVendedor.value.infoVendedor.claveDepartamento === "NUE"
+        ) {
           const numero =
             totalFacturas * (kpi.objetivosKpi.objetivoCumplimiento / 100);
 

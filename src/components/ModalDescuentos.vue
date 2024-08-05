@@ -258,7 +258,7 @@ export default {
 
     const abrir = (objFactura) => {
       if (objFactura.condicion === "nuevas") {
-        if (objFactura.descuentosUnidades) {
+        if (objFactura.descuentosUnidades.length === 0) {
           objFactura.descuentosUnidades = [
             {
               previa: 0,
@@ -282,7 +282,7 @@ export default {
           ];
         }
       } else {
-        if (objFactura.descuentosUnidadesSeminuevos) {
+        if (objFactura.descuentosUnidadesSeminuevos.length === 0) {
           objFactura.descuentosUnidadesSeminuevos = [
             {
               garantia_extendida: 0,

@@ -1318,6 +1318,7 @@ import { useKpiStore } from "src/stores/catalogos/kpis";
 import { useRouter } from "vue-router";
 import { listaMeses } from "src/helpers/listas";
 import { useAutorizacionesStore } from "src/stores/autorizaciones";
+import { info } from "autoprefixer";
 
 export default {
   setup() {
@@ -1341,6 +1342,7 @@ export default {
       rechazarComision,
       enviarComisionRechazo,
       obtenerInfoVendedorByID,
+      obtenerInfoAutorizacion,
     } = useAutorizaciones;
 
     const cargando = ref(true);
@@ -1350,6 +1352,7 @@ export default {
       idAsesor: router.currentRoute.value.params.idAsesor,
       mes: router.currentRoute.value.params.mes,
       anio: router.currentRoute.value.params.anio,
+      idAutorizacion: router.currentRoute.value.params.idAutorizacion,
     });
 
     const mes = ref("");
@@ -1637,11 +1640,17 @@ export default {
       },
     ];
 
+    const autorizaciones = ref(null);
+
     onMounted(async () => {
       mes.value = listaMeses[infoUrl.value.mes];
 
       infoVendedorAutorizacion.value = await obtenerInfoVendedorByID(
         infoUrl.value.idAsesor
+      );
+
+      autorizaciones.value = await obtenerInfoAutorizacion(
+        infoUrl.value.idAutorizacion
       );
 
       await buscarComision();
@@ -1672,28 +1681,36 @@ export default {
     };
 
     const enviarComision = async () => {
-      cargandoConfirmacion.value = true;
+      try {
+        cargandoConfirmacion.value = true;
 
-      const data = {
-        idAutorizacionDetalle:
-          infoVendedorAutorizacion.value.idAutorizacionDetalle,
-        comentario: comentario.value,
-      };
+        const autorizacionVendedor =
+          autorizaciones.value.autorizaciones_comisiones_autos_detalles.find(
+            (autorizacion) => autorizacion.tipoEmpleado === "VENDEDOR"
+          );
 
-      await aceptarAutorizacion(data);
+        const data = {
+          idAutorizacionDetalle: autorizacionVendedor.idAutorizacionDetalle,
+          comentario: comentario.value,
+        };
 
-      await obtenerUrlComision(comisionVendedor.value, "jefe");
+        await aceptarAutorizacion(data);
 
-      const objMensaje = {
-        infoVendedor: comisionVendedor.value.infoVendedor,
-        infoAutorizacion: comisionVendedor.value.autorizaciones,
-        link: urlComision.value,
-        mes: mes.value,
-      };
+        const linkComision = `https://www.gruver.com.mx/portal_comisiones_unidades_autos/#/autorizacion/jefe/${infoUrl.value.idAsesor}/${infoUrl.value.mes}/${infoUrl.value.anio}/${infoUrl.value.idAutorizacion}`;
 
-      await enviarComisionJefe(objMensaje);
+        const objMensaje = {
+          infoVendedor: comisionVendedor.value.infoVendedor,
+          infoAutorizacion: autorizaciones.value,
+          link: linkComision,
+          mes: mes.value,
+        };
 
-      cargandoConfirmacion.value = false;
+        await enviarComisionJefe(objMensaje);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        cargandoConfirmacion.value = false;
+      }
     };
 
     const descargarPDF = async () => {
@@ -1703,22 +1720,27 @@ export default {
     const rechazoComision = async () => {
       cargandoRechazar.value = true;
 
+      const autorizacionVendedor =
+        autorizaciones.value.autorizaciones_comisiones_autos_detalles.find(
+          (autorizacion) => autorizacion.tipoEmpleado === "VENDEDOR"
+        );
+
       const data = {
-        idAutorizacionDetalle:
-          infoVendedorAutorizacion.value.idAutorizacionDetalle,
+        idAutorizacionDetalle: autorizacionVendedor.idAutorizacionDetalle,
         comentario: comentario.value,
+        idAutorizacion: infoUrl.value.idAutorizacion,
       };
 
       await rechazarComision(data);
 
-      await obtenerUrlComision(comisionVendedor.value, "vendedor");
+      const linkComision = `https://www.gruver.com.mx/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${infoUrl.value.idAsesor}/${infoUrl.value.mes}/${infoUrl.value.anio}/${infoUrl.value.idAutorizacion}`;
 
       const objMensaje = {
         infoVendedor: comisionVendedor.value.infoVendedor,
         mes: mes.value,
         comentario: comentario.value,
-        link: urlComision.value,
-        infoAutorizacion: comisionVendedor.value.autorizaciones,
+        link: linkComision,
+        infoAutorizacion: autorizaciones.value,
       };
 
       await enviarComisionRechazo(objMensaje);

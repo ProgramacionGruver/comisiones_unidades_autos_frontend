@@ -9,6 +9,7 @@ export const useAutorizacionesStore = defineStore("autorizaciones", () => {
   const autorizadores = ref([]);
   const autorizaciones = ref([]);
   const urlPDF = ref("");
+  const infoJefe = ref({});
 
   const useKpis = useKpiStore();
   const { comisionVendedor } = storeToRefs(useKpis);
@@ -56,6 +57,10 @@ export const useAutorizacionesStore = defineStore("autorizaciones", () => {
       return data.autorizacion;
     } catch (error) {
       console.log(error);
+      notificacion(
+        "negative",
+        error.response.data.message || "Error al registrar la autorización"
+      );
       return [];
     }
   };
@@ -66,14 +71,14 @@ export const useAutorizacionesStore = defineStore("autorizaciones", () => {
         "/autorizaciones/aceptar",
         objAutorizacion
       );
-      const index =
-        comisionVendedor.value.autorizaciones.autorizaciones_comisiones_autos_detalles.findIndex(
-          (item) => item.idAutorizacion === objAutorizacion.idAutorizacion
-        );
+      // const index =
+      //   comisionVendedor.value.autorizaciones.autorizaciones_comisiones_autos_detalles.findIndex(
+      //     (item) => item.idAutorizacion === objAutorizacion.idAutorizacion
+      //   );
 
-      comisionVendedor.value.autorizaciones.autorizaciones_comisiones_autos_detalles[
-        index
-      ] = data;
+      // comisionVendedor.value.autorizaciones.autorizaciones_comisiones_autos_detalles[
+      //   index
+      // ] = data;
     } catch (error) {
       console.log(error);
     }
@@ -102,14 +107,14 @@ export const useAutorizacionesStore = defineStore("autorizaciones", () => {
         objAutorizacion
       );
 
-      const index =
-        comisionVendedor.value.autorizaciones.autorizaciones_comisiones_autos_detalles.findIndex(
-          (item) => item.idAutorizacion === objAutorizacion.idAutorizacion
-        );
+      // const index =
+      //   comisionVendedor.value.autorizaciones.autorizaciones_comisiones_autos_detalles.findIndex(
+      //     (item) => item.idAutorizacion === objAutorizacion.idAutorizacion
+      //   );
 
-      comisionVendedor.value.autorizaciones.autorizaciones_comisiones_autos_detalles[
-        index
-      ] = data;
+      // comisionVendedor.value.autorizaciones.autorizaciones_comisiones_autos_detalles[
+      //   index
+      // ] = data;
     } catch (error) {
       console.log(error);
     }
@@ -122,14 +127,14 @@ export const useAutorizacionesStore = defineStore("autorizaciones", () => {
         objAutorizacion
       );
 
-      const index =
-        comisionVendedor.value.autorizaciones.autorizaciones_comisiones_autos_detalles.findIndex(
-          (item) => item.idAutorizacion === objAutorizacion.idAutorizacion
-        );
+      // const index =
+      //   comisionVendedor.value.autorizaciones.autorizaciones_comisiones_autos_detalles.findIndex(
+      //     (item) => item.idAutorizacion === objAutorizacion.idAutorizacion
+      //   );
 
-      comisionVendedor.value.autorizaciones.autorizaciones_comisiones_autos_detalles[
-        index
-      ] = data;
+      // comisionVendedor.value.autorizaciones.autorizaciones_comisiones_autos_detalles[
+      //   index
+      // ] = data;
 
       notificacion("positive", "Correo de rechazo enviado correctamente");
     } catch (error) {
@@ -163,11 +168,48 @@ export const useAutorizacionesStore = defineStore("autorizaciones", () => {
     }
   };
 
+  const obtenerInfoVendedorByNumeroEmpleado = async (numeroEmpleado) => {
+    try {
+      const { data } = await api.get(
+        `/autorizaciones/vendedor/numero/${numeroEmpleado}`
+      );
+
+      return data;
+    } catch (error) {
+      console.log(error);
+      return {};
+    }
+  };
+
+  const obtenerInfoJefe = async (busquedaObj) => {
+    try {
+      const { data } = await api.post(`/autorizaciones/jefe`, busquedaObj);
+
+      infoJefe.value = data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const obtenerInfoAutorizacion = async (idAutorizacion) => {
+    try {
+      const { data } = await api.get(
+        `/autorizaciones/obtener/${idAutorizacion}`
+      );
+
+      return data;
+    } catch (error) {
+      console.log(error);
+      return {};
+    }
+  };
+
   return {
     // States
     autorizadores,
     autorizaciones,
     urlPDF,
+    infoJefe,
     // Methods
     enviarCorreo,
     obtenerAutorizadores,
@@ -179,5 +221,8 @@ export const useAutorizacionesStore = defineStore("autorizaciones", () => {
     enviarComisionRechazo,
     obtenerInfoVendedorByID,
     obtenerUrlPDF,
+    obtenerInfoVendedorByNumeroEmpleado,
+    obtenerInfoJefe,
+    obtenerInfoAutorizacion,
   };
 });

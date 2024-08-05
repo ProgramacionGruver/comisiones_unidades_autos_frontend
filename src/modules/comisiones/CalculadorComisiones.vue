@@ -475,7 +475,7 @@
                           </q-td>
                           <q-td style="text-align: center">
                             {{
-                              props.row.bonoub.toLocaleString("es-MX", {
+                              props.row.bono.toLocaleString("es-MX", {
                                 style: "currency",
                                 currency: "MXN",
                               })

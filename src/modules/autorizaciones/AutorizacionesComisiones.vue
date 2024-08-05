@@ -121,7 +121,7 @@
                   <q-spinner color="primary" />
                 </template>
               </q-btn>
-              <q-btn
+              <!-- <q-btn
                 icon="download"
                 color="primary"
                 flat
@@ -130,7 +130,7 @@
                 @click="descargarPDF(props.row.urlPDF)"
               >
                 <q-tooltip>Descargar PDF</q-tooltip>
-              </q-btn>
+              </q-btn> -->
             </div>
           </q-td>
         </template>
@@ -225,6 +225,7 @@
         </div>
       </div>
     </div>
+    <ModalCopiarUrl ref="modalCopiarUrl" />
   </q-layout>
 </template>
 
@@ -239,16 +240,22 @@ import { obtenerNumerosDeMes } from "src/constant/constantes";
 import { definirAutorizacion } from "src/helpers/coloresAutorizaciones";
 import { useKpiStore } from "src/stores/catalogos/kpis";
 import { useFormulariosStore } from "src/stores/formularios";
-import { ca } from "date-fns/locale";
+import ModalCopiarUrl from "src/components/ModalCopiarUrl.vue";
 
 export default {
+  components: {
+    ModalCopiarUrl,
+  },
   setup() {
     const useFacturas = useFacturasStore();
     const { anioSeleccionado, mesSeleccionado } = storeToRefs(useFacturas);
 
     const useAutorizaciones = useAutorizacionesStore();
-    const { obtenerAutorizacionesByMes, obtenerInfoVendedorByID } =
-      useAutorizaciones;
+    const {
+      obtenerAutorizacionesByMes,
+      obtenerInfoVendedorByID,
+      obtenerInfoVendedorByNumeroEmpleado,
+    } = useAutorizaciones;
     const { autorizaciones } = storeToRefs(useAutorizaciones);
 
     const useKpis = useKpiStore();
@@ -262,6 +269,8 @@ export default {
     const cargando = ref(false);
     const cargandoCopiar = ref(false);
     const autorizacionSeleccionada = ref([]);
+
+    const modalCopiarUrl = ref(null);
 
     const columns = [
       {
@@ -378,42 +387,7 @@ export default {
     });
 
     const copiarURL = async (autorizacionObj) => {
-      cargandoCopiar.value = true;
-
-      const empleado =
-        autorizacionObj.autorizaciones_comisiones_autos_detalles.find(
-          (empleado) => empleado.tipoEmpleado === "VENDEDOR"
-        );
-
-      const infoEmpleado = await obtenerInfoVendedorByID(
-        empleado.numeroEmpleado
-      );
-
-      const objBuscarComision = {
-        idErp: infoEmpleado.idErp,
-        anio: anioSeleccionado.value,
-        mes: Number(obtenerNumerosDeMes(mesSeleccionado.value)),
-        idAsesor: infoEmpleado.idAsesor,
-      };
-
-      await obtenerComisionVendedor(objBuscarComision);
-
-      comisionVendedor.value.autorizaciones = autorizacionObj;
-
-      if (
-        comisionVendedor.value.autorizaciones.autorizaciones_comisiones_autos_detalles.find(
-          (empleado) => empleado.tipoEmpleado === "VENDEDOR"
-        ).idEstatusAutorizacion === 1
-      ) {
-        await obtenerUrlComision(comisionVendedor.value, "vendedor");
-      } else {
-        await obtenerUrlComision(comisionVendedor.value, "jefe");
-      }
-
-      await navigator.clipboard.writeText(urlComision.value);
-
-      notificacion("positive", "Link copiado al portapapeles");
-      cargandoCopiar.value = false;
+      modalCopiarUrl.value.abrir(autorizacionObj);
     };
 
     return {
@@ -429,6 +403,7 @@ export default {
       columnsDetalles,
       pagination,
       cargandoCopiar,
+      modalCopiarUrl,
       // Methods
       obtenerAutorizaciones,
       descargarPDF,

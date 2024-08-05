@@ -155,13 +155,13 @@ const routes = [
     ],
   },
   {
-    path: "/autorizacion/vendedor/:idAsesor/:mes/:anio",
+    path: "/autorizacion/vendedor/:idAsesor/:mes/:anio/:idAutorizacion",
     name: "autorizacionVendedor",
     component: () =>
       import("src/modules/autorizaciones/AutorizacionVendedor.vue"),
   },
   {
-    path: "/autorizacion/jefe/:idAsesor/:mes/:anio",
+    path: "/autorizacion/jefe/:idAsesor/:mes/:anio/:idAutorizacion",
     name: "autorizacionJefe",
     component: () =>
       import("src/modules/autorizaciones/AutorizacionJefeVentas.vue"),
