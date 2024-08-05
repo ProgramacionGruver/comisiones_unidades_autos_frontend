@@ -392,9 +392,9 @@ export const useKpiStore = defineStore("kpi", () => {
           const totalAPagar =
             kpis.reduce((acc, kpi) => acc + Number(kpi.montoAPagar), 0) +
             Number(bono) -
-            Number(descuento) -
-            Number(inCredit) -
-            Number(suAuto) -
+            Number(descuento) +
+            Number(inCredit) +
+            Number(suAuto) +
             Number(accesorios) +
             Number(seminuevos);
 
@@ -453,7 +453,7 @@ export const useKpiStore = defineStore("kpi", () => {
           const totalAPagar =
             kpis.reduce((acc, kpi) => acc + Number(kpi.montoAPagar), 0) +
             Number(bono) -
-            Number(descuento) -
+            Number(descuento) +
             Number(accesorios) +
             Number(nuevos);
 
