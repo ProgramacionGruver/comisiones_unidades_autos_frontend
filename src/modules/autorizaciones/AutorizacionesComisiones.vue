@@ -14,6 +14,7 @@
         :loading="cargando"
         v-model:selected="autorizacionSeleccionada"
         selection="single"
+        row-key="idAutorizacion"
         :pagination="pagination"
       >
         <template v-slot:top>

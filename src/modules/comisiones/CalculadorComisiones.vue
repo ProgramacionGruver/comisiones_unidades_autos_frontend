@@ -946,7 +946,7 @@
                       :pagination="pagination"
                       v-if="
                         comisionBonoVendedor.infoVendedor.claveDepartamento ===
-                        'NUE'
+                        'SEM'
                       "
                     >
                       <template v-slot:body="props">
@@ -1174,7 +1174,7 @@
                       :pagination="pagination"
                       v-else-if="
                         comisionBonoVendedor.infoVendedor.claveDepartamento ===
-                        'SEM'
+                        'NUE'
                       "
                     >
                       <template v-slot:body="props">
@@ -1253,7 +1253,7 @@
                           </q-td>
                           <q-td style="text-align: center">
                             {{
-                              props.row.bonoub.toLocaleString("es-MX", {
+                              props.row.bono.toLocaleString("es-MX", {
                                 style: "currency",
                                 currency: "MXN",
                               })
@@ -1839,8 +1839,6 @@ export default {
         cargando.value = false;
         datosCargados.value = false;
       }
-
-      comisionBonoVendedor.value = null;
 
       if (comisionBonoVendedor.value) {
         hayBono.value = true;
