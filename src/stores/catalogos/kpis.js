@@ -93,7 +93,7 @@ export const useKpiStore = defineStore("kpi", () => {
             factura.descuentos.traslado -
             factura.descuentos.descVentas -
             factura.descuentos.cortesia -
-            factura.descuentos.gasolina -
+            factura.descuentos.gasolina +
             factura.descuentos.bonoub;
 
           facturas.push({
