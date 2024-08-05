@@ -305,19 +305,21 @@ export const useKpiStore = defineStore("kpi", () => {
           const numero =
             totalFacturas * (kpi.objetivosKpi.objetivoCumplimiento / 100);
 
-          kpi.objetivosKpi.objetivo = redondear(numero);
+          const objetivo = redondear(numero);
+          kpi.objetivosKpi.objetivo = objetivo === 0 ? 1 : objetivo;
         }
 
         if (kpi.objetivosKpi.nombreKpi.includes("entregas")) {
           const numero = totalFacturas * 0.9;
 
-          kpi.objetivosKpi.objetivo = Math.floor(numero);
+          const objetivo = redondear(numero);
+          kpi.objetivosKpi.objetivo = objetivo === 0 ? 1 : objetivo;
         }
 
         let desempenio = Math.floor(
-          (kpi.valorReal * kpi.objetivosKpi.objetivoCumplimiento) /
-            kpi.objetivosKpi.objetivo
+          (kpi.valorReal * 100) / kpi.objetivosKpi.objetivo
         );
+
         let pagoCompleto =
           (totalBaseComision + totalPvas) *
           (porcentajeUB / 100) *
