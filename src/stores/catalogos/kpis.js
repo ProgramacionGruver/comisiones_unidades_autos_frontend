@@ -292,11 +292,12 @@ export const useKpiStore = defineStore("kpi", () => {
 
       let kpis = [];
 
+      let totalFacturas = comisionVendedor.value.kpis.find((kpi) =>
+        kpi.objetivosKpi.nombreKpi.includes("objetivo de ventas")
+      ).valorReal;
+
       for (const kpi of comisionVendedor.value.kpis) {
         let porcentajeUB = kpi.objetivosKpi.porcentajeub;
-        let totalFacturas = facturas.filter(
-          (factura) => factura.utilidad > 0 && factura.serie !== "Total"
-        ).length;
 
         if (
           kpi.objetivosKpi.nombreKpi.includes("Penetracion") &&
@@ -310,10 +311,9 @@ export const useKpiStore = defineStore("kpi", () => {
         }
 
         if (kpi.objetivosKpi.nombreKpi.includes("entregas")) {
-          const numero = totalFacturas * 0.9;
+          const objetivo = totalFacturas - 1 <= 0 ? 1 : totalFacturas - 1;
 
-          const objetivo = redondear(numero);
-          kpi.objetivosKpi.objetivo = objetivo === 0 ? 1 : objetivo;
+          kpi.objetivosKpi.objetivo = objetivo;
         }
 
         let desempenio = Math.floor(
@@ -566,7 +566,8 @@ export const useKpiStore = defineStore("kpi", () => {
             factura.descuentos.acondicionamiento -
             factura.descuentos.gestorias -
             factura.descuentos.toma_unidad -
-            factura.descuentos.cortesias;
+            factura.descuentos.cortesias +
+            factura.descuentos.bonoub;
 
           facturas.push({
             folioFactura: factura.factura,
@@ -717,36 +718,176 @@ export const useKpiStore = defineStore("kpi", () => {
       const totalBaseComision = Number(
         facturas[facturas.length - 1].baseComision
       );
-      const totalPvas = Number(pvas[pvas.length - 1].utilidad);
 
+      const totalPvas = Number(pvas[pvas.length - 1].utilidad);
       const totalBonos = Number(facturas[facturas.length - 1].bono);
 
+      let descuentosVendedor = [];
+      if (comisionBonoVendedor.value.infoVendedor.claveDepartamento === "SEM") {
+        if (
+          comisionBonoVendedor.value.descuentosVendedor
+            .descuentosVendedoresDetalles.length > 0
+        ) {
+          const bono =
+            comisionBonoVendedor.value.descuentosVendedor.descuentosVendedoresDetalles.filter(
+              (descuento) => descuento.idCatalogoFormularioDescuentos === 2
+            )[0].valor;
+          const descuento =
+            comisionBonoVendedor.value.descuentosVendedor.descuentosVendedoresDetalles.filter(
+              (descuento) => descuento.idCatalogoFormularioDescuentos === 1
+            )[0].valor;
+          const inCredit =
+            comisionBonoVendedor.value.descuentosVendedor.descuentosVendedoresDetalles.filter(
+              (descuento) => descuento.idCatalogoFormularioDescuentos === 4
+            )[0].valor;
+          const suAuto =
+            comisionBonoVendedor.value.descuentosVendedor.descuentosVendedoresDetalles.filter(
+              (descuento) => descuento.idCatalogoFormularioDescuentos === 3
+            )[0].valor;
+          const accesorios =
+            comisionBonoVendedor.value.descuentosVendedor.descuentosVendedoresDetalles.filter(
+              (descuento) => descuento.idCatalogoFormularioDescuentos === 5
+            )[0].valor;
+          const seminuevos =
+            comisionBonoVendedor.value.descuentosVendedor.descuentosVendedoresDetalles.filter(
+              (descuento) => descuento.idCatalogoFormularioDescuentos === 6
+            )[0].valor;
+
+          descuentosVendedor.push({
+            bono,
+            descuento,
+            inCredit,
+            suAuto,
+            accesorios,
+            seminuevos,
+          });
+        } else {
+          descuentosVendedor.push({
+            bono: 0,
+            descuento: 0,
+            inCredit: 0,
+            suAuto: 0,
+            accesorios: 0,
+            seminuevos: 0,
+          });
+        }
+      } else if (
+        comisionBonoVendedor.value.infoVendedor.claveDepartamento === "NUE"
+      ) {
+        if (
+          comisionBonoVendedor.value.descuentosVendedor
+            .descuentosVendedoresDetalles.length > 0
+        ) {
+          const bono =
+            comisionBonoVendedor.value.descuentosVendedor.descuentosVendedoresDetalles.filter(
+              (descuento) => descuento.idCatalogoFormularioDescuentos === 8
+            )[0].valor;
+
+          const descuento =
+            comisionBonoVendedor.value.descuentosVendedor.descuentosVendedoresDetalles.filter(
+              (descuento) => descuento.idCatalogoFormularioDescuentos === 7
+            )[0].valor;
+
+          const accesorios =
+            comisionBonoVendedor.value.descuentosVendedor.descuentosVendedoresDetalles.filter(
+              (descuento) => descuento.idCatalogoFormularioDescuentos === 9
+            )[0].valor;
+
+          const nuevos =
+            comisionBonoVendedor.value.descuentosVendedor.descuentosVendedoresDetalles.filter(
+              (descuento) => descuento.idCatalogoFormularioDescuentos === 10
+            )[0].valor;
+
+          descuentosVendedor.push({
+            bono,
+            descuento,
+            accesorios,
+            nuevos,
+          });
+        } else {
+          descuentosVendedor.push({
+            bono: 0,
+            descuento: 0,
+            accesorios: 0,
+            nuevos: 0,
+          });
+        }
+      }
+
       if (comisionBonoVendedor.value.infoVendedor.claveDepartamento === "NUE") {
+        const bono = descuentosVendedor[0].bono
+          ? descuentosVendedor[0].bono
+          : 0;
+        const descuento = descuentosVendedor[0].descuento
+          ? descuentosVendedor[0].descuento
+          : 0;
+        const accesorios = descuentosVendedor[0].accesorios
+          ? descuentosVendedor[0].accesorios
+          : 0;
+
+        const totalAPagar =
+          (totalBaseComision +
+            totalPvas -
+            comisionBonoVendedor.value.planPiso.monto) *
+            Number(comisionBonoVendedor.value.infoVendedor.porcentajeUB / 100) +
+          totalBonos +
+          bono -
+          descuento +
+          accesorios;
+
         totalUtilidadBruta.push({
+          bono: bono,
+          descuento: descuento,
+          accesorios: accesorios,
           totalBaseComision,
           totalPvas,
           totalPlanPiso: comisionBonoVendedor.value.planPiso.monto,
           totalBonos,
-          totalUtilidadBruta:
-            (totalBaseComision +
-              totalPvas -
-              comisionBonoVendedor.value.planPiso.monto) *
-              Number(
-                comisionBonoVendedor.value.infoVendedor.porcentajeUB / 100
-              ) +
-            totalBonos,
+          totalUtilidadBruta: totalAPagar,
         });
       } else {
+        const bono = descuentosVendedor[0].bono
+          ? descuentosVendedor[0].bono
+          : 0;
+        const descuento = descuentosVendedor[0].descuento
+          ? descuentosVendedor[0].descuento
+          : 0;
+        const inCredit = descuentosVendedor[0].inCredit
+          ? descuentosVendedor[0].inCredit
+          : 0;
+        const suAuto = descuentosVendedor[0].suAuto
+          ? descuentosVendedor[0].suAuto
+          : 0;
+        const accesorios = descuentosVendedor[0].accesorios
+          ? descuentosVendedor[0].accesorios
+          : 0;
+
+        const totalAPagar =
+          totalBaseComision +
+          totalPvas +
+          bono -
+          descuento +
+          inCredit +
+          suAuto +
+          accesorios;
+
         totalUtilidadBruta.push({
+          bono: bono,
+          descuento: descuento,
+          inCredit: inCredit,
+          suAuto: suAuto,
+          accesorios: accesorios,
           totalBaseComision,
           totalPvas,
-          totalUtilidadBruta: totalBaseComision + totalPvas,
+          totalUtilidadBruta: totalAPagar,
         });
       }
 
       comisionBonoVendedor.value.facturas = facturas;
       comisionBonoVendedor.value.pvas = pvas;
       comisionBonoVendedor.value.totalUtilidadBruta = totalUtilidadBruta;
+
+      console.log(comisionBonoVendedor.value);
 
       return;
     } catch (error) {

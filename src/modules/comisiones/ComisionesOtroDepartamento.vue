@@ -560,6 +560,46 @@
                     <q-tr>
                       <q-td style="text-align: center">
                         {{
+                          props.row.bono.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.descuento.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.inCredit.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.suAuto.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.accesorios.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
                           props.row.totalBaseComision.toLocaleString("es-MX", {
                             style: "currency",
                             currency: "MXN",
@@ -604,6 +644,30 @@
                 >
                   <template v-slot:body="props">
                     <q-tr>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.bono.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.descuento.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
+                      <q-td style="text-align: center">
+                        {{
+                          props.row.accesorios.toLocaleString("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                          })
+                        }}
+                      </q-td>
                       <q-td style="text-align: center">
                         {{
                           props.row.totalBaseComision.toLocaleString("es-MX", {
@@ -821,6 +885,26 @@ export default {
 
     const columnasUtilidadBruta = [
       {
+        name: "bono",
+        label: "Bono directo a vendedor",
+      },
+      {
+        name: "descuento",
+        label: "Descuento directo a vendedor",
+      },
+      {
+        name: "inCredit",
+        label: "InCredit",
+      },
+      {
+        name: "suAuto",
+        label: "SuAuto",
+      },
+      {
+        name: "accesorios",
+        label: "Accesorios",
+      },
+      {
         name: "totalBaseComision",
         label: "Total base comisión",
       },
@@ -835,6 +919,18 @@ export default {
     ];
 
     const columnasUtilidadBrutaSeminuevos = [
+      {
+        name: "bono",
+        label: "Bono directo a vendedor",
+      },
+      {
+        name: "descuento",
+        label: "Descuento directo a vendedor",
+      },
+      {
+        name: "accesorios",
+        label: "Accesorios",
+      },
       {
         name: "totalBaseComision",
         label: "Total base comisión",
