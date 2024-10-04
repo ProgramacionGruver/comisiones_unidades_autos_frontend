@@ -56,7 +56,7 @@ export const useDescuentosStore = defineStore("descuentos", () => {
       const { data } = await api.post("/descuentos/vendedores", descuento);
 
       descuentoCreado.value = data;
-      descuentos.value = [...descuentos.value, data];
+      descuentos.value.push(data);
 
       notificacion("positive", "Descuento guardado correctamente");
       return;
