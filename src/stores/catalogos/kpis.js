@@ -311,9 +311,16 @@ export const useKpiStore = defineStore("kpi", () => {
         }
 
         if (kpi.objetivosKpi.nombreKpi.includes("entregas")) {
-          const objetivo = totalFacturas - 1 <= 0 ? 1 : totalFacturas - 1;
+          if (
+            comisionVendedor.value.infoVendedor.claveSucursal == "CHDM" ||
+            comisionVendedor.value.infoVendedor.claveSucursal == "CHMO"
+          ) {
+            kpi.objetivosKpi.objetivo = kpi.objetivosKpi.objetivo;
+          } else {
+            const objetivo = totalFacturas - 1 <= 0 ? 1 : totalFacturas - 1;
 
-          kpi.objetivosKpi.objetivo = objetivo;
+            kpi.objetivosKpi.objetivo = objetivo;
+          }
         }
 
         let desempenio = Math.floor(
