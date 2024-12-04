@@ -417,7 +417,7 @@ export default {
     onMounted(async () => {
       await obtenerEmpresas();
       await obtenerSucursales();
-      // await obtenerDepartamentos();
+      await obtenerDepartamentos();
 
       opcionesEmpresas.value = empresas.value.map((empresa) => {
         empresa.label = formatearCapitalCase(empresa.razonSocial);
