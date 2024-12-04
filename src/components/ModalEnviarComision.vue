@@ -105,19 +105,8 @@ export default {
 
         const mes = Number(obtenerNumerosDeMes(mesSeleccionado.value));
 
-        const folio = `COM-${vendedorObj.value.claveDepartamento}-${vendedorObj.value.numeroEmpleado}-${anioSeleccionado.value}-${mes}`;
-
-        // const objObtenerPDF = {
-        //   anio: anioSeleccionado.value,
-        //   mes: mes,
-        //   folio,
-        //   idAsesor: vendedorObj.value.idAsesor,
-        //   numeroEmpleado: vendedorObj.value.numeroEmpleado,
-        //   nivel: vendedorObj.value.nivel,
-        //   id: folio,
-        // };
-
-        // await obtenerUrlPDF(objObtenerPDF);
+        const folioPrev = `COM-${vendedorObj.value.claveDepartamento}-${vendedorObj.value.numeroEmpleado}-${anioSeleccionado.value}-${mes}`;
+        const folio = folioPrev.replace(/\s/g, "-");
 
         const dataAutorizacion = {
           anio: anioSeleccionado.value,
@@ -129,23 +118,26 @@ export default {
           urlPDF: "",
           folio,
           claveDepartamento: vendedorObj.value.claveDepartamento,
-          monto: comision.value.descuentosVendedor[0].totalAPagar,
+          monto:
+            vendedorObj.value.claveDepartamento == "SUAUTO" ||
+            vendedorObj.value.claveDepartamento == "COOR SUAUTO"
+              ? comision.value.totalAPagar
+              : comision.value.descuentosVendedor[0].totalAPagar,
         };
 
         const autorizaciones = await registrarAutorizaciones(dataAutorizacion);
 
-        if (autorizaciones.length === 0) {
+        if (!autorizaciones) {
           cargando.value = false;
           return;
         }
 
-        comisionVendedor.value.autorizaciones = autorizaciones;
-
         // await obtenerUrlComision(comisionVendedor.value, "vendedor");
-        // const linkComision = `http://localhost:9000/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}/${comisionVendedor.value.autorizaciones.idAutorizacion}`;
-        const linkComision = `https://www.gruver.com.mx/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}/${comisionVendedor.value.autorizaciones.idAutorizacion}`;
+        // const linkComision = `http://localhost:9000/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}/${autorizaciones.idAutorizacion}`;
+        const linkComision = `https://www.gruver.com.mx/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}/${autorizaciones.idAutorizacion}`;
         // const linkComision = `` // <--------- Cambiar a productivo
 
+        console.log(linkComision);
         const mesNombre = listaMeses[mes - 1];
 
         const objData = {
@@ -153,7 +145,7 @@ export default {
           link: linkComision,
           infoVendedor: vendedorObj.value,
           mes: mesNombre,
-          infoAutorizacion: comisionVendedor.value.autorizaciones,
+          infoAutorizacion: autorizaciones,
         };
 
         await enviarCorreo(objData);

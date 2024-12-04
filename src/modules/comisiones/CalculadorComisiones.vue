@@ -73,7 +73,254 @@
       </div>
       <div v-else>
         <div v-if="datosCargados && !cargando">
-          <q-card class="q-mt-md">
+          <q-card
+            v-if="
+              comisionVendedorSuAuto.infoVendedor.claveDepartamento === 'SUAUTO'
+            "
+          >
+            <q-card-section>
+              <div
+                style="
+                  width: 100%;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 1rem;
+                "
+              >
+                <div style="display: block">
+                  <div>
+                    <strong>Nombre:</strong>
+                    {{ comisionVendedorSuAuto.infoVendedor.nombreEmpleado }}
+                  </div>
+                  <div>
+                    <strong>No. de empleado:</strong>
+                    {{ comisionVendedorSuAuto.infoVendedor.numeroEmpleado }}
+                  </div>
+                  <div>
+                    <strong>Puesto:</strong>
+                    {{ comisionVendedorSuAuto.infoVendedor.claveDepartamento }}
+                  </div>
+                </div>
+                <div>
+                  <q-btn
+                    icon="send"
+                    color="primary"
+                    label="Enviar comisión"
+                    class="q-mr-md"
+                    @click="enviarComision"
+                  />
+                </div>
+              </div>
+            </q-card-section>
+            <q-card-section>
+              <div class="text-center text-bold text-h4 q-mb-md">CONTRATOS</div>
+              <q-table
+                square
+                dense
+                flat
+                hide-bottom
+                class="my-sticky-header-column-table"
+                :rows="comisionVendedorSuAuto.contratos"
+                :columns="columnasComisionSuAuto"
+                no-data-label="No se encontró informacion disponible."
+                no-results-label="No se encontraron coincidencias."
+                :pagination="pagination"
+                v-if="comisionVendedorSuAuto.contratos.length > 0"
+              />
+              <div v-else>
+                <div class="text-h4 text-center">
+                  Este asesor no cuenta con contratos de Su Auto para este
+                  período
+                </div>
+              </div>
+            </q-card-section>
+            <q-card-section>
+              <div class="text-center text-bold text-h4 q-mb-md">FACTURAS</div>
+              <q-table
+                square
+                dense
+                flat
+                hide-bottom
+                class="my-sticky-header-column-table"
+                :rows="comisionVendedorSuAuto.facturas"
+                :columns="columnasFacturasSuAuto"
+                no-data-label="No se encontró informacion disponible."
+                no-results-label="No se encontraron coincidencias."
+                :pagination="pagination"
+                v-if="comisionVendedorSuAuto.facturas.length > 0"
+              />
+              <div v-else>
+                <div class="text-h4 text-center">
+                  Este asesor no cuenta con facturas de Su Auto para este
+                  período
+                </div>
+              </div>
+            </q-card-section>
+            <q-card-section>
+              <div>
+                <div>
+                  <strong>Total base contratos:</strong>
+                  {{
+                    comisionVendedorSuAuto.totalContratos.toLocaleString(
+                      "es-MX",
+                      {
+                        style: "currency",
+                        currency: "MXN",
+                      }
+                    )
+                  }}
+                </div>
+                <div>
+                  <strong>Total base facturas:</strong>
+                  {{
+                    comisionVendedorSuAuto.totalFacturas.toLocaleString(
+                      "es-MX",
+                      {
+                        style: "currency",
+                        currency: "MXN",
+                      }
+                    )
+                  }}
+                </div>
+                <div>
+                  <strong>Total a pagar:</strong>
+                  {{
+                    comisionVendedorSuAuto.totalAPagar.toLocaleString("es-MX", {
+                      style: "currency",
+                      currency: "MXN",
+                    })
+                  }}
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
+
+          <q-card
+            v-else-if="
+              comisionVendedorSuAuto.infoVendedor.claveDepartamento ===
+              'COOR SUAUTO'
+            "
+          >
+            <q-card-section>
+              <div
+                style="
+                  width: 100%;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 1rem;
+                "
+              >
+                <div style="display: block">
+                  <div>
+                    <strong>Nombre:</strong>
+                    {{ comisionVendedorSuAuto.infoVendedor.nombreEmpleado }}
+                  </div>
+                  <div>
+                    <strong>No. de empleado:</strong>
+                    {{ comisionVendedorSuAuto.infoVendedor.numeroEmpleado }}
+                  </div>
+                  <div>
+                    <strong>Puesto:</strong>
+                    {{ comisionVendedorSuAuto.infoVendedor.claveDepartamento }}
+                  </div>
+                </div>
+                <div>
+                  <q-btn
+                    icon="send"
+                    color="primary"
+                    label="Enviar comisión"
+                    class="q-mr-md"
+                    @click="enviarComision"
+                  />
+                </div>
+              </div>
+            </q-card-section>
+            <q-card-section>
+              <div class="text-center text-bold text-h4 q-mb-md">CONTRATOS</div>
+              <q-table
+                square
+                dense
+                flat
+                hide-bottom
+                class="my-sticky-header-column-table"
+                :rows="comisionVendedorSuAuto.contratos"
+                :columns="columnasComisionSuAuto"
+                no-data-label="No se encontró informacion disponible."
+                no-results-label="No se encontraron coincidencias."
+                :pagination="pagination"
+                v-if="comisionVendedorSuAuto.contratos.length > 0"
+              />
+              <div v-else>
+                <div class="text-h4 text-center">
+                  Este asesor no cuenta con contratos de Su Auto para este
+                  período
+                </div>
+              </div>
+            </q-card-section>
+            <q-card-section>
+              <div class="text-center text-bold text-h4 q-mb-md">FACTURAS</div>
+              <q-table
+                square
+                dense
+                flat
+                hide-bottom
+                class="my-sticky-header-column-table"
+                :rows="comisionVendedorSuAuto.facturas"
+                :columns="columnasFacturasSuAuto"
+                no-data-label="No se encontró informacion disponible."
+                no-results-label="No se encontraron coincidencias."
+                :pagination="pagination"
+                v-if="comisionVendedorSuAuto.facturas.length > 0"
+              />
+              <div v-else>
+                <div class="text-h4 text-center">
+                  Este asesor no cuenta con facturas de Su Auto para este
+                  período
+                </div>
+              </div>
+            </q-card-section>
+            <q-card-section>
+              <div>
+                <div>
+                  <strong>Total base contratos:</strong>
+                  {{
+                    comisionVendedorSuAuto.totalContratos.toLocaleString(
+                      "es-MX",
+                      {
+                        style: "currency",
+                        currency: "MXN",
+                      }
+                    )
+                  }}
+                </div>
+                <div>
+                  <strong>Total base facturas:</strong>
+                  {{
+                    comisionVendedorSuAuto.totalFacturas.toLocaleString(
+                      "es-MX",
+                      {
+                        style: "currency",
+                        currency: "MXN",
+                      }
+                    )
+                  }}
+                </div>
+                <div>
+                  <strong>Total a pagar:</strong>
+                  {{
+                    comisionVendedorSuAuto.totalAPagar.toLocaleString("es-MX", {
+                      style: "currency",
+                      currency: "MXN",
+                    })
+                  }}
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
+
+          <q-card v-else class="q-mt-md">
             <q-tabs v-model="tabs" indicator-color="yellow" align="justify">
               <q-tab
                 name="comision"
@@ -1473,6 +1720,7 @@ import { obtenerNumerosDeMes } from "src/constant/constantes";
 import { notificacion } from "src/helpers/mensajes";
 import ModalEnviarComision from "src/components/ModalEnviarComision.vue";
 import { filtradoBusquedaObj } from "src/helpers/filtradoBusquedaObj";
+import { formatearFecha } from "src/helpers/formatearFecha";
 
 export default {
   components: {
@@ -1480,8 +1728,13 @@ export default {
   },
   setup() {
     const useFacturas = useFacturasStore();
-    const { opcionesVendedores, anioSeleccionado, mesSeleccionado } =
-      storeToRefs(useFacturas);
+    const { obtenerComisionesSuAuto } = useFacturas;
+    const {
+      opcionesVendedores,
+      anioSeleccionado,
+      mesSeleccionado,
+      comisionVendedorSuAuto,
+    } = storeToRefs(useFacturas);
 
     const useKpis = useKpiStore();
     const {
@@ -1775,6 +2028,174 @@ export default {
       },
     ];
 
+    const columnasComisionSuAuto = [
+      {
+        name: "contrato",
+        label: "Contrato",
+        align: "center",
+        field: "contrato",
+      },
+      {
+        name: "fechaContrato",
+        label: "Fecha contrato",
+        align: "center",
+        field: "fechaContrato",
+      },
+      {
+        name: "plan",
+        label: "Plan",
+        align: "center",
+        field: "plan",
+      },
+      {
+        name: "modelo",
+        label: "Modelo",
+        align: "center",
+        field: "tu",
+      },
+      {
+        name: "cliente",
+        label: "Cliente",
+        align: "center",
+        field: "cliente",
+      },
+      {
+        name: "precioGuia",
+        label: "Precio distribuidor",
+        align: "center",
+        field: (row) =>
+          row.precioGuia
+            ? row.precioGuia.toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              })
+            : "0".toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              }),
+      },
+    ];
+
+    const columnasComisionCoorSuAuto = [
+      {
+        name: "contrato",
+        label: "Contrato",
+        align: "center",
+        field: "contrato",
+      },
+      {
+        name: "fechaContrato",
+        label: "Fecha contrato",
+        align: "center",
+        field: "fechaContrato",
+      },
+      {
+        name: "plan",
+        label: "Plan",
+        align: "center",
+        field: "plan",
+      },
+      {
+        name: "modelo",
+        label: "Modelo",
+        align: "center",
+        field: "tu",
+      },
+      {
+        name: "cliente",
+        label: "Cliente",
+        align: "center",
+        field: "cliente",
+      },
+      {
+        name: "precioGuia",
+        label: "Precio distribuidor",
+        align: "center",
+        field: (row) =>
+          row.precioGuia
+            ? row.precioGuia.toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              })
+            : "0".toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              }),
+      },
+      {
+        name: "pago",
+        label: "Pago por contrato",
+        align: "center",
+        field: (row) =>
+          row.pago
+            ? row.pago.toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              })
+            : "0".toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              }),
+      },
+    ];
+
+    const columnasFacturasSuAuto = [
+      {
+        name: "folioFactura",
+        label: "Folio",
+        align: "center",
+        field: "factura",
+      },
+      {
+        name: "fechaFactura",
+        label: "Fecha",
+        align: "center",
+        field: (row) => formatearFecha(row.fecha_facturacion),
+      },
+      {
+        name: "modelo",
+        label: "Modelo",
+        align: "center",
+        field: "modelo",
+      },
+      {
+        name: "serie",
+        label: "Serie",
+        align: "center",
+        field: "vin",
+      },
+      {
+        name: "importe_venta",
+        label: "Importe de venta",
+        align: "center",
+        field: (row) =>
+          row.importe_venta
+            ? row.importe_venta.toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              })
+            : "0".toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              }),
+      },
+      {
+        name: "utilidad",
+        label: "Utilidad",
+        align: "center",
+        field: (row) =>
+          row.utilidad
+            ? row.utilidad.toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              })
+            : "0".toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              }),
+      },
+    ];
+
     const tabs = ref("comision");
 
     const buscarComisiones = async () => {
@@ -1793,65 +2214,98 @@ export default {
         return;
       }
 
-      cargando.value = true;
+      if (
+        vendedorSeleccionado.value.value.claveDepartamento === "SUAUTO" ||
+        vendedorSeleccionado.value.value.claveDepartamento === "COOR SUAUTO"
+      ) {
+        cargando.value = true;
 
-      const bucarBonoAprobado = {
-        idAsesor: vendedorSeleccionado.value.value.idAsesor,
-        anio: anioSeleccionado.value,
-        mes: obtenerNumerosDeMes(mesSeleccionado.value),
-      };
+        const busquedaObj = {
+          mes: obtenerNumerosDeMes(mesSeleccionado.value),
+          anio: anioSeleccionado.value,
+          idAsesor: vendedorSeleccionado.value.value.idAsesor,
+        };
 
-      await obtenerBonoAprobado(bucarBonoAprobado);
+        await obtenerComisionesSuAuto(busquedaObj);
 
-      if (!bonoAprobado.value) {
-        notificacion(
-          "warning",
-          "No se puede calcular la comision debido a que el bono de venta de unidades no ha sido validado por el otro departamento"
-        );
-        cargando.value = false;
-        return;
-      }
-
-      const objBusqueda = {
-        idErp: vendedorSeleccionado.value.value.idErp,
-        idAsesor: vendedorSeleccionado.value.value.idAsesor,
-        anio: anioSeleccionado.value,
-        mes: obtenerNumerosDeMes(mesSeleccionado.value),
-      };
-
-      await obtenerComisionVendedor(objBusqueda);
-
-      const busquedaBonoObj = {
-        idAsesor: vendedorSeleccionado.value.value.idAsesor,
-        anio: anioSeleccionado.value,
-        mes: obtenerNumerosDeMes(mesSeleccionado.value),
-        claveDepartamentoVendedor:
-          vendedorSeleccionado.value.value.claveDepartamento,
-        desdeCalculador: true,
-      };
-
-      await obtenerComisionBonoVendedor(busquedaBonoObj);
-
-      if (comisionVendedor.value) {
-        cargando.value = false;
-        datosCargados.value = true;
+        if (comisionVendedorSuAuto.value) {
+          cargando.value = false;
+          datosCargados.value = true;
+        } else {
+          cargando.value = false;
+          datosCargados.value = false;
+        }
       } else {
-        cargando.value = false;
-        datosCargados.value = false;
-      }
+        cargando.value = true;
 
-      if (comisionBonoVendedor.value) {
-        hayBono.value = true;
-      } else {
-        hayBono.value = false;
+        const bucarBonoAprobado = {
+          idAsesor: vendedorSeleccionado.value.value.idAsesor,
+          anio: anioSeleccionado.value,
+          mes: obtenerNumerosDeMes(mesSeleccionado.value),
+        };
+
+        await obtenerBonoAprobado(bucarBonoAprobado);
+
+        if (!bonoAprobado.value) {
+          notificacion(
+            "warning",
+            "No se puede calcular la comision debido a que el bono de venta de unidades no ha sido validado por el otro departamento"
+          );
+          cargando.value = false;
+          return;
+        }
+
+        const objBusqueda = {
+          idErp: vendedorSeleccionado.value.value.idErp,
+          idAsesor: vendedorSeleccionado.value.value.idAsesor,
+          anio: anioSeleccionado.value,
+          mes: obtenerNumerosDeMes(mesSeleccionado.value),
+        };
+
+        await obtenerComisionVendedor(objBusqueda);
+
+        const busquedaBonoObj = {
+          idAsesor: vendedorSeleccionado.value.value.idAsesor,
+          anio: anioSeleccionado.value,
+          mes: obtenerNumerosDeMes(mesSeleccionado.value),
+          claveDepartamentoVendedor:
+            vendedorSeleccionado.value.value.claveDepartamento,
+          desdeCalculador: true,
+        };
+
+        await obtenerComisionBonoVendedor(busquedaBonoObj);
+
+        if (comisionVendedor.value) {
+          cargando.value = false;
+          datosCargados.value = true;
+        } else {
+          cargando.value = false;
+          datosCargados.value = false;
+        }
+
+        if (comisionBonoVendedor.value) {
+          hayBono.value = true;
+        } else {
+          hayBono.value = false;
+        }
       }
     };
 
     const enviarComision = () => {
-      modalEnviarComision.value.abrir(
-        comisionVendedor.value.infoVendedor,
-        comisionVendedor.value
-      );
+      if (
+        vendedorSeleccionado.value.value.claveDepartamento === "SUAUTO" ||
+        vendedorSeleccionado.value.value.claveDepartamento === "COOR SUAUTO"
+      ) {
+        modalEnviarComision.value.abrir(
+          comisionVendedorSuAuto.value.infoVendedor,
+          comisionVendedorSuAuto.value
+        );
+      } else {
+        modalEnviarComision.value.abrir(
+          comisionVendedor.value.infoVendedor,
+          comisionVendedor.value
+        );
+      }
     };
 
     const pagination = ref({
@@ -1893,6 +2347,10 @@ export default {
       columansDescuentosNoExisten,
       tabs,
       comisionBonoVendedor,
+      comisionVendedorSuAuto,
+      columnasComisionSuAuto,
+      columnasComisionCoorSuAuto,
+      columnasFacturasSuAuto,
       // Methods
       buscarComisiones,
       enviarComision,

@@ -44,6 +44,8 @@ export const useFacturasStore = defineStore("facturas", () => {
   const opcionesVendedoresInversa = ref([]);
   const opcionesVendedoresJefes = ref([]);
 
+  const comisionVendedorSuAuto = ref({});
+
   const useEmpresas = useEmpresasStore();
   const { empresaSeleccionada } = storeToRefs(useEmpresas);
 
@@ -264,7 +266,7 @@ export const useFacturasStore = defineStore("facturas", () => {
       //Opciones departamentos
       opcionesVendedores.value = vendedores.value.map((vendedor) => {
         return {
-          label: `${vendedor.nombreEmpleado}`,
+          label: `${vendedor.nombreEmpleado} - ${vendedor.claveDepartamento}`,
           value: vendedor,
         };
       });
@@ -352,6 +354,16 @@ export const useFacturasStore = defineStore("facturas", () => {
     }
   };
 
+  const obtenerComisionesSuAuto = async (busquedaObj) => {
+    try {
+      const { data } = await api.post("/suauto/comision", busquedaObj);
+
+      comisionVendedorSuAuto.value = data;
+    } catch (error) {
+      notificacion("warning", error.response.data.message);
+    }
+  };
+
   return {
     anioSeleccionado,
     mesSeleccionado,
@@ -367,6 +379,7 @@ export const useFacturasStore = defineStore("facturas", () => {
     opcionesClientes,
     vendedores,
     opcionesVendedores,
+    comisionVendedorSuAuto,
     obtenerFacturas,
     guardarFacturas,
     obtenerClientes,
@@ -378,5 +391,6 @@ export const useFacturasStore = defineStore("facturas", () => {
     opcionesVendedoresJefes,
     obtenerVendedoresYJefes,
     vendedoresAlt,
+    obtenerComisionesSuAuto,
   };
 });

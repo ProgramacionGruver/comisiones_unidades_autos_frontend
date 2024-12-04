@@ -14,6 +14,8 @@ export const useKpiStore = defineStore("kpi", () => {
   const comisionBonoVendedor = ref(null);
   const bonoAprobado = ref(null);
 
+  const informacionVendedor = ref(null);
+
   const obtenerObjetivosKpis = async (objKpi, nivel) => {
     try {
       const { data } = await api.post("/objetivos/kpis/autos", objKpi);
@@ -941,6 +943,16 @@ export const useKpiStore = defineStore("kpi", () => {
     }
   };
 
+  const obtenerInfoVendedor = async (idAsesor) => {
+    try {
+      const { data } = await api.get(`/asesor/autos/${idAsesor}`);
+
+      informacionVendedor.value = data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     objetivosKpis,
     valoresRealesKpis,
@@ -960,5 +972,7 @@ export const useKpiStore = defineStore("kpi", () => {
     aprobarBono,
     bonoAprobado,
     obtenerBonoAprobado,
+    informacionVendedor,
+    obtenerInfoVendedor,
   };
 });

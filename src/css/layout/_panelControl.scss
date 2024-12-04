@@ -1,0 +1,8 @@
+.contenedor-card-acceso {
+  display: grid;
+  gap: 1rem;
+
+  @include adaptar(860px) {
+    grid-template-columns: 42% 56%;
+  }
+}

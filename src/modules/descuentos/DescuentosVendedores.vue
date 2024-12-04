@@ -16,6 +16,7 @@
             : 'Seleccione un rango de fechas para buscar'
         "
         loading-label="Buscando información . . ."
+        row-key="idDescuentoVendedor"
       >
         <template v-slot:body-cell-fechaDescuento="props">
           <td style="text-align: center">

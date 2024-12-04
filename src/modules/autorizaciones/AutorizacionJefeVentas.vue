@@ -13,8 +13,304 @@
       <q-spinner color="primary" size="200px" class="q-mb-lg" />
       <span>Espere un momento a que los datos sean cargados...</span>
     </div>
-    <div v-else>
-      <q-card>
+    <div>
+      <q-card v-if="infoVendedorAutorizacion?.claveDepartamento === 'SUAUTO'">
+        <q-card-section>
+          <div
+            style="
+              width: 100%;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 1rem;
+            "
+          >
+            <div style="display: block">
+              <div>
+                <strong>Nombre:</strong>
+                {{ comisionVendedorSuAuto?.infoVendedor?.nombreEmpleado }}
+              </div>
+              <div>
+                <strong>No. de empleado:</strong>
+                {{ comisionVendedorSuAuto?.infoVendedor?.numeroEmpleado }}
+              </div>
+              <div>
+                <strong>Puesto:</strong>
+                {{ comisionVendedorSuAuto?.infoVendedor?.claveDepartamento }}
+              </div>
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <div class="text-center text-bold text-h4 q-mb-md">CONTRATOS</div>
+          <q-table
+            square
+            dense
+            flat
+            hide-bottom
+            class="my-sticky-header-column-table"
+            :rows="comisionVendedorSuAuto?.contratos"
+            :columns="columnasComisionSuAuto"
+            no-data-label="No se encontró informacion disponible."
+            no-results-label="No se encontraron coincidencias."
+            :pagination="pagination"
+            v-if="comisionVendedorSuAuto?.contratos?.length > 0"
+          />
+          <div v-else>
+            <div class="text-h4 text-center">
+              Este asesor no cuenta con contratos de Su Auto para este período
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <div class="text-center text-bold text-h4 q-mb-md">FACTURAS</div>
+          <q-table
+            square
+            dense
+            flat
+            hide-bottom
+            class="my-sticky-header-column-table"
+            :rows="comisionVendedorSuAuto?.facturas"
+            :columns="columnasFacturasSuAuto"
+            no-data-label="No se encontró informacion disponible."
+            no-results-label="No se encontraron coincidencias."
+            :pagination="pagination"
+            v-if="comisionVendedorSuAuto?.facturas?.length > 0"
+          />
+          <div v-else>
+            <div class="text-h4 text-center">
+              Este asesor no cuenta con facturas de Su Auto para este período
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <div>
+            <div>
+              <strong>Total base contratos:</strong>
+              {{
+                comisionVendedorSuAuto?.totalContratos?.toLocaleString(
+                  "es-MX",
+                  {
+                    style: "currency",
+                    currency: "MXN",
+                  }
+                )
+              }}
+            </div>
+            <div>
+              <strong>Total base facturas:</strong>
+              {{
+                comisionVendedorSuAuto?.totalFacturas?.toLocaleString("es-MX", {
+                  style: "currency",
+                  currency: "MXN",
+                })
+              }}
+            </div>
+            <div>
+              <strong>Total a pagar:</strong>
+              {{
+                comisionVendedorSuAuto?.totalAPagar?.toLocaleString("es-MX", {
+                  style: "currency",
+                  currency: "MXN",
+                })
+              }}
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-actions class="botones--div__comision">
+          <!-- <div class="boton--superior">
+            <q-btn
+              label="Descargar PDF"
+              color="primary"
+              @click="descargarPDF"
+              icon-right="cloud_download"
+              :loading="cargandoPDF"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+          </div> -->
+
+          <div class="botones--inferiores">
+            <q-btn
+              label="Confirmar"
+              color="green"
+              @click="enviarComision"
+              icon-right="check"
+              :loading="cargandoConfirmacion"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+
+            <q-btn
+              label="Rechazar"
+              color="red"
+              @click="rechazoComision"
+              icon-right="close"
+              :loading="cargandoRechazar"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+          </div>
+        </q-card-actions>
+      </q-card>
+
+      <q-card
+        v-else-if="
+          infoVendedorAutorizacion?.claveDepartamento === 'COOR SUAUTO'
+        "
+      >
+        <q-card-section>
+          <div
+            style="
+              width: 100%;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 1rem;
+            "
+          >
+            <div style="display: block">
+              <div>
+                <strong>Nombre:</strong>
+                {{ comisionVendedorSuAuto?.infoVendedor?.nombreEmpleado }}
+              </div>
+              <div>
+                <strong>No. de empleado:</strong>
+                {{ comisionVendedorSuAuto?.infoVendedor?.numeroEmpleado }}
+              </div>
+              <div>
+                <strong>Puesto:</strong>
+                {{ comisionVendedorSuAuto?.infoVendedor?.claveDepartamento }}
+              </div>
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <div class="text-center text-bold text-h4 q-mb-md">CONTRATOS</div>
+          <q-table
+            square
+            dense
+            flat
+            hide-bottom
+            class="my-sticky-header-column-table"
+            :rows="comisionVendedorSuAuto?.contratos"
+            :columns="columnasComisionSuAuto"
+            no-data-label="No se encontró informacion disponible."
+            no-results-label="No se encontraron coincidencias."
+            :pagination="pagination"
+            v-if="comisionVendedorSuAuto?.contratos?.length > 0"
+          />
+          <div v-else>
+            <div class="text-h4 text-center">
+              Este asesor no cuenta con contratos de Su Auto para este período
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <div class="text-center text-bold text-h4 q-mb-md">FACTURAS</div>
+          <q-table
+            square
+            dense
+            flat
+            hide-bottom
+            class="my-sticky-header-column-table"
+            :rows="comisionVendedorSuAuto?.facturas"
+            :columns="columnasFacturasSuAuto"
+            no-data-label="No se encontró informacion disponible."
+            no-results-label="No se encontraron coincidencias."
+            :pagination="pagination"
+            v-if="comisionVendedorSuAuto?.facturas?.length > 0"
+          />
+          <div v-else>
+            <div class="text-h4 text-center">
+              Este asesor no cuenta con facturas de Su Auto para este período
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <div>
+            <div>
+              <strong>Total base contratos:</strong>
+              {{
+                comisionVendedorSuAuto?.totalContratos?.toLocaleString(
+                  "es-MX",
+                  {
+                    style: "currency",
+                    currency: "MXN",
+                  }
+                )
+              }}
+            </div>
+            <div>
+              <strong>Total base facturas:</strong>
+              {{
+                comisionVendedorSuAuto?.totalFacturas?.toLocaleString("es-MX", {
+                  style: "currency",
+                  currency: "MXN",
+                })
+              }}
+            </div>
+            <div>
+              <strong>Total a pagar:</strong>
+              {{
+                comisionVendedorSuAuto?.totalAPagar?.toLocaleString("es-MX", {
+                  style: "currency",
+                  currency: "MXN",
+                })
+              }}
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-actions class="botones--div__comision">
+          <!-- <div class="boton--superior">
+            <q-btn
+              label="Descargar PDF"
+              color="primary"
+              @click="descargarPDF"
+              icon-right="cloud_download"
+              :loading="cargandoPDF"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+          </div> -->
+
+          <div class="botones--inferiores">
+            <q-btn
+              label="Confirmar"
+              color="green"
+              @click="enviarComision"
+              icon-right="check"
+              :loading="cargandoConfirmacion"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+
+            <q-btn
+              label="Rechazar"
+              color="red"
+              @click="rechazoComision"
+              icon-right="close"
+              :loading="cargandoRechazar"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+          </div>
+        </q-card-actions>
+      </q-card>
+
+      <q-card v-else>
         <q-tabs v-model="tabs" indicator-color="yellow" align="justify">
           <q-tab
             name="comision"
@@ -34,34 +330,36 @@
               <div style="display: block">
                 <div>
                   <strong>Nombre:</strong>
-                  {{ comisionVendedor.infoVendedor.nombreEmpleado }}
+                  {{ comisionVendedor?.infoVendedor?.nombreEmpleado }}
                 </div>
                 <div>
                   <strong>No. de empleado:</strong>
-                  {{ comisionVendedor.infoVendedor.numeroEmpleado }}
+                  {{ comisionVendedor?.infoVendedor?.numeroEmpleado }}
                 </div>
                 <div>
                   <strong>Nivel:</strong>
                   <q-chip
-                    v-if="comisionVendedor.infoVendedor.nivel === 'oro'"
+                    v-if="comisionVendedor?.infoVendedor?.nivel === 'oro'"
                     color="orange"
                     text-color="white"
                     label="ORO"
                   />
                   <q-chip
-                    v-else-if="comisionVendedor.infoVendedor.nivel === 'plata'"
+                    v-else-if="
+                      comisionVendedor?.infoVendedor?.nivel === 'plata'
+                    "
                     color="grey"
                     text-color="white"
                     label="PLATA"
                   />
                   <q-chip
-                    v-if="comisionVendedor.infoVendedor.nivel === 'bronce'"
+                    v-if="comisionVendedor?.infoVendedor?.nivel === 'bronce'"
                     color="brown"
                     text-color="white"
                     label="BRONCE"
                   />
                   <q-chip
-                    v-if="comisionVendedor.infoVendedor.nivel === 'asesor'"
+                    v-if="comisionVendedor?.infoVendedor?.nivel === 'asesor'"
                     color="green"
                     text-color="white"
                     label="ASESOR"
@@ -77,13 +375,13 @@
                   flat
                   hide-bottom
                   class="my-sticky-header-column-table"
-                  :rows="comisionVendedor.facturas"
+                  :rows="comisionVendedor?.facturas"
                   :columns="columnasFactuas"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
                   v-if="
-                    comisionVendedor.infoVendedor.claveDepartamento === 'NUE'
+                    comisionVendedor?.infoVendedor.claveDepartamento === 'NUE'
                   "
                 >
                   <template v-slot:body="props">
@@ -287,13 +585,13 @@
                   flat
                   hide-bottom
                   class="my-sticky-header-column-table"
-                  :rows="comisionVendedor.facturas"
+                  :rows="comisionVendedor?.facturas"
                   :columns="columnasFacturasSeminuevas"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
                   v-else-if="
-                    comisionVendedor.infoVendedor.claveDepartamento === 'SEM'
+                    comisionVendedor?.infoVendedor.claveDepartamento === 'SEM'
                   "
                 >
                   <template v-slot:body="props">
@@ -390,7 +688,7 @@
                   flat
                   hide-bottom
                   class="my-sticky-header-column-table q-mt-lg"
-                  :rows="comisionVendedor.pvas"
+                  :rows="comisionVendedor?.pvas"
                   :columns="columnasPvas"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
@@ -453,13 +751,13 @@
                   flat
                   hide-bottom
                   class="my-sticky-header-column-table q-mt-lg"
-                  :rows="comisionVendedor.totalUtilidadBruta"
+                  :rows="comisionVendedor?.totalUtilidadBruta"
                   :columns="columnasUtilidadBruta"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
                   v-if="
-                    comisionVendedor.infoVendedor.claveDepartamento === 'NUE'
+                    comisionVendedor?.infoVendedor?.claveDepartamento === 'NUE'
                   "
                 >
                   <template v-slot:body="props">
@@ -498,13 +796,13 @@
                   flat
                   hide-bottom
                   class="my-sticky-header-column-table q-mt-lg"
-                  :rows="comisionVendedor.totalUtilidadBruta"
+                  :rows="comisionVendedor?.totalUtilidadBruta"
                   :columns="columnasUtilidadBrutaSeminuevos"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
                   v-if="
-                    comisionVendedor.infoVendedor.claveDepartamento === 'SEM'
+                    comisionVendedor?.infoVendedor?.claveDepartamento === 'SEM'
                   "
                 >
                   <template v-slot:body="props">
@@ -551,7 +849,7 @@
                   flat
                   hide-bottom
                   class="my-sticky-header-column-table q-mt-lg"
-                  :rows="comisionVendedor.kpis"
+                  :rows="comisionVendedor?.kpis"
                   :columns="columnasKPIs"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
@@ -626,13 +924,13 @@
                   flat
                   hide-bottom
                   class="my-sticky-header-column-table q-mt-lg q-mb-lg"
-                  :rows="comisionVendedor.descuentosVendedor"
+                  :rows="comisionVendedor?.descuentosVendedor"
                   :columns="columnasDescuentosVendedor"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
                   v-if="
-                    comisionVendedor.infoVendedor.claveDepartamento === 'NUE'
+                    comisionVendedor?.infoVendedor?.claveDepartamento === 'NUE'
                   "
                 >
                   <template v-slot:body="props">
@@ -706,13 +1004,13 @@
                   flat
                   hide-bottom
                   class="my-sticky-header-column-table q-mt-lg q-mb-lg"
-                  :rows="comisionVendedor.descuentosVendedor"
+                  :rows="comisionVendedor?.descuentosVendedor"
                   :columns="columnasDescuentosVendedorSeminuevos"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
                   v-else-if="
-                    comisionVendedor.infoVendedor.claveDepartamento === 'SEM'
+                    comisionVendedor?.infoVendedor?.claveDepartamento === 'SEM'
                   "
                 >
                   <template v-slot:body="props">
@@ -773,7 +1071,8 @@
                   <div class="text-h4">
                     No hay bono del departamento de unidades
                     {{
-                      comisionVendedor.infoVendedor.claveDepartamento === "NUE"
+                      comisionVendedor?.infoVendedor?.claveDepartamento ===
+                      "NUE"
                         ? "seminuevas"
                         : "nuevas"
                     }}
@@ -789,13 +1088,13 @@
                   flat
                   hide-bottom
                   class="my-sticky-header-column-table"
-                  :rows="comisionBonoVendedor.facturas"
+                  :rows="comisionBonoVendedor?.facturas"
                   :columns="columnasFactuas"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
                   v-if="
-                    comisionBonoVendedor.infoVendedor.claveDepartamento ===
+                    comisionBonoVendedor?.infoVendedor?.claveDepartamento ===
                     'NUE'
                   "
                 >
@@ -1000,13 +1299,13 @@
                   flat
                   hide-bottom
                   class="my-sticky-header-column-table"
-                  :rows="comisionBonoVendedor.facturas"
+                  :rows="comisionBonoVendedor?.facturas"
                   :columns="columnasFacturasSeminuevas"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
                   v-else-if="
-                    comisionBonoVendedor.infoVendedor.claveDepartamento ===
+                    comisionBonoVendedor?.infoVendedor?.claveDepartamento ===
                     'SEM'
                   "
                 >
@@ -1104,7 +1403,7 @@
                   flat
                   hide-bottom
                   class="my-sticky-header-column-table q-mt-lg"
-                  :rows="comisionBonoVendedor.pvas"
+                  :rows="comisionBonoVendedor?.pvas"
                   :columns="columnasPvas"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
@@ -1167,13 +1466,13 @@
                   flat
                   hide-bottom
                   class="my-sticky-header-column-table q-mt-lg"
-                  :rows="comisionBonoVendedor.totalUtilidadBruta"
+                  :rows="comisionBonoVendedor?.totalUtilidadBruta"
                   :columns="columnasUtilidadBruta"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
                   v-if="
-                    comisionBonoVendedor.infoVendedor.claveDepartamento ===
+                    comisionBonoVendedor?.infoVendedor?.claveDepartamento ===
                     'NUE'
                   "
                 >
@@ -1213,13 +1512,13 @@
                   flat
                   hide-bottom
                   class="my-sticky-header-column-table q-mt-lg"
-                  :rows="comisionBonoVendedor.totalUtilidadBruta"
+                  :rows="comisionBonoVendedor?.totalUtilidadBruta"
                   :columns="columnasUtilidadBrutaSeminuevos"
                   no-data-label="No se encontró informacion disponible."
                   no-results-label="No se encontraron coincidencias."
                   :pagination="pagination"
                   v-if="
-                    comisionBonoVendedor.infoVendedor.claveDepartamento ===
+                    comisionBonoVendedor?.infoVendedor?.claveDepartamento ===
                     'SEM'
                   "
                 >
@@ -1318,9 +1617,15 @@ import { useKpiStore } from "src/stores/catalogos/kpis";
 import { useRouter } from "vue-router";
 import { listaMeses } from "src/helpers/listas";
 import { useAutorizacionesStore } from "src/stores/autorizaciones";
+import { useFacturasStore } from "src/stores/catalogos/facturas";
+import { formatearFecha } from "src/helpers/formatearFecha";
 
 export default {
   setup() {
+    const useFacturas = useFacturasStore();
+    const { obtenerComisionesSuAuto } = useFacturas;
+    const { comisionVendedorSuAuto } = storeToRefs(useFacturas);
+
     const useFormularios = useFormulariosStore();
     const { desencriptarData } = useFormularios;
 
@@ -1329,9 +1634,14 @@ export default {
       obtenerComisionVendedor,
       obtenerComisionBonoVendedor,
       obtenerBonoAprobado,
+      obtenerInfoVendedor,
     } = useKpis;
-    const { comisionVendedor, comisionBonoVendedor, bonoAprobado } =
-      storeToRefs(useKpis);
+    const {
+      comisionVendedor,
+      comisionBonoVendedor,
+      bonoAprobado,
+      informacionVendedor,
+    } = storeToRefs(useKpis);
 
     const useAutorizaciones = useAutorizacionesStore();
     const {
@@ -1640,6 +1950,174 @@ export default {
       },
     ];
 
+    const columnasComisionSuAuto = [
+      {
+        name: "contrato",
+        label: "Contrato",
+        align: "center",
+        field: "contrato",
+      },
+      {
+        name: "fechaContrato",
+        label: "Fecha contrato",
+        align: "center",
+        field: "fechaContrato",
+      },
+      {
+        name: "plan",
+        label: "Plan",
+        align: "center",
+        field: "plan",
+      },
+      {
+        name: "modelo",
+        label: "Modelo",
+        align: "center",
+        field: "tu",
+      },
+      {
+        name: "cliente",
+        label: "Cliente",
+        align: "center",
+        field: "cliente",
+      },
+      {
+        name: "precioGuia",
+        label: "Precio distribuidor",
+        align: "center",
+        field: (row) =>
+          row.precioGuia
+            ? row.precioGuia.toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              })
+            : "0".toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              }),
+      },
+    ];
+
+    const columnasComisionCoorSuAuto = [
+      {
+        name: "contrato",
+        label: "Contrato",
+        align: "center",
+        field: "contrato",
+      },
+      {
+        name: "fechaContrato",
+        label: "Fecha contrato",
+        align: "center",
+        field: "fechaContrato",
+      },
+      {
+        name: "plan",
+        label: "Plan",
+        align: "center",
+        field: "plan",
+      },
+      {
+        name: "modelo",
+        label: "Modelo",
+        align: "center",
+        field: "tu",
+      },
+      {
+        name: "cliente",
+        label: "Cliente",
+        align: "center",
+        field: "cliente",
+      },
+      {
+        name: "precioGuia",
+        label: "Precio distribuidor",
+        align: "center",
+        field: (row) =>
+          row.precioGuia
+            ? row.precioGuia.toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              })
+            : "0".toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              }),
+      },
+      {
+        name: "pago",
+        label: "Pago por contrato",
+        align: "center",
+        field: (row) =>
+          row.pago
+            ? row.pago.toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              })
+            : "0".toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              }),
+      },
+    ];
+
+    const columnasFacturasSuAuto = [
+      {
+        name: "folioFactura",
+        label: "Folio",
+        align: "center",
+        field: "factura",
+      },
+      {
+        name: "fechaFactura",
+        label: "Fecha",
+        align: "center",
+        field: (row) => formatearFecha(row.fecha_facturacion),
+      },
+      {
+        name: "modelo",
+        label: "Modelo",
+        align: "center",
+        field: "modelo",
+      },
+      {
+        name: "serie",
+        label: "Serie",
+        align: "center",
+        field: "vin",
+      },
+      {
+        name: "importe_venta",
+        label: "Importe de venta",
+        align: "center",
+        field: (row) =>
+          row.importe_venta
+            ? row.importe_venta.toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              })
+            : "0".toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              }),
+      },
+      {
+        name: "utilidad",
+        label: "Utilidad",
+        align: "center",
+        field: (row) =>
+          row.utilidad
+            ? row.utilidad.toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              })
+            : "0".toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              }),
+      },
+    ];
+
     const tabs = ref("comision");
 
     const autorizaciones = ref(null);
@@ -1668,18 +2146,27 @@ export default {
         mes: infoUrl.value.mes,
       };
 
-      await obtenerComisionVendedor(objBusqueda);
+      await obtenerInfoVendedor(objBusqueda.idAsesor);
 
-      const busquedaBonoObj = {
-        idAsesor: infoUrl.value.idAsesor,
-        anio: infoUrl.value.anio,
-        mes: infoUrl.value.mes,
-        claveDepartamentoVendedor:
-          infoVendedorAutorizacion.value.claveDepartamento,
-        desdeCalculador: true,
-      };
+      if (
+        informacionVendedor.value.claveDepartamento == "SUAUTO" ||
+        informacionVendedor.value.claveDepartamento == "COOR SUAUTO"
+      ) {
+        await obtenerComisionesSuAuto(objBusqueda);
+      } else {
+        await obtenerComisionVendedor(objBusqueda);
 
-      await obtenerComisionBonoVendedor(busquedaBonoObj);
+        const busquedaBonoObj = {
+          idAsesor: infoUrl.value.idAsesor,
+          anio: infoUrl.value.anio,
+          mes: infoUrl.value.mes,
+          claveDepartamentoVendedor:
+            infoVendedorAutorizacion.value.claveDepartamento,
+          desdeCalculador: true,
+        };
+
+        await obtenerComisionBonoVendedor(busquedaBonoObj);
+      }
     };
 
     const enviarComision = async () => {
@@ -1756,6 +2243,10 @@ export default {
       columnasDescuentosVendedorSeminuevos,
       columnasDescuentosNoExisten,
       columnasUtilidadBrutaSeminuevos,
+      columnasComisionSuAuto,
+      columnasComisionCoorSuAuto,
+      columnasFacturasSuAuto,
+      comisionVendedorSuAuto,
       tabs,
       // Methods
       enviarComision,

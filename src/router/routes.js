@@ -23,6 +23,16 @@ const routes = [
           ),
       },
       {
+        path: "/panelControl",
+        icono: "admin_panel_settings",
+        label: "Panel Control",
+        name: "panelControl",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/panelcontrol/PanelControlModule.vue"
+          ),
+      },
+      {
         path: "panelFacturas",
         icono: "description",
         label: "Panel de Facturas",
@@ -30,6 +40,16 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "dashboard" */ "src/modules/facturas/PanelFacturas.vue"
+          ),
+      },
+      {
+        path: "suAuto",
+        icono: "drive_eta",
+        label: "SuAuto",
+        name: "suAuto",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/facturas/SuAutoModule.vue"
           ),
       },
       {
@@ -116,7 +136,7 @@ const routes = [
         path: "kpis",
         icono: "checklist",
         label: "Catálogo KPIS",
-        name: "kpis",
+        name: "catalogoKpis",
         component: () =>
           import(
             /* webpackChunkName: "dashboard" */ "src/modules/catalogos/PanelKpis.vue"

@@ -55,6 +55,8 @@ import { useFacturasStore } from "src/stores/catalogos/facturas";
 import { useAseguradorasStore } from "src/stores/catalogos/aseguradoras";
 import { useKpiStore } from "src/stores/catalogos/kpis";
 import { useAutorizacionesStore } from "src/stores/autorizaciones";
+import { useModulosStore } from "src/stores/permisosModulos";
+import { ID_SERVIDOR } from "src/constant/servidor";
 //import { useDashboardStore } from "../stores/dashboard";
 
 export default {
@@ -67,7 +69,7 @@ export default {
     const router = useRouter();
 
     const { usuarioAutenticado } = storeToRefs(useUsuario);
-    const { cerrarSesion, obtenerPerfilUsuario } = useUsuario;
+    const { cerrarSesion } = useUsuario;
 
     const useEmpresas = useEmpresasStore();
     const { obtenerEmpresas } = useEmpresas;
@@ -87,6 +89,9 @@ export default {
     const useAutorizaciones = useAutorizacionesStore();
     const { obtenerAutorizadores } = useAutorizaciones;
 
+    const useModulos = useModulosStore();
+    const { obtenerUsuariosModulo } = useModulos;
+
     onMounted(async () => {
       await obtenerEmpresas();
       await obtenerSucursales();
@@ -95,12 +100,14 @@ export default {
       await obtenerCatalogoAseguradoras();
       await obtenerClientes();
       await obtenerAutorizadores();
+      await obtenerUsuariosModulo(ID_SERVIDOR);
     });
 
     const logout = () => {
       router.push("/");
       cerrarSesion();
     };
+
     const inicialesUsuarios = computed(() => {
       const nombreArray = usuarioAutenticado?.value?.nombre.split(" ");
       if (!nombreArray) return;
