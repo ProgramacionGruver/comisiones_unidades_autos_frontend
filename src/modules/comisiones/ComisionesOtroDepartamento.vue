@@ -950,21 +950,7 @@ export default {
     ];
 
     onMounted(async () => {
-      if (
-        perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
-        "AUXILIAR NUEVAS"
-      ) {
-        titulo.value =
-          "Calculador de Bono de Vendedores de Seminuevas para Unidades Nuevas";
-      } else if (
-        perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
-        "AUXILIAR SEMINUEVAS"
-      ) {
-        titulo.value =
-          "Calculador de Bono de Vendedores de Unidades Nuevas para Seminuevas";
-      } else {
-        titulo.value = "Calculador de Bono de Vendedores de Otro Departamento";
-      }
+      titulo.value = "Calculador de Bono de Vendedores de Otro Departamento";
 
       cargando_1.value = false;
     });
