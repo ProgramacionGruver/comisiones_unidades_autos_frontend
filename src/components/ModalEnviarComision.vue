@@ -137,7 +137,6 @@ export default {
         const linkComision = `https://www.gruver.com.mx/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}/${autorizaciones.idAutorizacion}`;
         // const linkComision = `` // <--------- Cambiar a productivo
 
-        console.log(linkComision);
         const mesNombre = listaMeses[mes - 1];
 
         const objData = {
