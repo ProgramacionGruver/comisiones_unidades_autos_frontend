@@ -75,7 +75,8 @@
         <div v-if="datosCargados && !cargando">
           <q-card
             v-if="
-              comisionVendedorSuAuto.infoVendedor.claveDepartamento === 'SUAUTO'
+              comisionVendedorSuAuto?.infoVendedor?.claveDepartamento ===
+              'SUAUTO'
             "
           >
             <q-card-section>
@@ -91,15 +92,17 @@
                 <div style="display: block">
                   <div>
                     <strong>Nombre:</strong>
-                    {{ comisionVendedorSuAuto.infoVendedor.nombreEmpleado }}
+                    {{ comisionVendedorSuAuto?.infoVendedor?.nombreEmpleado }}
                   </div>
                   <div>
                     <strong>No. de empleado:</strong>
-                    {{ comisionVendedorSuAuto.infoVendedor.numeroEmpleado }}
+                    {{ comisionVendedorSuAuto?.infoVendedor?.numeroEmpleado }}
                   </div>
                   <div>
                     <strong>Puesto:</strong>
-                    {{ comisionVendedorSuAuto.infoVendedor.claveDepartamento }}
+                    {{
+                      comisionVendedorSuAuto?.infoVendedor?.claveDepartamento
+                    }}
                   </div>
                 </div>
                 <div>
@@ -121,12 +124,12 @@
                 flat
                 hide-bottom
                 class="my-sticky-header-column-table"
-                :rows="comisionVendedorSuAuto.contratos"
+                :rows="comisionVendedorSuAuto?.contratos"
                 :columns="columnasComisionSuAuto"
                 no-data-label="No se encontró informacion disponible."
                 no-results-label="No se encontraron coincidencias."
                 :pagination="pagination"
-                v-if="comisionVendedorSuAuto.contratos.length > 0"
+                v-if="comisionVendedorSuAuto?.contratos?.length > 0"
               />
               <div v-else>
                 <div class="text-h4 text-center">
@@ -143,12 +146,12 @@
                 flat
                 hide-bottom
                 class="my-sticky-header-column-table"
-                :rows="comisionVendedorSuAuto.facturas"
+                :rows="comisionVendedorSuAuto?.facturas"
                 :columns="columnasFacturasSuAuto"
                 no-data-label="No se encontró informacion disponible."
                 no-results-label="No se encontraron coincidencias."
                 :pagination="pagination"
-                v-if="comisionVendedorSuAuto.facturas.length > 0"
+                v-if="comisionVendedorSuAuto?.facturas?.length > 0"
               />
               <div v-else>
                 <div class="text-h4 text-center">
@@ -162,7 +165,7 @@
                 <div>
                   <strong>Total base contratos:</strong>
                   {{
-                    comisionVendedorSuAuto.totalContratos.toLocaleString(
+                    comisionVendedorSuAuto?.totalContratos?.toLocaleString(
                       "es-MX",
                       {
                         style: "currency",
@@ -174,7 +177,7 @@
                 <div>
                   <strong>Total base facturas:</strong>
                   {{
-                    comisionVendedorSuAuto.totalFacturas.toLocaleString(
+                    comisionVendedorSuAuto?.totalFacturas?.toLocaleString(
                       "es-MX",
                       {
                         style: "currency",
@@ -186,10 +189,13 @@
                 <div>
                   <strong>Total a pagar:</strong>
                   {{
-                    comisionVendedorSuAuto.totalAPagar.toLocaleString("es-MX", {
-                      style: "currency",
-                      currency: "MXN",
-                    })
+                    comisionVendedorSuAuto?.totalAPagar?.toLocaleString(
+                      "es-MX",
+                      {
+                        style: "currency",
+                        currency: "MXN",
+                      }
+                    )
                   }}
                 </div>
               </div>
@@ -198,7 +204,7 @@
 
           <q-card
             v-else-if="
-              comisionVendedorSuAuto.infoVendedor.claveDepartamento ===
+              comisionVendedorSuAuto?.infoVendedor?.claveDepartamento ===
               'COOR SUAUTO'
             "
           >
@@ -215,15 +221,17 @@
                 <div style="display: block">
                   <div>
                     <strong>Nombre:</strong>
-                    {{ comisionVendedorSuAuto.infoVendedor.nombreEmpleado }}
+                    {{ comisionVendedorSuAuto?.infoVendedor?.nombreEmpleado }}
                   </div>
                   <div>
                     <strong>No. de empleado:</strong>
-                    {{ comisionVendedorSuAuto.infoVendedor.numeroEmpleado }}
+                    {{ comisionVendedorSuAuto?.infoVendedor?.numeroEmpleado }}
                   </div>
                   <div>
                     <strong>Puesto:</strong>
-                    {{ comisionVendedorSuAuto.infoVendedor.claveDepartamento }}
+                    {{
+                      comisionVendedorSuAuto?.infoVendedor?.claveDepartamento
+                    }}
                   </div>
                 </div>
                 <div>
@@ -245,12 +253,12 @@
                 flat
                 hide-bottom
                 class="my-sticky-header-column-table"
-                :rows="comisionVendedorSuAuto.contratos"
+                :rows="comisionVendedorSuAuto?.contratos"
                 :columns="columnasComisionSuAuto"
                 no-data-label="No se encontró informacion disponible."
                 no-results-label="No se encontraron coincidencias."
                 :pagination="pagination"
-                v-if="comisionVendedorSuAuto.contratos.length > 0"
+                v-if="comisionVendedorSuAuto?.contratos?.length > 0"
               />
               <div v-else>
                 <div class="text-h4 text-center">
@@ -267,12 +275,12 @@
                 flat
                 hide-bottom
                 class="my-sticky-header-column-table"
-                :rows="comisionVendedorSuAuto.facturas"
+                :rows="comisionVendedorSuAuto?.facturas"
                 :columns="columnasFacturasSuAuto"
                 no-data-label="No se encontró informacion disponible."
                 no-results-label="No se encontraron coincidencias."
                 :pagination="pagination"
-                v-if="comisionVendedorSuAuto.facturas.length > 0"
+                v-if="comisionVendedorSuAuto?.facturas?.length > 0"
               />
               <div v-else>
                 <div class="text-h4 text-center">
@@ -286,7 +294,7 @@
                 <div>
                   <strong>Total base contratos:</strong>
                   {{
-                    comisionVendedorSuAuto.totalContratos.toLocaleString(
+                    comisionVendedorSuAuto?.totalContratos?.toLocaleString(
                       "es-MX",
                       {
                         style: "currency",
@@ -298,7 +306,7 @@
                 <div>
                   <strong>Total base facturas:</strong>
                   {{
-                    comisionVendedorSuAuto.totalFacturas.toLocaleString(
+                    comisionVendedorSuAuto?.totalFacturas?.toLocaleString(
                       "es-MX",
                       {
                         style: "currency",
@@ -310,10 +318,13 @@
                 <div>
                   <strong>Total a pagar:</strong>
                   {{
-                    comisionVendedorSuAuto.totalAPagar.toLocaleString("es-MX", {
-                      style: "currency",
-                      currency: "MXN",
-                    })
+                    comisionVendedorSuAuto?.totalAPagar?.toLocaleString(
+                      "es-MX",
+                      {
+                        style: "currency",
+                        currency: "MXN",
+                      }
+                    )
                   }}
                 </div>
               </div>
@@ -349,23 +360,23 @@
                     <div style="display: block">
                       <div>
                         <strong>Nombre:</strong>
-                        {{ comisionVendedor.infoVendedor.nombreEmpleado }}
+                        {{ comisionVendedor?.infoVendedor?.nombreEmpleado }}
                       </div>
                       <div>
                         <strong>No. de empleado:</strong>
-                        {{ comisionVendedor.infoVendedor.numeroEmpleado }}
+                        {{ comisionVendedor?.infoVendedor?.numeroEmpleado }}
                       </div>
                       <div>
                         <strong>Nivel:</strong>
                         <q-chip
-                          v-if="comisionVendedor.infoVendedor.nivel === 'oro'"
+                          v-if="comisionVendedor?.infoVendedor?.nivel === 'oro'"
                           color="orange"
                           text-color="white"
                           label="ORO"
                         />
                         <q-chip
                           v-else-if="
-                            comisionVendedor.infoVendedor.nivel === 'plata'
+                            comisionVendedor?.infoVendedor?.nivel === 'plata'
                           "
                           color="grey"
                           text-color="white"
@@ -373,7 +384,7 @@
                         />
                         <q-chip
                           v-if="
-                            comisionVendedor.infoVendedor.nivel === 'bronce'
+                            comisionVendedor?.infoVendedor?.nivel === 'bronce'
                           "
                           color="brown"
                           text-color="white"
@@ -381,7 +392,7 @@
                         />
                         <q-chip
                           v-if="
-                            comisionVendedor.infoVendedor.nivel === 'asesor'
+                            comisionVendedor?.infoVendedor?.nivel === 'asesor'
                           "
                           color="green"
                           text-color="white"
@@ -408,13 +419,13 @@
                       flat
                       hide-bottom
                       class="my-sticky-header-column-table"
-                      :rows="comisionVendedor.facturas"
+                      :rows="comisionVendedor?.facturas"
                       :columns="columnasFactuas"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
                       :pagination="pagination"
                       v-if="
-                        comisionVendedor.infoVendedor.claveDepartamento ===
+                        comisionVendedor?.infoVendedor?.claveDepartamento ===
                         'NUE'
                       "
                     >
@@ -636,13 +647,13 @@
                       flat
                       hide-bottom
                       class="my-sticky-header-column-table"
-                      :rows="comisionVendedor.facturas"
+                      :rows="comisionVendedor?.facturas"
                       :columns="columnasFacturasSeminuevas"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
                       :pagination="pagination"
                       v-else-if="
-                        comisionVendedor.infoVendedor.claveDepartamento ===
+                        comisionVendedor?.infoVendedor?.claveDepartamento ===
                         'SEM'
                       "
                     >
@@ -746,7 +757,7 @@
                       flat
                       hide-bottom
                       class="my-sticky-header-column-table q-mt-lg"
-                      :rows="comisionVendedor.pvas"
+                      :rows="comisionVendedor?.pvas"
                       :columns="columnasPvas"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
@@ -815,13 +826,13 @@
                       flat
                       hide-bottom
                       class="my-sticky-header-column-table q-mt-lg"
-                      :rows="comisionVendedor.totalUtilidadBruta"
+                      :rows="comisionVendedor?.totalUtilidadBruta"
                       :columns="columnasUtilidadBruta"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
                       :pagination="pagination"
                       v-if="
-                        comisionVendedor.infoVendedor.claveDepartamento ===
+                        comisionVendedor?.infoVendedor?.claveDepartamento ===
                         'NUE'
                       "
                     >
@@ -867,13 +878,13 @@
                       flat
                       hide-bottom
                       class="my-sticky-header-column-table q-mt-lg"
-                      :rows="comisionVendedor.totalUtilidadBruta"
+                      :rows="comisionVendedor?.totalUtilidadBruta"
                       :columns="columnasUtilidadBrutaSeminuevos"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
                       :pagination="pagination"
                       v-if="
-                        comisionVendedor.infoVendedor.claveDepartamento ===
+                        comisionVendedor?.infoVendedor?.claveDepartamento ===
                         'SEM'
                       "
                     >
@@ -927,7 +938,7 @@
                       flat
                       hide-bottom
                       class="my-sticky-header-column-table q-mt-lg"
-                      :rows="comisionVendedor.kpis"
+                      :rows="comisionVendedor?.kpis"
                       :columns="columnasKPIs"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
@@ -1002,13 +1013,13 @@
                       flat
                       hide-bottom
                       class="my-sticky-header-column-table q-mt-lg q-mb-lg"
-                      :rows="comisionVendedor.descuentosVendedor"
+                      :rows="comisionVendedor?.descuentosVendedor"
                       :columns="columnasDescuentosVendedor"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
                       :pagination="pagination"
                       v-if="
-                        comisionVendedor.infoVendedor.claveDepartamento ===
+                        comisionVendedor?.infoVendedor?.claveDepartamento ===
                         'NUE'
                       "
                     >
@@ -1095,13 +1106,13 @@
                       flat
                       hide-bottom
                       class="my-sticky-header-column-table q-mt-lg q-mb-lg"
-                      :rows="comisionVendedor.descuentosVendedor"
+                      :rows="comisionVendedor?.descuentosVendedor"
                       :columns="columnasDescuentosVendedorSeminuevos"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
                       :pagination="pagination"
                       v-else-if="
-                        comisionVendedor.infoVendedor.claveDepartamento ===
+                        comisionVendedor?.infoVendedor?.claveDepartamento ===
                         'SEM'
                       "
                     >
@@ -1169,7 +1180,7 @@
                       <div class="text-h4">
                         No hay bono del departamento de unidades
                         {{
-                          comisionVendedor.infoVendedor.claveDepartamento ===
+                          comisionVendedor?.infoVendedor?.claveDepartamento ===
                           "NUE"
                             ? "seminuevas"
                             : "nuevas"
@@ -1186,14 +1197,14 @@
                       flat
                       hide-bottom
                       class="my-sticky-header-column-table"
-                      :rows="comisionBonoVendedor.facturas"
+                      :rows="comisionBonoVendedor?.facturas"
                       :columns="columnasFactuas"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
                       :pagination="pagination"
                       v-if="
-                        comisionBonoVendedor.infoVendedor.claveDepartamento ===
-                        'SEM'
+                        comisionBonoVendedor?.infoVendedor
+                          ?.claveDepartamento === 'SEM'
                       "
                     >
                       <template v-slot:body="props">
@@ -1414,14 +1425,14 @@
                       flat
                       hide-bottom
                       class="my-sticky-header-column-table"
-                      :rows="comisionBonoVendedor.facturas"
+                      :rows="comisionBonoVendedor?.facturas"
                       :columns="columnasFacturasSeminuevas"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
                       :pagination="pagination"
                       v-else-if="
-                        comisionBonoVendedor.infoVendedor.claveDepartamento ===
-                        'NUE'
+                        comisionBonoVendedor?.infoVendedor
+                          ?.claveDepartamento === 'NUE'
                       "
                     >
                       <template v-slot:body="props">
@@ -1524,7 +1535,7 @@
                       flat
                       hide-bottom
                       class="my-sticky-header-column-table q-mt-lg"
-                      :rows="comisionBonoVendedor.pvas"
+                      :rows="comisionBonoVendedor?.pvas"
                       :columns="columnasPvas"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
@@ -1593,14 +1604,14 @@
                       flat
                       hide-bottom
                       class="my-sticky-header-column-table q-mt-lg"
-                      :rows="comisionBonoVendedor.totalUtilidadBruta"
+                      :rows="comisionBonoVendedor?.totalUtilidadBruta"
                       :columns="columnasUtilidadBruta"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
                       :pagination="pagination"
                       v-if="
-                        comisionBonoVendedor.infoVendedor.claveDepartamento ===
-                        'NUE'
+                        comisionBonoVendedor?.infoVendedor
+                          ?.claveDepartamento === 'NUE'
                       "
                     >
                       <template v-slot:body="props">
@@ -1645,14 +1656,14 @@
                       flat
                       hide-bottom
                       class="my-sticky-header-column-table q-mt-lg"
-                      :rows="comisionBonoVendedor.totalUtilidadBruta"
+                      :rows="comisionBonoVendedor?.totalUtilidadBruta"
                       :columns="columnasUtilidadBrutaSeminuevos"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
                       :pagination="pagination"
                       v-if="
-                        comisionBonoVendedor.infoVendedor.claveDepartamento ===
-                        'SEM'
+                        comisionBonoVendedor?.infoVendedor
+                          ?.claveDepartamento === 'SEM'
                       "
                     >
                       <template v-slot:body="props">
