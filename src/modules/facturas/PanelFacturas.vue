@@ -466,7 +466,7 @@ export default {
     onMounted(async () => {
       await obtenerEmpresas();
       await obtenerSucursales();
-      // await obtenerDepartamentos();
+      await obtenerDepartamentos();
       facturaSeleccionada.value = [];
       facturasFiltrada.value = [];
 
