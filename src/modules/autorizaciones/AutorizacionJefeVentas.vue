@@ -14,7 +14,7 @@
       <span>Espere un momento a que los datos sean cargados...</span>
     </div>
     <div>
-      <q-card v-if="infoVendedorAutorizacion?.claveDepartamento === 'SUAUTO'">
+      <q-card v-if="informacionVendedor?.claveDepartamento === 'SUAUTO'">
         <q-card-section>
           <div
             style="
@@ -161,9 +161,7 @@
       </q-card>
 
       <q-card
-        v-else-if="
-          infoVendedorAutorizacion?.claveDepartamento === 'COOR SUAUTO'
-        "
+        v-else-if="informacionVendedor?.claveDepartamento === 'COOR SUAUTO'"
       >
         <q-card-section>
           <div
@@ -2248,6 +2246,7 @@ export default {
       columnasFacturasSuAuto,
       comisionVendedorSuAuto,
       tabs,
+      informacionVendedor,
       // Methods
       enviarComision,
       descargarPDF,
