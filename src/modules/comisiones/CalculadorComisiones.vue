@@ -2119,12 +2119,12 @@ export default {
         field: "cliente",
       },
       {
-        name: "precioGuia",
-        label: "Precio distribuidor",
+        name: "precioLista",
+        label: "Precio",
         align: "center",
         field: (row) =>
-          row.precioGuia
-            ? row.precioGuia.toLocaleString("es-MX", {
+          row.precioLista
+            ? row.precioLista.toLocaleString("es-MX", {
                 style: "currency",
                 currency: "MXN",
               })
