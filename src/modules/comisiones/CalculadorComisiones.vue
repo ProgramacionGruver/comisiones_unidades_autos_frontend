@@ -254,7 +254,7 @@
                 hide-bottom
                 class="my-sticky-header-column-table"
                 :rows="comisionVendedorSuAuto?.contratos"
-                :columns="columnasComisionSuAuto"
+                :columns="columnasComisionCoorSuAuto"
                 no-data-label="No se encontró informacion disponible."
                 no-results-label="No se encontraron coincidencias."
                 :pagination="pagination"
@@ -2125,21 +2125,6 @@ export default {
         field: (row) =>
           row.precioLista
             ? row.precioLista.toLocaleString("es-MX", {
-                style: "currency",
-                currency: "MXN",
-              })
-            : "0".toLocaleString("es-MX", {
-                style: "currency",
-                currency: "MXN",
-              }),
-      },
-      {
-        name: "pago",
-        label: "Pago por contrato",
-        align: "center",
-        field: (row) =>
-          row.pago
-            ? row.pago.toLocaleString("es-MX", {
                 style: "currency",
                 currency: "MXN",
               })
