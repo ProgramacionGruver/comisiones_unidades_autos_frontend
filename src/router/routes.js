@@ -172,6 +172,16 @@ const routes = [
             /* webpackChunkName: "dashboard" */ "src/modules/catalogos/CatalogoAseguradoras.vue"
           ),
       },
+      {
+        path: "catalogoPrevias",
+        icono: "sell",
+        label: "Previas",
+        name: "catalogoPrevias",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/catalogos/CatalogoPrevias.vue"
+          ),
+      },
     ],
   },
   {

@@ -18,15 +18,8 @@
         :pagination="pagination"
       >
         <template v-slot:top>
-          <div
-            style="
-              width: 100%;
-              display: grid;
-              grid-template-columns: 1.8fr 1.8fr 0.4fr;
-              column-gap: 1rem;
-            "
-          >
-            <div>
+          <div class="fit row q-gutter-md">
+            <div class="col">
               <label>Seleccione el año</label>
               <q-select
                 outlined
@@ -35,9 +28,10 @@
                 v-model="anioSeleccionado"
                 map-options
                 option-value="name"
+                @update:model-value="obtenerAutorizaciones"
               />
             </div>
-            <div>
+            <div class="col">
               <label>Seleccione el mes</label>
               <q-select
                 outlined
@@ -46,15 +40,7 @@
                 v-model="mesSeleccionado"
                 map-options
                 option-value="name"
-              />
-            </div>
-            <div>
-              <label class="text-white">......</label>
-              <q-btn
-                label="Buscar"
-                icon-right="search"
-                color="primary"
-                @click="obtenerAutorizaciones"
+                @update:model-value="obtenerAutorizaciones"
               />
             </div>
           </div>
@@ -71,160 +57,202 @@
           </td>
         </template>
 
-        <template v-slot:body-cell-estatus="props">
-          <q-td class="text-center">
-            <div>
-              <q-chip
-                v-if="props.row.estatus === 0"
-                color="gray"
-                text-color="black"
-                label="PENDIENTE"
-              />
-
-              <q-chip
-                v-else-if="props.row.estatus === 1"
-                color="green"
-                text-color="white"
-                label="AUTORIZADA"
-              />
-
-              <q-chip
-                v-else-if="props.row.estatus === 2"
-                color="red"
-                text-color="white"
-                label="RECHAZADA"
-              />
-            </div>
-          </q-td>
+        <template v-slot:header="props">
+          <q-tr
+            :props="props"
+            style="background-color: #1052a0; color: white; font-weight: bold"
+          >
+            <q-th auto-width />
+            <q-th
+              v-for="col in props.cols"
+              :key="col.name"
+              :props="props"
+              :class="col.align"
+            >
+              {{ col.label }}
+            </q-th>
+          </q-tr>
         </template>
 
-        <template v-slot:body-cell-acciones="props">
-          <q-td class="text-center">
-            <div
-              style="
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-              "
-            >
-              <q-btn
-                icon="content_copy"
-                color="primary"
-                flat
-                dense
-                round
-                @click="copiarURL(props.row)"
-                :loading="cargandoCopiar"
-              >
-                <q-tooltip>Copiar link</q-tooltip>
-
-                <template v-slot:loading>
-                  <q-spinner color="primary" />
-                </template>
-              </q-btn>
-              <!-- <q-btn
-                icon="download"
-                color="primary"
-                flat
-                dense
-                round
-                @click="descargarPDF(props.row.urlPDF)"
-              >
-                <q-tooltip>Descargar PDF</q-tooltip>
-              </q-btn> -->
-            </div>
-          </q-td>
-        </template>
-
-        <template v-slot:body-cell-autorizaciones="props">
-          <q-td>
-            <div
-              style="
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-              "
-            >
-              <template
-                v-for="autorizacion in props.row
-                  .autorizaciones_comisiones_autos_detalles"
-                :key="autorizacion.idAutorizacionDetalle"
-              >
-                <q-icon
-                  class="q-mx-sm"
-                  size="2.5rem"
-                  :color="
-                    definirAutorizacion(autorizacion.idEstatusAutorizacion)
-                      .color
-                  "
-                  :name="
-                    definirAutorizacion(autorizacion.idEstatusAutorizacion).icon
+        <template v-slot:body="props">
+          <q-tr :props="props">
+            <q-td auto-width>
+              <q-checkbox v-model="props.expand" :value="!props.expand" />
+            </q-td>
+            <q-td v-for="col in props.cols" :key="col.name" :props="props">
+              <div v-if="col.name === 'numeroEmpleado'">
+                {{
+                  props.row.autorizaciones_comisiones_autos_detalles.find(
+                    (autorizacion) => autorizacion.tipoEmpleado === "VENDEDOR"
+                  ).numeroEmpleado
+                }}
+              </div>
+              <div v-else-if="col.name === 'nombreEmpleado'">
+                {{
+                  props.row.autorizaciones_comisiones_autos_detalles.find(
+                    (autorizacion) => autorizacion.tipoEmpleado === "VENDEDOR"
+                  ).nombreEmpleado
+                }}
+              </div>
+              <div v-else-if="col.name === 'autorizaciones'">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
                   "
                 >
-                  <q-tooltip>
-                    {{
-                      autorizacion.catalogo_tipo_autorizacion.nombreAutorizacion
-                    }}
-                  </q-tooltip>
-                </q-icon>
-              </template>
-            </div>
-          </q-td>
+                  <template
+                    v-for="autorizacion in props.row
+                      .autorizaciones_comisiones_autos_detalles"
+                    :key="autorizacion.idAutorizacionDetalle"
+                  >
+                    <q-icon
+                      class="q-mx-sm"
+                      size="2.5rem"
+                      :color="
+                        definirAutorizacion(autorizacion.idEstatusAutorizacion)
+                          .color
+                      "
+                      :name="
+                        definirAutorizacion(autorizacion.idEstatusAutorizacion)
+                          .icon
+                      "
+                    >
+                      <q-tooltip>
+                        {{
+                          autorizacion.catalogo_tipo_autorizacion
+                            .nombreAutorizacion
+                        }}
+                      </q-tooltip>
+                    </q-icon>
+                  </template>
+                </div>
+              </div>
+              <div v-else-if="col.name === 'estatus'">
+                <q-td class="text-center">
+                  <div>
+                    <q-chip
+                      v-if="props.row.estatus === 0"
+                      color="gray"
+                      text-color="black"
+                      label="PENDIENTE"
+                    />
+
+                    <q-chip
+                      v-else-if="props.row.estatus === 1"
+                      color="green"
+                      text-color="white"
+                      label="AUTORIZADA"
+                    />
+
+                    <q-chip
+                      v-else-if="props.row.estatus === 2"
+                      color="red"
+                      text-color="white"
+                      label="RECHAZADA"
+                    />
+                  </div>
+                </q-td>
+              </div>
+              <div v-else-if="col.name === 'acciones'">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                  "
+                >
+                  <q-btn
+                    icon="content_copy"
+                    color="primary"
+                    flat
+                    dense
+                    round
+                    @click="copiarURL(props.row)"
+                    :loading="cargandoCopiar"
+                  >
+                    <q-tooltip>Copiar link</q-tooltip>
+
+                    <template v-slot:loading>
+                      <q-spinner color="primary" />
+                    </template>
+                  </q-btn>
+                </div>
+              </div>
+              <div v-else-if="col.name === 'monto'">
+                {{
+                  props.row[col.name] > 0
+                    ? props.row[col.name].toLocaleString("es-MX", {
+                        style: "currency",
+                        currency: "MXN",
+                      })
+                    : "0".toLocaleString("es-MX", {
+                        style: "currency",
+                        currency: "MXN",
+                      })
+                }}
+              </div>
+              <div v-else>
+                {{ props.row[col.name] }}
+              </div>
+            </q-td>
+          </q-tr>
+
+          <q-tr
+            v-show="props.expand"
+            :props="props"
+            style="background-color: #f0efef"
+          >
+            <q-td colspan="100%">
+              <q-card>
+                <q-card-section>
+                  <q-table
+                    :columns="columnsDetalles"
+                    :rows="props.row.autorizaciones_comisiones_autos_detalles"
+                    hide-bottom
+                  >
+                    <template v-slot:body-cell-tipoAutorizacion="props">
+                      <q-td>
+                        <div class="text-center">
+                          {{
+                            props.row.catalogo_tipo_autorizacion
+                              .nombreAutorizacion
+                          }}
+                        </div>
+                      </q-td>
+                    </template>
+
+                    <template v-slot:body-cell-estatus="props">
+                      <q-td>
+                        <div class="text-center">
+                          <q-chip
+                            :color="
+                              definirAutorizacion(
+                                props.row.idEstatusAutorizacion
+                              ).color
+                            "
+                            :class="
+                              props.row.idEstatusAutorizacion === 1
+                                ? 'text-black'
+                                : 'text-white'
+                            "
+                            :label="
+                              definirAutorizacion(
+                                props.row.idEstatusAutorizacion
+                              ).texto
+                            "
+                          />
+                        </div>
+                      </q-td>
+                    </template>
+                  </q-table>
+                </q-card-section>
+              </q-card>
+            </q-td>
+          </q-tr>
         </template>
       </q-table>
-      <div v-show="autorizacionSeleccionada.length > 0">
-        <div
-          class="q-ma-md"
-          style="
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-          "
-        >
-          <h3 style="text-align: center">Detalle de la autorización</h3>
-          <q-table
-            :columns="columnsDetalles"
-            :rows="
-              autorizacionSeleccionada[0] &&
-              autorizacionSeleccionada[0]
-                .autorizaciones_comisiones_autos_detalles
-                ? autorizacionSeleccionada[0]
-                    .autorizaciones_comisiones_autos_detalles
-                : []
-            "
-            hide-bottom
-          >
-            <template v-slot:body-cell-tipoAutorizacion="props">
-              <q-td>
-                <div class="text-center">
-                  {{ props.row.catalogo_tipo_autorizacion.nombreAutorizacion }}
-                </div>
-              </q-td>
-            </template>
-
-            <template v-slot:body-cell-estatus="props">
-              <q-td>
-                <div class="text-center">
-                  <q-chip
-                    :color="
-                      definirAutorizacion(props.row.idEstatusAutorizacion).color
-                    "
-                    :class="
-                      props.row.idEstatusAutorizacion === 1
-                        ? 'text-black'
-                        : 'text-white'
-                    "
-                    :label="
-                      definirAutorizacion(props.row.idEstatusAutorizacion).texto
-                    "
-                  />
-                </div>
-              </q-td>
-            </template>
-          </q-table>
-        </div>
-      </div>
     </div>
     <ModalCopiarUrl ref="modalCopiarUrl" />
   </q-layout>
@@ -279,6 +307,18 @@ export default {
         label: "#",
         align: "center",
         field: "idAutorizacion",
+      },
+      {
+        name: "numeroEmpleado",
+        label: "Número de empleado",
+        align: "center",
+        field: "autorizaciones_comisiones_autos_detalles",
+      },
+      {
+        name: "nombreEmpleado",
+        label: "Nombre del empleado",
+        align: "center",
+        field: "autorizaciones_comisiones_autos_detalles",
       },
       {
         name: "folio",

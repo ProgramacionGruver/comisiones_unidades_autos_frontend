@@ -15,6 +15,7 @@
         v-model:selected="pvaSeleccionado"
         selection="single"
         row-key="idPva"
+        :pagination="pagination"
       >
         <template v-slot:top>
           <div class="fit row q-gutter-sm q-mb-sm justify-end">
@@ -25,6 +26,14 @@
               label="Cargar PVAS"
               no-caps
               @click="nuevoPva"
+            />
+            <q-btn
+              dense
+              color="primary"
+              icon-right="cloud_upload"
+              label="Cargar garantias"
+              no-caps
+              @click="cargaMasivaGarantias"
             />
             <div class="col">
               <q-input outlined dense v-model="buscar" placeholder="Buscar">
@@ -57,7 +66,7 @@
                 @update:model-value="filtrarPvas"
               />
             </div>
-            <div class="col q-ma-sm">
+            <!-- <div class="col q-ma-sm">
               <q-select
                 outlined
                 dense
@@ -67,7 +76,7 @@
                 map-options
                 option-value="name"
               />
-            </div>
+            </div> -->
             <!-- <div class="col q-ma-sm">
               <q-select
                 outlined
@@ -160,6 +169,9 @@
         </div>
       </div>
       <modal-subir-pva ref="modalSubirPva"></modal-subir-pva>
+      <modal-cargar-garantias
+        ref="modalCargarGarantias"
+      ></modal-cargar-garantias>
     </div>
   </q-layout>
 </template>
@@ -170,7 +182,6 @@ import { listaMeses, listaAnios, listaQuincenas } from "src/helpers/listas";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
 import { formatearMonto } from "src/helpers/formatos";
 import { storeToRefs } from "pinia";
-import ModalSubirPva from "src/components/ModalSubirPva.vue";
 import { usePvaStore } from "src/stores/catalogos/pvas";
 import {
   obtenerNumeroQuincena,
@@ -180,10 +191,13 @@ import { tipoPva } from "src/constant/constantes";
 import { convertirTablaCSV } from "src/helpers/generarCSV";
 import { formatearFecha } from "src/helpers/formatearFecha";
 import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
+import ModalSubirPva from "src/components/ModalSubirPva.vue";
+import ModalCargarGarantias from "src/components/ModalCargarGarantias.vue";
 
 export default {
   components: {
     ModalSubirPva,
+    ModalCargarGarantias,
   },
   setup() {
     const useFacturas = useFacturasStore();
@@ -257,6 +271,7 @@ export default {
     ];
 
     const modalSubirPva = ref(null);
+    const modalCargarGarantias = ref(null);
 
     const objPvaInit = ref({
       quincena: obtenerNumeroQuincena(quincenaSeleccionada.value),
@@ -339,30 +354,32 @@ export default {
       convertirTablaCSV(columnas, pvasArray, `PVA_${fecha}`);
     };
 
+    const cargaMasivaGarantias = async () => {
+      modalCargarGarantias.value.abrir();
+    };
+
     return {
       columns,
       buscar: ref(""),
-
       listaAnios,
       listaMeses,
       listaQuincenas,
       anioSeleccionado,
       mesSeleccionado,
       quincenaSeleccionada,
-
       pvas,
-
       modalSubirPva,
       nuevoPva,
       filtrarPvas,
       exportarExcel,
       pvaSeleccionado,
-
       formatearFecha,
-
       departamentos,
       departamentoSeleccionado,
       formatearMonto,
+      cargaMasivaGarantias,
+      modalCargarGarantias,
+      pagination: ref({ rowsPerPage: 10 }),
     };
   },
 };
