@@ -79,7 +79,7 @@ export default {
       }
 
       $q.loading.show({
-        message: "Cargando los contratos...",
+        message: "Cargando contratos...",
         spinner: QSpinnerIos,
       });
 

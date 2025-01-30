@@ -105,6 +105,12 @@
                 text-color="white"
                 class="text-bold"
               />
+              <q-chip
+                v-if="props.row.nivel === 'nuevo'"
+                color="primary"
+                text-color="white"
+                label="NUEVO INGRESO"
+              />
             </div>
           </q-td>
         </template>

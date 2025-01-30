@@ -89,7 +89,7 @@ export default {
       facturaSeleccionada.value = [];
 
       $q.loading.show({
-        message: "Enviando Facturas para Autorizaciones",
+        message: "Cargando facturas en el sistema...",
       });
 
       try {

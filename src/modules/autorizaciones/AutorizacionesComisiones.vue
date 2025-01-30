@@ -43,6 +43,15 @@
                 @update:model-value="obtenerAutorizaciones"
               />
             </div>
+            <div class="col-auto">
+              <div class="text-white">...</div>
+              <q-btn
+                color="green"
+                label="Descargar layout"
+                @click="descargarLayoutNomina"
+                icon="fa-solid fa-file-excel"
+              />
+            </div>
           </div>
         </template>
 
@@ -130,7 +139,13 @@
                 </div>
               </div>
               <div v-else-if="col.name === 'estatus'">
-                <q-td class="text-center">
+                <q-td
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
                   <div>
                     <q-chip
                       v-if="props.row.estatus === 0"
@@ -193,6 +208,19 @@
                       })
                 }}
               </div>
+              <div v-else-if="col.name === 'totalBonos'">
+                {{
+                  props.row[col.name] > 0
+                    ? props.row[col.name].toLocaleString("es-MX", {
+                        style: "currency",
+                        currency: "MXN",
+                      })
+                    : "0".toLocaleString("es-MX", {
+                        style: "currency",
+                        currency: "MXN",
+                      })
+                }}
+              </div>
               <div v-else>
                 {{ props.row[col.name] }}
               </div>
@@ -225,7 +253,14 @@
 
                     <template v-slot:body-cell-estatus="props">
                       <q-td>
-                        <div class="text-center">
+                        <div
+                          style="
+                            width: 100%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                          "
+                        >
                           <q-chip
                             :color="
                               definirAutorizacion(
@@ -264,12 +299,14 @@ import { listaMeses, listaAnios } from "src/helpers/listas";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
 import { useAutorizacionesStore } from "src/stores/autorizaciones";
 import { notificacion } from "src/helpers/mensajes";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { obtenerNumerosDeMes } from "src/constant/constantes";
 import { definirAutorizacion } from "src/helpers/coloresAutorizaciones";
 import { useKpiStore } from "src/stores/catalogos/kpis";
 import { useFormulariosStore } from "src/stores/formularios";
+import "@fortawesome/fontawesome-free/css/all.css";
 import ModalCopiarUrl from "src/components/ModalCopiarUrl.vue";
+import { convertirTablaCSV } from "src/helpers/generarCSV";
 
 export default {
   components: {
@@ -339,9 +376,15 @@ export default {
       },
       {
         name: "monto",
-        label: "Monto a pagar",
+        label: "Monto a pagar comisión",
         align: "center",
         field: "monto",
+      },
+      {
+        name: "totalBonos",
+        label: "Monto a pagar bonos",
+        align: "center",
+        field: "totalBonos",
       },
       {
         name: "estatus",
@@ -398,6 +441,13 @@ export default {
       },
     ];
 
+    onMounted(async () => {
+      await obtenerAutorizacionesByMes(
+        Number(obtenerNumerosDeMes(mesSeleccionado.value)),
+        anioSeleccionado.value
+      );
+    });
+
     const obtenerAutorizaciones = async () => {
       cargando.value = true;
 
@@ -431,6 +481,73 @@ export default {
       modalCopiarUrl.value.abrir(autorizacionObj);
     };
 
+    const descargarLayoutNomina = () => {
+      const columnas = [
+        {
+          label: "Codigo Trabajador",
+          field: "numeroEmpleado",
+        },
+        {
+          label: "ID Comision",
+          field: "idComision",
+        },
+        {
+          label: "Monto",
+          field: "monto",
+        },
+        {
+          label: "NUM. DE QUINCENAS",
+          field: "numQuincenas",
+        },
+        {
+          label: "Importe de la Comision",
+          field: "monto",
+        },
+        {
+          label: "Import de Bonos",
+          field: "totalBonos",
+        },
+        {
+          label: "Fecha Inicial",
+          field: "fechaInicial",
+        },
+        {
+          label: "Nombre",
+          field: "nombreEmpleado",
+        },
+      ];
+
+      const autorizacionesAutorizadas = autorizaciones.value.filter(
+        (autorizacion) => autorizacion.estatus === 1
+      );
+
+      const datos = autorizacionesAutorizadas.map((autorizacion) => {
+        return {
+          numeroEmpleado:
+            autorizacion.autorizaciones_comisiones_autos_detalles.find(
+              (autorizacion) => autorizacion.tipoEmpleado === "VENDEDOR"
+            ).numeroEmpleado,
+          idComision: "NUEVAS",
+          monto: autorizacion.monto,
+          totalBonos: autorizacion.totalBonos,
+          numQuincenas: 2,
+          fechaInicial: "",
+          nombreEmpleado:
+            autorizacion.autorizaciones_comisiones_autos_detalles.find(
+              (autorizacion) => autorizacion.tipoEmpleado === "VENDEDOR"
+            ).nombreEmpleado,
+        };
+      });
+
+      convertirTablaCSV(
+        columnas,
+        datos,
+        `ComisionesUnidadesAutos_${obtenerNumerosDeMes(
+          mesSeleccionado.value
+        )}_${anioSeleccionado.value}`
+      );
+    };
+
     return {
       // States
       anioSeleccionado,
@@ -450,6 +567,7 @@ export default {
       descargarPDF,
       definirAutorizacion,
       copiarURL,
+      descargarLayoutNomina,
     };
   },
 };

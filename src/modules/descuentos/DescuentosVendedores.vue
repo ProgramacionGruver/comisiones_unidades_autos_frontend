@@ -63,42 +63,42 @@
             </div>
           </div>
           <div class="fit row q-gutter-sm q-mb-sm justify-end">
-            <q-input
-              v-model="fechaInicio"
-              outlined
-              dense
-              label="Fecha de inicio"
-              type="date"
-            />
-            <q-input
-              v-model="fechaFin"
-              outlined
-              dense
-              label="Fecha de fin"
-              type="date"
-            />
-            <q-select
-              outlined
-              dense
-              :options="departamentos"
-              v-model="departamentoSeleccionado"
-              map-options
-              option-value="name"
-              style="min-width: 20rem; max-width: 40rem"
-            />
-            <q-btn
-              dense
-              color="primary"
-              icon-right="search"
-              label="Buscar"
-              :disable="!fechaInicio || !fechaFin"
-              @click="obtenerDescuentos"
-              :loading="cargandoDescuentos"
-            >
-              <template v-slot:loading>
-                <q-spinner-facebook />
-              </template>
-            </q-btn>
+            <div class="col q-ma-sm">
+              <q-select
+                outlined
+                dense
+                :disable="cargando"
+                :options="listaAnios"
+                v-model="anioSeleccionado"
+                @update:model-value="obtenerDescuentos"
+                map-options
+                option-value="name"
+              />
+            </div>
+            <div class="col q-ma-sm">
+              <q-select
+                outlined
+                dense
+                :disable="cargando"
+                :options="listaMeses"
+                v-model="mesSeleccionado"
+                @update:model-value="obtenerDescuentos"
+                map-options
+                option-value="name"
+              />
+            </div>
+            <div class="col q-ma-sm">
+              <q-select
+                outlined
+                dense
+                :disable="cargando"
+                :options="departamentos"
+                v-model="departamentoSeleccionado"
+                @update:model-value="obtenerDescuentos"
+                map-options
+                option-value="name"
+              />
+            </div>
           </div>
         </template>
       </q-table>
@@ -116,6 +116,9 @@ import ModalCrearNuevoDescuento from "src/components/ModalCrearNuevoDescuento.vu
 import ModalDescuentosVendedor from "src/components/ModalDescuentosVendedor.vue";
 import { formatearFecha } from "src/helpers/formatearFecha";
 import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
+import { listaMeses, listaAnios, listaQuincenas } from "src/helpers/listas";
+import { useFacturasStore } from "src/stores/catalogos/facturas";
+import { obtenerNumeroMes } from "src/constant/constantes";
 
 export default {
   components: {
@@ -134,8 +137,12 @@ export default {
     const { descuentos } = storeToRefs(useDescuentos);
 
     const useDepartamentos = useDepartamentosStore();
+    const { obtenerDepartamentos } = useDepartamentos;
     const { departamentos, departamentoSeleccionado } =
       storeToRefs(useDepartamentos);
+
+    const useFacturas = useFacturasStore();
+    const { anioSeleccionado, mesSeleccionado } = storeToRefs(useFacturas);
 
     const columns = [
       {
@@ -178,8 +185,14 @@ export default {
     const cargandoDescuentos = ref(false);
     const datosCargados = ref(false);
 
-    onMounted(() => {
+    onMounted(async () => {
+      await obtenerDepartamentos();
+
       departamentoSeleccionado.value = departamentos.value[0];
+
+      if (departamentoSeleccionado.value) {
+        await obtenerDescuentos();
+      }
     });
 
     const obtenerDescuentos = async () => {
@@ -188,9 +201,11 @@ export default {
       const claveDepartamento =
         departamentoSeleccionado.value.value.claveDepartamento;
 
+      const mes = Number(obtenerNumeroMes(mesSeleccionado.value));
+
       await obtenerDescuentosVendedoresByFechas(
-        fechaInicio.value,
-        fechaFin.value,
+        mes,
+        anioSeleccionado.value,
         claveDepartamento
       );
 
@@ -229,6 +244,10 @@ export default {
       datosCargados,
       departamentos,
       departamentoSeleccionado,
+      listaAnios,
+      listaMeses,
+      anioSeleccionado,
+      mesSeleccionado,
       // Methods
       obtenerDescuentos,
       nuevoDescuento,

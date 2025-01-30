@@ -93,8 +93,15 @@ export default {
       comision.value = infoComision;
 
       fechaPrimerEnvio.value = new Date();
-      fechaPrimerEnvio.value =
-        fechaPrimerEnvio.value.toLocaleDateString("es-MX");
+      const mesPrimerEnvio = (fechaPrimerEnvio.value.getMonth() + 1)
+        .toString()
+        .padStart(2, "0");
+      const diaPrimerEnvio = fechaPrimerEnvio.value
+        .getDate()
+        .toString()
+        .padStart(2, "0");
+
+      fechaPrimerEnvio.value = `${diaPrimerEnvio}/${mesPrimerEnvio}/${fechaPrimerEnvio.value.getFullYear()}`;
 
       abrirModal.value = true;
     };
@@ -108,6 +115,21 @@ export default {
         const folioPrev = `COM-${vendedorObj.value.claveDepartamento}-${vendedorObj.value.numeroEmpleado}-${anioSeleccionado.value}-${mes}`;
         const folio = folioPrev.replace(/\s/g, "-");
 
+        let montoComision = 0;
+
+        if (
+          vendedorObj.value.claveDepartamento == "SUAUTO" ||
+          vendedorObj.value.claveDepartamento == "COOR SUAUTO"
+        ) {
+          montoComision = Number(comision.value.totalAPagar.toFixed(2));
+        } else {
+          montoComision = Number(
+            comision.value.kpis
+              .find((kpi) => kpi.tipoRenglon === "total")
+              .montoAPagar.toFixed(2)
+          );
+        }
+
         const dataAutorizacion = {
           anio: anioSeleccionado.value,
           mes: mes,
@@ -118,10 +140,11 @@ export default {
           urlPDF: "",
           folio,
           claveDepartamento: vendedorObj.value.claveDepartamento,
-          monto:
+          montoComision,
+          montoBonos:
             vendedorObj.value.claveDepartamento == "SUAUTO" ||
             vendedorObj.value.claveDepartamento == "COOR SUAUTO"
-              ? comision.value.totalAPagar
+              ? 0
               : comision.value.descuentosVendedor[0].totalAPagar,
         };
 
@@ -133,8 +156,8 @@ export default {
         }
 
         // await obtenerUrlComision(comisionVendedor.value, "vendedor");
-        // const linkComision = `http://localhost:9000/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}/${autorizaciones.idAutorizacion}`;
-        const linkComision = `https://www.gruver.com.mx/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}/${autorizaciones.idAutorizacion}`;
+        const linkComision = `http://localhost:9000/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}/${autorizaciones.idAutorizacion}`;
+        // const linkComision = `https://www.gruver.com.mx/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}/${autorizaciones.idAutorizacion}`;
         // const linkComision = `` // <--------- Cambiar a productivo
 
         const mesNombre = listaMeses[mes - 1];

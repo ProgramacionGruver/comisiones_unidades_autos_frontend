@@ -95,13 +95,18 @@ export const useKpiStore = defineStore("kpi", () => {
             factura.descuentos.traslado -
             factura.descuentos.descVentas -
             factura.descuentos.cortesia -
-            factura.descuentos.gasolina +
-            factura.descuentos.bonoub;
+            factura.descuentos.gasolina -
+            factura.descuentos.bonoub -
+            factura.descuentos.garantia_extendida -
+            factura.descuentos.acondicionamiento -
+            factura.descuentos.gestorias -
+            factura.descuentos.toma_unidad;
 
           facturas.push({
             folioFactura: factura.factura,
             fechaFactura: formatearFecha(factura.fecha_facturacion),
             tasaCredito: factura.tipo_venta,
+            condicion: factura.condicion,
             modelo: factura.modelo,
             serie: factura.vin,
             utilidad: factura.utilidad,
@@ -111,31 +116,45 @@ export const useKpiStore = defineStore("kpi", () => {
             cortesias: factura.descuentos.cortesia,
             gasolina: factura.descuentos.gasolina,
             bono: factura.descuentos.bonoub,
+            garantia_extendida: factura.descuentos.garantia_extendida,
+            acondicionamiento: factura.descuentos.acondicionamiento,
+            gestorias: factura.descuentos.gestorias,
+            toma_unidad: factura.descuentos.toma_unidad,
             baseComision: baseComision,
             tipoRenglon: "dato",
           });
         } else {
           let baseComision =
             factura.utilidad -
+            factura.descuentos.previa -
+            factura.descuentos.traslado -
+            factura.descuentos.descVentas -
+            factura.descuentos.cortesia -
+            factura.descuentos.gasolina -
+            factura.descuentos.bonoub -
             factura.descuentos.garantia_extendida -
             factura.descuentos.acondicionamiento -
             factura.descuentos.gestorias -
-            factura.descuentos.toma_unidad -
-            factura.descuentos.cortesias;
+            factura.descuentos.toma_unidad;
 
           facturas.push({
             folioFactura: factura.factura,
             fechaFactura: formatearFecha(factura.fecha_facturacion),
             tasaCredito: factura.tipo_venta,
+            condicion: factura.condicion,
             modelo: factura.modelo,
             serie: factura.vin,
             utilidad: factura.utilidad,
+            previa: factura.descuentos.previa,
+            traslado: factura.descuentos.traslado,
+            descuentoVentas: factura.descuentos.descVentas,
+            cortesias: factura.descuentos.cortesia,
+            gasolina: factura.descuentos.gasolina,
+            bono: factura.descuentos.bonoub,
             garantia_extendida: factura.descuentos.garantia_extendida,
-            toma_unidad: factura.descuentos.toma_unidad,
             acondicionamiento: factura.descuentos.acondicionamiento,
             gestorias: factura.descuentos.gestorias,
-            cortesias: factura.descuentos.cortesias,
-            bono: factura.descuentos.bonoub,
+            toma_unidad: factura.descuentos.toma_unidad,
             baseComision: baseComision,
             tipoRenglon: "dato",
           });
@@ -147,6 +166,7 @@ export const useKpiStore = defineStore("kpi", () => {
           folioFactura: "",
           fechaFactura: "",
           tasaCredito: "",
+          condicion: "",
           modelo: "",
           serie: "Total",
           utilidad: comisionVendedor.value.facturas
@@ -173,22 +193,6 @@ export const useKpiStore = defineStore("kpi", () => {
           bono: comisionVendedor.value.facturas
             .reduce((acc, bono) => acc + bono.descuentos.bonoub, 0)
             .toFixed(2),
-          baseComision: facturas
-            .filter((factura) => factura.tipoRenglon === "dato")
-            .reduce((acc, baseComision) => acc + baseComision.baseComision, 0)
-            .toFixed(2),
-          tipoRenglon: "total",
-        });
-      } else {
-        facturas.push({
-          folioFactura: "",
-          fechaFactura: "",
-          tasaCredito: "",
-          modelo: "",
-          serie: "Total",
-          utilidad: comisionVendedor.value.facturas
-            .reduce((acc, utilidad) => acc + utilidad.utilidad, 0)
-            .toFixed(2),
           garantia_extendida: comisionVendedor.value.facturas
             .reduce(
               (acc, garantia) => acc + garantia.descuentos.garantia_extendida,
@@ -211,11 +215,65 @@ export const useKpiStore = defineStore("kpi", () => {
               0
             )
             .toFixed(2),
+          baseComision: facturas
+            .filter((factura) => factura.tipoRenglon === "dato")
+            .reduce((acc, baseComision) => acc + baseComision.baseComision, 0)
+            .toFixed(2),
+          tipoRenglon: "total",
+        });
+      } else {
+        facturas.push({
+          folioFactura: "",
+          fechaFactura: "",
+          tasaCredito: "",
+          condicion: "",
+          modelo: "",
+          serie: "Total",
+          utilidad: comisionVendedor.value.facturas
+            .reduce((acc, utilidad) => acc + utilidad.utilidad, 0)
+            .toFixed(2),
+          previa: comisionVendedor.value.facturas
+            .reduce((acc, previa) => acc + previa.descuentos.previa, 0)
+            .toFixed(2),
+          traslado: comisionVendedor.value.facturas
+            .reduce((acc, traslado) => acc + traslado.descuentos.traslado, 0)
+            .toFixed(2),
+          descuentoVentas: comisionVendedor.value.facturas
+            .reduce(
+              (acc, descVentas) => acc + descVentas.descuentos.descVentas,
+              0
+            )
+            .toFixed(2),
           cortesias: comisionVendedor.value.facturas
-            .reduce((acc, cortesias) => acc + cortesias.descuentos.cortesias, 0)
+            .reduce((acc, cortesia) => acc + cortesia.descuentos.cortesia, 0)
+            .toFixed(2),
+          gasolina: comisionVendedor.value.facturas
+            .reduce((acc, gasolina) => acc + gasolina.descuentos.gasolina, 0)
             .toFixed(2),
           bono: comisionVendedor.value.facturas
             .reduce((acc, bono) => acc + bono.descuentos.bonoub, 0)
+            .toFixed(2),
+          garantia_extendida: comisionVendedor.value.facturas
+            .reduce(
+              (acc, garantia) => acc + garantia.descuentos.garantia_extendida,
+              0
+            )
+            .toFixed(2),
+          acondicionamiento: comisionVendedor.value.facturas
+            .reduce(
+              (acc, acondicionamiento) =>
+                acc + acondicionamiento.descuentos.acondicionamiento,
+              0
+            )
+            .toFixed(2),
+          gestorias: comisionVendedor.value.facturas
+            .reduce((acc, gestorias) => acc + gestorias.descuentos.gestorias, 0)
+            .toFixed(2),
+          toma_unidad: comisionVendedor.value.facturas
+            .reduce(
+              (acc, tomaUnidad) => acc + tomaUnidad.descuentos.toma_unidad,
+              0
+            )
             .toFixed(2),
           baseComision: facturas
             .filter((factura) => factura.tipoRenglon === "dato")
@@ -274,23 +332,11 @@ export const useKpiStore = defineStore("kpi", () => {
       );
       const totalPvas = Number(pvas[pvas.length - 1].utilidad);
 
-      if (comisionVendedor.value.infoVendedor.claveDepartamento === "SEM") {
-        totalUtilidadBruta.push({
-          totalBaseComision,
-          totalPvas,
-          totalPlanPiso: comisionVendedor.value.planPiso.monto,
-          totalUtilidadBruta:
-            totalBaseComision +
-            totalPvas -
-            comisionVendedor.value.planPiso.monto,
-        });
-      } else {
-        totalUtilidadBruta.push({
-          totalBaseComision,
-          totalPvas,
-          totalUtilidadBruta: totalBaseComision + totalPvas,
-        });
-      }
+      totalUtilidadBruta.push({
+        totalBaseComision,
+        totalPvas,
+        totalUtilidadBruta: totalBaseComision + totalPvas,
+      });
 
       let kpis = [];
 
@@ -364,8 +410,27 @@ export const useKpiStore = defineStore("kpi", () => {
           pagoCompleto: pagoCompleto.toFixed(2),
           porcentajeDeComision: porcentajeDeComision,
           montoAPagar: montoAPagar.toFixed(2),
+          tipoRenglon: "dato",
         });
       }
+
+      kpis.push({
+        kpi: "",
+        porcentajeUB: "",
+        objetivo: "",
+        objetivoCumplimiento: "",
+        objetivoValorReal: "",
+        desempenio: "",
+        peso: "",
+        utilidadBruta: "",
+        pagoCompleto: "Total a pagar de comisión",
+        porcentajeDeComision: "",
+        montoAPagar: kpis.reduce(
+          (acc, kpi) => acc + Number(kpi.montoAPagar),
+          0
+        ),
+        tipoRenglon: "total",
+      });
 
       let descuentosVendedor = [];
 
@@ -394,18 +459,12 @@ export const useKpiStore = defineStore("kpi", () => {
             comisionVendedor.value.descuentosVendedor.descuentosVendedoresDetalles.filter(
               (descuento) => descuento.idCatalogoFormularioDescuentos === 5
             )[0].valor;
-          const seminuevos =
-            comisionVendedor.value.descuentosVendedor.descuentosVendedoresDetalles.filter(
-              (descuento) => descuento.idCatalogoFormularioDescuentos === 6
-            )[0].valor;
           const totalAPagar =
-            kpis.reduce((acc, kpi) => acc + Number(kpi.montoAPagar), 0) +
             Number(bono) -
             Number(descuento) +
             Number(inCredit) +
             Number(suAuto) +
-            Number(accesorios) +
-            Number(seminuevos);
+            Number(accesorios);
 
           descuentosVendedor.push({
             bono,
@@ -413,14 +472,10 @@ export const useKpiStore = defineStore("kpi", () => {
             inCredit,
             suAuto,
             accesorios,
-            seminuevos,
             totalAPagar,
           });
         } else {
-          const totalAPagar = kpis.reduce(
-            (acc, kpi) => acc + Number(kpi.montoAPagar),
-            0
-          );
+          const totalAPagar = 0;
 
           descuentosVendedor.push({
             bono: 0,
@@ -428,7 +483,6 @@ export const useKpiStore = defineStore("kpi", () => {
             inCredit: 0,
             suAuto: 0,
             accesorios: 0,
-            seminuevos: 0,
             totalAPagar,
           });
         }
@@ -454,30 +508,17 @@ export const useKpiStore = defineStore("kpi", () => {
               (descuento) => descuento.idCatalogoFormularioDescuentos === 9
             )[0].valor;
 
-          const nuevos =
-            comisionVendedor.value.descuentosVendedor.descuentosVendedoresDetalles.filter(
-              (descuento) => descuento.idCatalogoFormularioDescuentos === 10
-            )[0].valor;
-
           const totalAPagar =
-            kpis.reduce((acc, kpi) => acc + Number(kpi.montoAPagar), 0) +
-            Number(bono) -
-            Number(descuento) +
-            Number(accesorios) +
-            Number(nuevos);
+            Number(bono) - Number(descuento) + Number(accesorios);
 
           descuentosVendedor.push({
             bono,
             descuento,
             accesorios,
-            nuevos,
             totalAPagar,
           });
         } else {
-          const totalAPagar = kpis.reduce(
-            (acc, kpi) => acc + Number(kpi.montoAPagar),
-            0
-          );
+          const totalAPagar = 0;
 
           descuentosVendedor.push({
             bono: 0,

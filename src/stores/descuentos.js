@@ -22,14 +22,14 @@ export const useDescuentosStore = defineStore("descuentos", () => {
   };
 
   const obtenerDescuentosVendedoresByFechas = async (
-    fechaInicio,
-    fechaFin,
+    mes,
+    anio,
     claveDepartamento
   ) => {
     try {
       const { data } = await api.post("/descuentos/vendedores/fecha", {
-        fechaInicio,
-        fechaFin,
+        mes,
+        anio,
         claveDepartamento,
       });
 

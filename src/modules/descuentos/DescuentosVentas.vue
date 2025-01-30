@@ -9,7 +9,6 @@
         :loading="cargando"
         color="primary"
         :columns="columns"
-        :visible-columns="columnasVisibles"
         :filter="buscar"
         :rows="comisionesFiltradas"
         binary-state-sort
@@ -31,30 +30,57 @@
         </template>
 
         <template v-slot:body-cell-previa="props">
-          <td>
+          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
             {{
-              props.row.descuentosUnidades[0]?.previa
-                ? formatearMonto(props.row.descuentosUnidades[0]?.previa)
+              props.row.descuentosUnidades?.length > 0
+                ? formatearMonto(props.row.descuentosUnidades[0].previa)
+                : formatearMonto(0)
+            }}
+          </td>
+          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
+            {{
+              props.row.descuentosUnidadesSeminuevos?.length > 0
+                ? formatearMonto(
+                    props.row.descuentosUnidadesSeminuevos[0].previa
+                  )
                 : formatearMonto(0)
             }}
           </td>
         </template>
 
         <template v-slot:body-cell-traslado="props">
-          <td>
+          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
             {{
-              props.row.descuentosUnidades[0]?.traslado
-                ? formatearMonto(props.row.descuentosUnidades[0]?.traslado)
+              props.row.descuentosUnidades?.length > 0
+                ? formatearMonto(props.row.descuentosUnidades[0].traslado)
+                : formatearMonto(0)
+            }}
+          </td>
+          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
+            {{
+              props.row.descuentosUnidadesSeminuevos?.length > 0
+                ? formatearMonto(
+                    props.row.descuentosUnidadesSeminuevos[0].traslado
+                  )
                 : formatearMonto(0)
             }}
           </td>
         </template>
 
         <template v-slot:body-cell-descVentas="props">
-          <td>
+          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
             {{
-              props.row.descuentosUnidades[0]?.descVentas
-                ? formatearMonto(props.row.descuentosUnidades[0]?.descVentas)
+              props.row.descuentosUnidades?.length > 0
+                ? formatearMonto(props.row.descuentosUnidades[0].descVentas)
+                : formatearMonto(0)
+            }}
+          </td>
+          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
+            {{
+              props.row.descuentosUnidadesSeminuevos?.length > 0
+                ? formatearMonto(
+                    props.row.descuentosUnidadesSeminuevos[0].descVentas
+                  )
                 : formatearMonto(0)
             }}
           </td>
@@ -63,18 +89,16 @@
         <template v-slot:body-cell-cortesia="props">
           <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
             {{
-              (props.row.descuentosUnidades || [])[0]?.cortesia
-                ? formatearMonto(
-                    (props.row.descuentosUnidades || [])[0]?.cortesia
-                  )
+              props.row.descuentosUnidades?.length > 0
+                ? formatearMonto(props.row.descuentosUnidades[0].cortesia)
                 : formatearMonto(0)
             }}
           </td>
-          <td v-else>
+          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
             {{
-              (props.row.descuentosUnidadesSeminuevos || [])[0]?.cortesias
+              props.row.descuentosUnidadesSeminuevos?.length > 0
                 ? formatearMonto(
-                    (props.row.descuentosUnidadesSeminuevos || [])[0]?.cortesias
+                    props.row.descuentosUnidadesSeminuevos[0].cortesia
                   )
                 : formatearMonto(0)
             }}
@@ -82,32 +106,58 @@
         </template>
 
         <template v-slot:body-cell-gasolina="props">
-          <td>
+          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
             {{
-              props.row.descuentosUnidades[0]?.gasolina
-                ? formatearMonto(props.row.descuentosUnidades[0]?.gasolina)
+              props.row.descuentosUnidades?.length > 0
+                ? formatearMonto(props.row.descuentosUnidades[0].gasolina)
+                : formatearMonto(0)
+            }}
+          </td>
+          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
+            {{
+              props.row.descuentosUnidadesSeminuevos?.length > 0
+                ? formatearMonto(
+                    props.row.descuentosUnidadesSeminuevos[0].gasolina
+                  )
                 : formatearMonto(0)
             }}
           </td>
         </template>
 
         <template v-slot:body-cell-bonoub="props">
-          <td>
+          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
             {{
-              props.row.descuentosUnidades[0]?.bonoub
-                ? formatearMonto(props.row.descuentosUnidades[0]?.bonoub)
+              props.row.descuentosUnidades?.length > 0
+                ? formatearMonto(props.row.descuentosUnidades[0].bonoub)
+                : formatearMonto(0)
+            }}
+          </td>
+          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
+            {{
+              props.row.descuentosUnidadesSeminuevos?.length > 0
+                ? formatearMonto(
+                    props.row.descuentosUnidadesSeminuevos[0].bonoub
+                  )
                 : formatearMonto(0)
             }}
           </td>
         </template>
 
         <template v-slot:body-cell-garantia_extendida="props">
-          <td>
+          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
             {{
-              props.row.descuentosUnidadesSeminuevos[0]?.garantia_extendida
+              props.row.descuentosUnidades?.length > 0
                 ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0]
-                      ?.garantia_extendida
+                    props.row.descuentosUnidades[0].garantia_extendida
+                  )
+                : formatearMonto(0)
+            }}
+          </td>
+          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
+            {{
+              props.row.descuentosUnidadesSeminuevos?.length > 0
+                ? formatearMonto(
+                    props.row.descuentosUnidadesSeminuevos[0].garantia_extendida
                   )
                 : formatearMonto(0)
             }}
@@ -115,11 +165,20 @@
         </template>
 
         <template v-slot:body-cell-acondicionamiento="props">
-          <td>
+          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
             {{
-              props.row.descuentosUnidadesSeminuevos[0]?.acondicionamiento
+              props.row.descuentosUnidades?.length > 0
                 ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0]?.acondicionamiento
+                    props.row.descuentosUnidades[0].acondicionamiento
+                  )
+                : formatearMonto(0)
+            }}
+          </td>
+          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
+            {{
+              props.row.descuentosUnidadesSeminuevos?.length > 0
+                ? formatearMonto(
+                    props.row.descuentosUnidadesSeminuevos[0].acondicionamiento
                   )
                 : formatearMonto(0)
             }}
@@ -127,11 +186,18 @@
         </template>
 
         <template v-slot:body-cell-gestorias="props">
-          <td>
+          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
             {{
-              props.row.descuentosUnidadesSeminuevos[0]?.gestorias
+              props.row.descuentosUnidades?.length > 0
+                ? formatearMonto(props.row.descuentosUnidades[0].gestorias)
+                : formatearMonto(0)
+            }}
+          </td>
+          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
+            {{
+              props.row.descuentosUnidadesSeminuevos?.length > 0
                 ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0]?.gestorias
+                    props.row.descuentosUnidadesSeminuevos[0].gestorias
                   )
                 : formatearMonto(0)
             }}
@@ -139,11 +205,18 @@
         </template>
 
         <template v-slot:body-cell-toma_unidad="props">
-          <td>
+          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
             {{
-              props.row.descuentosUnidadesSeminuevos[0]?.toma_unidad
+              props.row.descuentosUnidades?.length > 0
+                ? formatearMonto(props.row.descuentosUnidades[0].toma_unidad)
+                : formatearMonto(0)
+            }}
+          </td>
+          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
+            {{
+              props.row.descuentosUnidadesSeminuevos?.length > 0
                 ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0]?.toma_unidad
+                    props.row.descuentosUnidadesSeminuevos[0].toma_unidad
                   )
                 : formatearMonto(0)
             }}
@@ -278,7 +351,6 @@ import {
   obtenerNumerosDeMes,
 } from "src/constant/constantes";
 import ModalDescuentos from "src/components/ModalDescuentos.vue";
-import { de } from "date-fns/locale";
 
 export default {
   components: {
@@ -412,8 +484,6 @@ export default {
       },
     ];
 
-    const columnasVisibles = ref([]);
-
     onMounted(async () => {
       await obtenerEmpresas();
       await obtenerSucursales();
@@ -460,16 +530,16 @@ export default {
       await obtenerComisionesUnidades(objComisionesInit.value);
       grupoEmpresas.value = [empresaSeleccionada.value.claveEmpresa];
       //TODAS LAS SUCURSALES PERTENECIENTES A LA EMPRESA
-      opcionesSucursales.value = filtrarElementos(
-        grupoEmpresas,
-        sucursales,
-        "claveEmpresa"
-      ).map((sucursal) => {
-        return {
-          label: formatearCapitalCase(sucursal.nombreSucursal),
-          value: { ...sucursal },
-        };
-      });
+      // opcionesSucursales.value = filtrarElementos(
+      //   grupoEmpresas,
+      //   sucursales,
+      //   "claveEmpresa"
+      // ).map((sucursal) => {
+      //   return {
+      //     label: formatearCapitalCase(sucursal.nombreSucursal),
+      //     value: { ...sucursal },
+      //   };
+      // });
     };
 
     const filtrarFacturas = async () => {
@@ -480,38 +550,12 @@ export default {
         mes: obtenerNumerosDeMes(mesSeleccionado.value),
         anio: anioSeleccionado.value,
       };
+
       await obtenerComisionesUnidades(objComisionesInit.value);
+
       comisionesFiltradas.value = comisionesUnidades.value.filter(
         (factura) => factura.id_plaza === sucursalSeleccionada.value.idErp
       );
-
-      columnasVisibles.value =
-        departamentoSeleccionado.value.label === "NUEVAS"
-          ? [
-              "factura",
-              "fecha_facturacion",
-              "modelo",
-              "vin",
-              "previa",
-              "traslado",
-              "descVentas",
-              "cortesia",
-              "gasolina",
-              "bonoub",
-              "acciones",
-            ]
-          : [
-              "factura",
-              "fecha_facturacion",
-              "modelo",
-              "vin",
-              "garantia_extendida",
-              "acondicionamiento",
-              "gestorias",
-              "toma_unidad",
-              "cortesia",
-              "acciones",
-            ];
     };
 
     const agregarDescuentos = async (objFactura) => {
@@ -523,7 +567,6 @@ export default {
       filtrarFacturas,
 
       columns,
-      columnasVisibles,
       buscar: ref(""),
       usuarioAutenticado,
 

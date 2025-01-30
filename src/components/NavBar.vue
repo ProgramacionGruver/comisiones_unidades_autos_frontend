@@ -43,7 +43,7 @@
           <div class="q-px-md q-py-md q-mt-md text-h4">PVAS</div>
           <q-separator />
         </div>
-        <div v-if="menuItem.name === 'planPiso'">
+        <div v-if="menuItem.name === 'panelPvas'">
           <div class="q-px-md q-py-md q-mt-md text-h4">Descuentos</div>
           <q-separator />
         </div>

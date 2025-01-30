@@ -467,6 +467,7 @@ export default {
       await obtenerEmpresas();
       await obtenerSucursales();
       await obtenerDepartamentos();
+
       facturaSeleccionada.value = [];
       facturasFiltrada.value = [];
 
@@ -489,52 +490,43 @@ export default {
       departamentoSeleccionado.value = departamentos.value[0];
 
       await filtrarFacturas(true);
-
-      //Habilitar boton envio
-      if (
-        usuarioAutenticado.value.puesto === "ASISTENTE DE VENTAS" ||
-        usuarioAutenticado.value.puesto === "PROGRAMADOR JUNIOR" ||
-        usuarioAutenticado.value.puesto === "ENLACE FINANCIERO"
-      ) {
-        if (facturasFiltrada.value.length > 0) {
-          usuarioAutorizado.value = true;
-        }
-      } else {
-        usuarioAutorizado.value = false;
-      }
     });
 
     const filtrarFacturas = async (buscarFacturas) => {
       facturaSeleccionada.value = [];
       facturasFiltrada.value = [];
+
       if (buscarFacturas) {
         await obtenerFacturas();
       }
-      grupoEmpresas.value = [empresaSeleccionada.value.claveEmpresa];
-      //TODAS LAS SUCURSALES PERTENECIENTES A LA EMPRESA
-      opcionesSucursales.value = filtrarElementos(
-        grupoEmpresas,
-        sucursales,
-        "claveEmpresa"
-      ).map((sucursal) => {
-        return {
-          label: formatearCapitalCase(sucursal.nombreSucursal),
-          value: { ...sucursal },
-        };
-      });
-      //SOLO SUCURSALES CON FACTURAS
-      opcionesSucursales.value = opcionesSucursales.value.filter((sucursal) =>
-        valoresUnicosSucursal.value.includes(sucursal.value.idErp)
-      );
 
-      if (buscarFacturas) {
-        sucursalSeleccionada.value = opcionesSucursales.value[0].value;
-      } else {
-        sucursalSeleccionada.value = opcionesSucursales.value.find(
-          (sucursal) =>
-            sucursal.value.idErp === sucursalSeleccionada.value.idErp
-        ).value;
-      }
+      grupoEmpresas.value = [empresaSeleccionada.value.claveEmpresa];
+
+      //TODAS LAS SUCURSALES PERTENECIENTES A LA EMPRESA
+      // opcionesSucursales.value = filtrarElementos(
+      //   grupoEmpresas,
+      //   sucursales,
+      //   "claveEmpresa"
+      // ).map((sucursal) => {
+      //   return {
+      //     label: formatearCapitalCase(sucursal.nombreSucursal),
+      //     value: { ...sucursal },
+      //   };
+      // });
+
+      //SOLO SUCURSALES CON FACTURAS
+      // opcionesSucursales.value = opcionesSucursales.value.filter((sucursal) =>
+      //   valoresUnicosSucursal.value.includes(sucursal.value.idErp)
+      // );
+
+      // if (buscarFacturas) {
+      //   sucursalSeleccionada.value = opcionesSucursales.value[0].value;
+      // } else {
+      //   sucursalSeleccionada.value = opcionesSucursales.value.find(
+      //     (sucursal) =>
+      //       sucursal.value.idErp === sucursalSeleccionada.value.idErp
+      //   ).value;
+      // }
 
       //Filtro por sucursal
       facturasFiltrada.value = facturas.value.filter(

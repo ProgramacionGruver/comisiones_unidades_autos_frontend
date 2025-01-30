@@ -89,6 +89,10 @@
                 min="0"
                 dense
                 outlined
+                :disable="
+                  objetivo.nombreKpi.includes('objetivo de ventas') ||
+                  objetivo.nombreKpi.includes('seminuevos')
+                "
               />
             </div>
           </template>
@@ -130,6 +134,7 @@ import {
   obtenerNumerosDeMes,
 } from "src/constant/constantes";
 import { filtradoBusquedaObj } from "src/helpers/filtradoBusquedaObj";
+import { useQuasar } from "quasar";
 
 export default {
   setup() {
@@ -158,6 +163,8 @@ export default {
     const habilitarFormulario = ref(false);
     const cargando = ref(false);
 
+    const $q = useQuasar();
+
     const abrir = () => {
       empleadoSeleccionado.value = null;
 
@@ -176,6 +183,10 @@ export default {
 
     const obtenerFormulario = async () => {
       if (empleadoSeleccionado.value) {
+        $q.loading.show({
+          message: "Cargando información...",
+        });
+
         const obj = {
           claveDepartamento: empleadoSeleccionado.value.claveDepartamento,
           idAsesor: empleadoSeleccionado.value.idAsesor,
@@ -185,11 +196,12 @@ export default {
 
         await obtenerObjetivosFormulario(obj);
 
-        for (const objetivo of obtjetivosFormulario.value) {
-          objetivo.valorReal = 0;
-        }
+        // for (const objetivo of obtjetivosFormulario.value) {
+        //   objetivo.valorReal = 0;
+        // }
 
         habilitarFormulario.value = true;
+        $q.loading.hide();
       }
     };
 

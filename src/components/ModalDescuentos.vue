@@ -267,6 +267,10 @@ export default {
               gasolina: 0,
               descVentas: 0,
               bonoub: 0,
+              garantia_extendida: 0,
+              acondicionamiento: 0,
+              gestorias: 0,
+              toma_unidad: 0,
             },
           ];
         } else {
@@ -278,6 +282,12 @@ export default {
               gasolina: objFactura.descuentosUnidades[0]?.gasolina ?? 0,
               descVentas: objFactura.descuentosUnidades[0]?.descVentas ?? 0,
               bonoub: objFactura.descuentosUnidades[0]?.bonoub ?? 0,
+              garantia_extendida:
+                objFactura.descuentosUnidades[0]?.garantia_extendida ?? 0,
+              acondicionamiento:
+                objFactura.descuentosUnidades[0]?.acondicionamiento ?? 0,
+              gestorias: objFactura.descuentosUnidades[0]?.gestorias ?? 0,
+              toma_unidad: objFactura.descuentosUnidades[0]?.toma_unidad ?? 0,
             },
           ];
         }
@@ -285,30 +295,33 @@ export default {
         if (objFactura.descuentosUnidadesSeminuevos.length === 0) {
           objFactura.descuentosUnidadesSeminuevos = [
             {
+              previa: 0,
+              traslado: 0,
+              cortesia: 0,
+              gasolina: 0,
+              descVentas: 0,
+              bonoub: 0,
               garantia_extendida: 0,
               acondicionamiento: 0,
               gestorias: 0,
               toma_unidad: 0,
-              cortesia: 0,
-              bonoub: 0,
             },
           ];
         } else {
           objFactura.descuentosUnidadesSeminuevos = [
             {
+              previa: objFactura.descuentosUnidades[0]?.previa ?? 0,
+              traslado: objFactura.descuentosUnidades[0]?.traslado ?? 0,
+              cortesia: objFactura.descuentosUnidades[0]?.cortesia ?? 0,
+              gasolina: objFactura.descuentosUnidades[0]?.gasolina ?? 0,
+              descVentas: objFactura.descuentosUnidades[0]?.descVentas ?? 0,
+              bonoub: objFactura.descuentosUnidades[0]?.bonoub ?? 0,
               garantia_extendida:
-                objFactura.descuentosUnidadesSeminuevos[0]
-                  ?.garantia_extendida ?? 0,
+                objFactura.descuentosUnidades[0]?.garantia_extendida ?? 0,
               acondicionamiento:
-                objFactura.descuentosUnidadesSeminuevos[0]?.acondicionamiento ??
-                0,
-              gestorias:
-                objFactura.descuentosUnidadesSeminuevos[0]?.gestorias ?? 0,
-              toma_unidad:
-                objFactura.descuentosUnidadesSeminuevos[0]?.toma_unidad ?? 0,
-              cortesia:
-                objFactura.descuentosUnidadesSeminuevos[0]?.cortesia ?? 0,
-              bonoub: objFactura.descuentosUnidadesSeminuevos[0]?.bonoub ?? 0,
+                objFactura.descuentosUnidades[0]?.acondicionamiento ?? 0,
+              gestorias: objFactura.descuentosUnidades[0]?.gestorias ?? 0,
+              toma_unidad: objFactura.descuentosUnidades[0]?.toma_unidad ?? 0,
             },
           ];
         }
@@ -330,12 +343,6 @@ export default {
             descuento.idFactura = factura.value.idFactura;
             descuento.usuario = usuarioAutenticado.value.usuario;
           });
-        }
-
-        // Me equivoque al poner el nombre de la columna en la BD, para ya no mover todo, lo dejo asi
-        if (factura.value.condicion === "SEM") {
-          factura.value.descuentosUnidadesSeminuevos[0].cortesias =
-            factura.value.descuentosUnidadesSeminuevos[0].cortesia;
         }
 
         await guardarDescuentos(

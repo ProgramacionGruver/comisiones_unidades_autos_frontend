@@ -332,7 +332,7 @@
           </q-card>
 
           <q-card v-else class="q-mt-md">
-            <q-tabs v-model="tabs" indicator-color="yellow" align="justify">
+            <!-- <q-tabs v-model="tabs" indicator-color="yellow" align="justify">
               <q-tab
                 name="comision"
                 label="Comisión"
@@ -343,837 +343,1157 @@
                 label="Detalle del bono"
                 class="bg-primary text-white"
               />
-            </q-tabs>
+            </q-tabs> -->
 
-            <q-tab-panels v-model="tabs" animated class="bg-white">
-              <q-tab-panel name="comision">
-                <div>
-                  <div
-                    style="
-                      width: 100%;
-                      display: flex;
-                      justify-content: space-between;
-                      align-items: center;
-                      margin-bottom: 1rem;
-                    "
-                  >
-                    <div style="display: block">
-                      <div>
-                        <strong>Nombre:</strong>
-                        {{ comisionVendedor?.infoVendedor?.nombreEmpleado }}
-                      </div>
-                      <div>
-                        <strong>No. de empleado:</strong>
-                        {{ comisionVendedor?.infoVendedor?.numeroEmpleado }}
-                      </div>
-                      <div>
-                        <strong>Nivel:</strong>
-                        <q-chip
-                          v-if="comisionVendedor?.infoVendedor?.nivel === 'oro'"
-                          color="orange"
-                          text-color="white"
-                          label="ORO"
-                        />
-                        <q-chip
-                          v-else-if="
-                            comisionVendedor?.infoVendedor?.nivel === 'plata'
-                          "
-                          color="grey"
-                          text-color="white"
-                          label="PLATA"
-                        />
-                        <q-chip
-                          v-if="
-                            comisionVendedor?.infoVendedor?.nivel === 'bronce'
-                          "
-                          color="brown"
-                          text-color="white"
-                          label="BRONCE"
-                        />
-                        <q-chip
-                          v-if="
-                            comisionVendedor?.infoVendedor?.nivel === 'asesor'
-                          "
-                          color="green"
-                          text-color="white"
-                          label="ASESOR"
-                        />
-                      </div>
+            <!-- <q-tab-panels v-model="tabs" animated class="bg-white"> -->
+            <q-tab-panel name="comision">
+              <div>
+                <div
+                  style="
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 1rem;
+                  "
+                >
+                  <div style="display: block">
+                    <div>
+                      <strong>Nombre:</strong>
+                      {{ comisionVendedor?.infoVendedor?.nombreEmpleado }}
                     </div>
                     <div>
-                      <q-btn
-                        icon="send"
+                      <strong>No. de empleado:</strong>
+                      {{ comisionVendedor?.infoVendedor?.numeroEmpleado }}
+                    </div>
+                    <div>
+                      <strong>Nivel:</strong>
+                      <q-chip
+                        v-if="comisionVendedor?.infoVendedor?.nivel === 'oro'"
+                        color="orange"
+                        text-color="white"
+                        label="ORO"
+                      />
+                      <q-chip
+                        v-else-if="
+                          comisionVendedor?.infoVendedor?.nivel === 'plata'
+                        "
+                        color="grey"
+                        text-color="white"
+                        label="PLATA"
+                      />
+                      <q-chip
+                        v-if="
+                          comisionVendedor?.infoVendedor?.nivel === 'bronce'
+                        "
+                        color="brown"
+                        text-color="white"
+                        label="BRONCE"
+                      />
+                      <q-chip
+                        v-if="
+                          comisionVendedor?.infoVendedor?.nivel === 'asesor'
+                        "
+                        color="green"
+                        text-color="white"
+                        label="ASESOR"
+                      />
+                      <q-chip
+                        v-if="comisionVendedor?.infoVendedor?.nivel === 'nuevo'"
                         color="primary"
-                        label="Enviar comisión"
-                        class="q-mr-md"
-                        @click="enviarComision"
+                        text-color="white"
+                        label="NUEVO INGRESO"
                       />
                     </div>
                   </div>
+                  <div>
+                    <q-btn
+                      icon="send"
+                      color="primary"
+                      label="Enviar comisión"
+                      class="q-mr-md"
+                      @click="enviarComision"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <q-scroll-area style="height: 80rem; width: 100%">
-                    <q-table
-                      square
-                      dense
-                      flat
-                      hide-bottom
-                      class="my-sticky-header-column-table"
-                      :rows="comisionVendedor?.facturas"
-                      :columns="columnasFactuas"
-                      no-data-label="No se encontró informacion disponible."
-                      no-results-label="No se encontraron coincidencias."
-                      :pagination="pagination"
-                      v-if="
-                        comisionVendedor?.infoVendedor?.claveDepartamento ===
-                        'NUE'
-                      "
-                    >
-                      <template v-slot:body="props">
-                        <q-tr
-                          v-if="props.row.tipoRenglon === 'dato'"
-                          :props="props"
+              </div>
+              <div>
+                <q-scroll-area style="height: 80rem; width: 100%">
+                  <q-table
+                    square
+                    dense
+                    flat
+                    hide-bottom
+                    class="my-sticky-header-column-table"
+                    :rows="comisionVendedor?.facturas"
+                    :columns="columnasFacturas"
+                    no-data-label="No se encontró informacion disponible."
+                    no-results-label="No se encontraron coincidencias."
+                    :pagination="pagination"
+                    v-if="
+                      comisionVendedor?.infoVendedor?.claveDepartamento ===
+                      'NUE'
+                    "
+                  >
+                    <template v-slot:body="props">
+                      <q-tr
+                        v-if="props.row.tipoRenglon === 'dato'"
+                        :props="props"
+                      >
+                        <q-td style="text-align: center">
+                          {{ props.row.folioFactura }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{ props.row.fechaFactura }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.tasaCredito }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{ props.row.condicion.toUpperCase() }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.modelo }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.serie }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.utilidad.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.previa.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.traslado.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.descuentoVentas.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.cortesias.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.gasolina.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.garantia_extendida.toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.acondicionamiento.toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.gestorias.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.toma_unidad.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.bono.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.baseComision.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                      </q-tr>
+
+                      <q-tr
+                        v-if="props.row.tipoRenglon === 'total'"
+                        :props="props"
+                      >
+                        <q-td>
+                          {{ props.row.folioFactura }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.fechaFactura }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.tasaCredito }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.condicion }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.modelo }}
+                        </q-td>
+                        <q-td
+                          style="text-align: left; background-color: yellow"
                         >
-                          <q-td style="text-align: center">
-                            {{ props.row.folioFactura }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{ props.row.fechaFactura }}
-                          </q-td>
-                          <q-td>
-                            {{ props.row.tasaCredito }}
-                          </q-td>
-                          <q-td>
-                            {{ props.row.modelo }}
-                          </q-td>
-                          <q-td>
-                            {{ props.row.serie }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.utilidad.toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.previa.toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.traslado.toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.descuentoVentas.toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.cortesias.toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.gasolina.toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.bono.toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.baseComision.toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                        </q-tr>
-
-                        <q-tr
-                          v-if="props.row.tipoRenglon === 'total'"
-                          :props="props"
+                          {{ props.row.serie }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
                         >
-                          <q-td>
-                            {{ props.row.folioFactura }}
-                          </q-td>
-                          <q-td>
-                            {{ props.row.fechaFactura }}
-                          </q-td>
-                          <q-td>
-                            {{ props.row.tasaCredito }}
-                          </q-td>
-                          <q-td>
-                            {{ props.row.modelo }}
-                          </q-td>
-                          <q-td
-                            style="text-align: left; background-color: yellow"
-                          >
-                            {{ props.row.serie }}
-                          </q-td>
-                          <q-td
-                            style="text-align: center; background-color: yellow"
-                          >
-                            {{
-                              Number(props.row.utilidad).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td
-                            style="text-align: center; background-color: yellow"
-                          >
-                            {{
-                              Number(props.row.previa).toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td
-                            style="text-align: center; background-color: yellow"
-                          >
-                            {{
-                              Number(props.row.traslado).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td
-                            style="text-align: center; background-color: yellow"
-                          >
-                            {{
-                              Number(props.row.descuentoVentas).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td
-                            style="text-align: center; background-color: yellow"
-                          >
-                            {{
-                              Number(props.row.cortesias).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td
-                            style="text-align: center; background-color: yellow"
-                          >
-                            {{
-                              Number(props.row.gasolina).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td
-                            style="text-align: center; background-color: yellow"
-                          >
-                            {{
-                              Number(props.row.bono).toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td
-                            style="text-align: center; background-color: yellow"
-                          >
-                            {{
-                              Number(props.row.baseComision).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                        </q-tr>
-                      </template>
-                    </q-table>
-
-                    <q-table
-                      square
-                      dense
-                      flat
-                      hide-bottom
-                      class="my-sticky-header-column-table"
-                      :rows="comisionVendedor?.facturas"
-                      :columns="columnasFacturasSeminuevas"
-                      no-data-label="No se encontró informacion disponible."
-                      no-results-label="No se encontraron coincidencias."
-                      :pagination="pagination"
-                      v-else-if="
-                        comisionVendedor?.infoVendedor?.claveDepartamento ===
-                        'SEM'
-                      "
-                    >
-                      <template v-slot:body="props">
-                        <q-tr
-                          v-if="props.row.tipoRenglon === 'dato'"
-                          :props="props"
+                          {{
+                            Number(props.row.utilidad).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
                         >
-                          <q-td style="text-align: center">
-                            {{ props.row.folioFactura }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{ props.row.fechaFactura }}
-                          </q-td>
-                          <q-td>
-                            {{ props.row.tasaCredito }}
-                          </q-td>
-                          <q-td>
-                            {{ props.row.modelo }}
-                          </q-td>
-                          <q-td>
-                            {{ props.row.serie }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.utilidad.toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.garantia_extendida.toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.acondicionamiento.toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.gestorias.toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.toma_unidad.toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.cortesias.toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.bono.toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.baseComision.toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                        </q-tr>
-                      </template>
-                    </q-table>
-
-                    <q-table
-                      square
-                      dense
-                      flat
-                      hide-bottom
-                      class="my-sticky-header-column-table q-mt-lg"
-                      :rows="comisionVendedor?.pvas"
-                      :columns="columnasPvas"
-                      no-data-label="No se encontró informacion disponible."
-                      no-results-label="No se encontraron coincidencias."
-                      :pagination="pagination"
-                    >
-                      <template v-slot:body="props">
-                        <q-tr
-                          v-if="props.row.tipoRenglon === 'dato'"
-                          :props="props"
+                          {{
+                            Number(props.row.previa).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
                         >
-                          <q-td>
-                            {{ props.row.nombreCliente.toUpperCase() }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.utilidad).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{ props.row.pva.toUpperCase() }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{ props.row.fi }}
-                          </q-td>
-                        </q-tr>
-
-                        <q-tr
-                          v-if="props.row.tipoRenglon === 'total'"
-                          :props="props"
+                          {{
+                            Number(props.row.traslado).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
                         >
-                          <q-td style="background-color: yellow">
-                            {{ props.row.nombreCliente }}
-                          </q-td>
-                          <q-td
-                            style="text-align: center; background-color: yellow"
-                          >
-                            {{
-                              Number(props.row.utilidad).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td>
-                            {{ props.row.pva }}
-                          </q-td>
-                          <q-td>
-                            {{ props.row.fi }}
-                          </q-td>
-                        </q-tr>
-                      </template>
-                    </q-table>
+                          {{
+                            Number(props.row.descuentoVentas).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.cortesias).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.gasolina).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.garantia_extendida).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.acondicionamiento).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.gestorias).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.toma_unidad).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.bono).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.baseComision).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                      </q-tr>
+                    </template>
+                  </q-table>
 
-                    <q-table
-                      square
-                      dense
-                      flat
-                      hide-bottom
-                      class="my-sticky-header-column-table q-mt-lg"
-                      :rows="comisionVendedor?.totalUtilidadBruta"
-                      :columns="columnasUtilidadBruta"
-                      no-data-label="No se encontró informacion disponible."
-                      no-results-label="No se encontraron coincidencias."
-                      :pagination="pagination"
-                      v-if="
-                        comisionVendedor?.infoVendedor?.claveDepartamento ===
-                        'NUE'
-                      "
-                    >
-                      <template v-slot:body="props">
-                        <q-tr>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.totalBaseComision.toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.totalPvas.toLocaleString("es-MX", {
+                  <q-table
+                    square
+                    dense
+                    flat
+                    hide-bottom
+                    class="my-sticky-header-column-table"
+                    :rows="comisionVendedor?.facturas"
+                    :columns="columnasFacturasSeminuevas"
+                    no-data-label="No se encontró informacion disponible."
+                    no-results-label="No se encontraron coincidencias."
+                    :pagination="pagination"
+                    v-else-if="
+                      comisionVendedor?.infoVendedor?.claveDepartamento ===
+                      'SEM'
+                    "
+                  >
+                    <template v-slot:body="props">
+                      <q-tr
+                        v-if="props.row.tipoRenglon === 'dato'"
+                        :props="props"
+                      >
+                        <q-td style="text-align: center">
+                          {{ props.row.folioFactura }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{ props.row.fechaFactura }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.tasaCredito }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{ props.row.condicion.toUpperCase() }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.modelo }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.serie }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.utilidad.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.previa.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.traslado.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.descuentoVentas.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.cortesias.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.gasolina.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.garantia_extendida.toLocaleString(
+                              "es-MX",
+                              {
                                 style: "currency",
                                 currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.totalUtilidadBruta.toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                        </q-tr>
-                      </template>
-                    </q-table>
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.acondicionamiento.toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.gestorias.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.toma_unidad.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.bono.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.baseComision.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                      </q-tr>
 
-                    <q-table
-                      square
-                      dense
-                      flat
-                      hide-bottom
-                      class="my-sticky-header-column-table q-mt-lg"
-                      :rows="comisionVendedor?.totalUtilidadBruta"
-                      :columns="columnasUtilidadBrutaSeminuevos"
-                      no-data-label="No se encontró informacion disponible."
-                      no-results-label="No se encontraron coincidencias."
-                      :pagination="pagination"
-                      v-if="
-                        comisionVendedor?.infoVendedor?.claveDepartamento ===
-                        'SEM'
-                      "
-                    >
-                      <template v-slot:body="props">
-                        <q-tr>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.totalBaseComision.toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.totalPvas.toLocaleString("es-MX", {
+                      <q-tr
+                        v-if="props.row.tipoRenglon === 'total'"
+                        :props="props"
+                      >
+                        <q-td>
+                          {{ props.row.folioFactura }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.fechaFactura }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.tasaCredito }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.condicion }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.modelo }}
+                        </q-td>
+                        <q-td
+                          style="text-align: left; background-color: yellow"
+                        >
+                          {{ props.row.serie }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.utilidad).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.previa).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.traslado).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.descuentoVentas).toLocaleString(
+                              "es-MX",
+                              {
                                 style: "currency",
                                 currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.totalPlanPiso.toLocaleString("es-MX", {
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.cortesias).toLocaleString(
+                              "es-MX",
+                              {
                                 style: "currency",
                                 currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              props.row.totalUtilidadBruta.toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                        </q-tr>
-                      </template>
-                    </q-table>
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.gasolina).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.garantia_extendida).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.acondicionamiento).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.gestorias).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.toma_unidad).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.bono).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.baseComision).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                      </q-tr>
+                    </template>
+                  </q-table>
 
-                    <q-table
-                      square
-                      dense
-                      flat
-                      hide-bottom
-                      class="my-sticky-header-column-table q-mt-lg"
-                      :rows="comisionVendedor?.kpis"
-                      :columns="columnasKPIs"
-                      no-data-label="No se encontró informacion disponible."
-                      no-results-label="No se encontraron coincidencias."
-                      :pagination="pagination"
-                    >
-                      <template v-slot:body="props">
-                        <q-tr>
-                          <q-td>
-                            {{ props.row.kpi }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{ `${props.row.porcentajeUB}%` }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{ props.row.objetivo }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{ `${props.row.objetivoCumplimiento}%` }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{ props.row.objetivoValorReal }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{ `${props.row.desempenio}%` }}
-                          </q-td>
-                          <q-td>
-                            {{ `${props.row.peso}%` }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{ `${props.row.porcentajeDeComision}%` }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.utilidadBruta).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.pagoCompleto).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.montoAPagar).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                        </q-tr>
-                      </template>
-                    </q-table>
+                  <q-table
+                    square
+                    dense
+                    flat
+                    hide-bottom
+                    class="my-sticky-header-column-table q-mt-lg"
+                    :rows="comisionVendedor?.pvas"
+                    :columns="columnasPvas"
+                    no-data-label="No se encontró informacion disponible."
+                    no-results-label="No se encontraron coincidencias."
+                    :pagination="pagination"
+                  >
+                    <template v-slot:body="props">
+                      <q-tr
+                        v-if="props.row.tipoRenglon === 'dato'"
+                        :props="props"
+                      >
+                        <q-td>
+                          {{ props.row.nombreCliente.toUpperCase() }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.utilidad).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{ props.row.pva.toUpperCase() }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{ props.row.fi }}
+                        </q-td>
+                      </q-tr>
 
-                    <q-table
-                      square
-                      dense
-                      flat
-                      hide-bottom
-                      class="my-sticky-header-column-table q-mt-lg q-mb-lg"
-                      :rows="comisionVendedor?.descuentosVendedor"
-                      :columns="columnasDescuentosVendedor"
-                      no-data-label="No se encontró informacion disponible."
-                      no-results-label="No se encontraron coincidencias."
-                      :pagination="pagination"
-                      v-if="
-                        comisionVendedor?.infoVendedor?.claveDepartamento ===
-                        'NUE'
-                      "
-                    >
-                      <template v-slot:body="props">
-                        <q-tr>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.bono).toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.descuento).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.inCredit).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.suAuto).toLocaleString("es-MX", {
-                                style: "currency",
-                                currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.accesorios).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.seminuevos).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.totalAPagar).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                        </q-tr>
-                      </template>
-                    </q-table>
+                      <q-tr
+                        v-if="props.row.tipoRenglon === 'total'"
+                        :props="props"
+                      >
+                        <q-td style="background-color: yellow">
+                          {{ props.row.nombreCliente }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.utilidad).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.pva }}
+                        </q-td>
+                        <q-td>
+                          {{ props.row.fi }}
+                        </q-td>
+                      </q-tr>
+                    </template>
+                  </q-table>
 
-                    <q-table
-                      square
-                      dense
-                      flat
-                      hide-bottom
-                      class="my-sticky-header-column-table q-mt-lg q-mb-lg"
-                      :rows="comisionVendedor?.descuentosVendedor"
-                      :columns="columnasDescuentosVendedorSeminuevos"
-                      no-data-label="No se encontró informacion disponible."
-                      no-results-label="No se encontraron coincidencias."
-                      :pagination="pagination"
-                      v-else-if="
-                        comisionVendedor?.infoVendedor?.claveDepartamento ===
-                        'SEM'
-                      "
-                    >
-                      <template v-slot:body="props">
-                        <q-tr>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.bono).toLocaleString("es-MX", {
+                  <q-table
+                    square
+                    dense
+                    flat
+                    hide-bottom
+                    class="my-sticky-header-column-table q-mt-lg"
+                    :rows="comisionVendedor?.totalUtilidadBruta"
+                    :columns="columnasUtilidadBruta"
+                    no-data-label="No se encontró informacion disponible."
+                    no-results-label="No se encontraron coincidencias."
+                    :pagination="pagination"
+                    v-if="
+                      comisionVendedor?.infoVendedor?.claveDepartamento ===
+                      'NUE'
+                    "
+                  >
+                    <template v-slot:body="props">
+                      <q-tr>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.totalBaseComision.toLocaleString(
+                              "es-MX",
+                              {
                                 style: "currency",
                                 currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.descuento).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.accesorios).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.nuevos).toLocaleString("es-MX", {
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.totalPvas.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.totalUtilidadBruta.toLocaleString(
+                              "es-MX",
+                              {
                                 style: "currency",
                                 currency: "MXN",
-                              })
-                            }}
-                          </q-td>
-                          <q-td style="text-align: center">
-                            {{
-                              Number(props.row.totalAPagar).toLocaleString(
-                                "es-MX",
-                                {
-                                  style: "currency",
-                                  currency: "MXN",
-                                }
-                              )
-                            }}
-                          </q-td>
-                        </q-tr>
-                      </template>
-                    </q-table>
-                  </q-scroll-area>
-                </div>
-              </q-tab-panel>
-              <q-tab-panel name="bono">
+                              }
+                            )
+                          }}
+                        </q-td>
+                      </q-tr>
+                    </template>
+                  </q-table>
+
+                  <q-table
+                    square
+                    dense
+                    flat
+                    hide-bottom
+                    class="my-sticky-header-column-table q-mt-lg"
+                    :rows="comisionVendedor?.totalUtilidadBruta"
+                    :columns="columnasUtilidadBrutaSeminuevos"
+                    no-data-label="No se encontró informacion disponible."
+                    no-results-label="No se encontraron coincidencias."
+                    :pagination="pagination"
+                    v-if="
+                      comisionVendedor?.infoVendedor?.claveDepartamento ===
+                      'SEM'
+                    "
+                  >
+                    <template v-slot:body="props">
+                      <q-tr>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.totalBaseComision.toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.totalPvas.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <!-- <q-td style="text-align: center">
+                          {{
+                            props.row.totalPlanPiso.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td> -->
+                        <q-td style="text-align: center">
+                          {{
+                            props.row.totalUtilidadBruta.toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                      </q-tr>
+                    </template>
+                  </q-table>
+
+                  <q-table
+                    square
+                    dense
+                    flat
+                    hide-bottom
+                    class="my-sticky-header-column-table q-mt-lg"
+                    :rows="comisionVendedor?.kpis"
+                    :columns="columnasKPIs"
+                    no-data-label="No se encontró informacion disponible."
+                    no-results-label="No se encontraron coincidencias."
+                    :pagination="pagination"
+                  >
+                    <template v-slot:body="props">
+                      <q-tr
+                        v-if="props.row.tipoRenglon === 'dato'"
+                        :props="props"
+                      >
+                        <q-td>
+                          {{ props.row.kpi }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{ `${props.row.porcentajeUB}%` }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{ props.row.objetivo }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{ `${props.row.objetivoCumplimiento}%` }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{ props.row.objetivoValorReal }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{ `${props.row.desempenio}%` }}
+                        </q-td>
+                        <q-td>
+                          {{ `${props.row.peso}%` }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{ `${props.row.porcentajeDeComision}%` }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.utilidadBruta).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.pagoCompleto).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.montoAPagar).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                      </q-tr>
+
+                      <q-tr
+                        v-if="props.row.tipoRenglon === 'total'"
+                        :props="props"
+                      >
+                        <q-td></q-td>
+                        <q-td></q-td>
+                        <q-td></q-td>
+                        <q-td></q-td>
+                        <q-td></q-td>
+                        <q-td></q-td>
+                        <q-td></q-td>
+                        <q-td></q-td>
+                        <q-td></q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{ props.row.pagoCompleto }}
+                        </q-td>
+                        <q-td
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.montoAPagar).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                      </q-tr>
+                    </template>
+                  </q-table>
+
+                  <q-table
+                    square
+                    dense
+                    flat
+                    hide-bottom
+                    class="my-sticky-header-column-table q-mt-lg q-mb-lg"
+                    :rows="comisionVendedor?.descuentosVendedor"
+                    :columns="columnasDescuentosVendedor"
+                    no-data-label="No se encontró informacion disponible."
+                    no-results-label="No se encontraron coincidencias."
+                    :pagination="pagination"
+                    v-if="
+                      comisionVendedor?.infoVendedor?.claveDepartamento ===
+                      'NUE'
+                    "
+                  >
+                    <template v-slot:body="props">
+                      <q-tr>
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.bono).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.descuento).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.inCredit).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.suAuto).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.accesorios).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <!-- <q-td style="text-align: center">
+                          {{
+                            Number(props.row.seminuevos).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td> -->
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.totalAPagar).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                      </q-tr>
+                    </template>
+                  </q-table>
+
+                  <q-table
+                    square
+                    dense
+                    flat
+                    hide-bottom
+                    class="my-sticky-header-column-table q-mt-lg q-mb-lg"
+                    :rows="comisionVendedor?.descuentosVendedor"
+                    :columns="columnasDescuentosVendedorSeminuevos"
+                    no-data-label="No se encontró informacion disponible."
+                    no-results-label="No se encontraron coincidencias."
+                    :pagination="pagination"
+                    v-else-if="
+                      comisionVendedor?.infoVendedor?.claveDepartamento ===
+                      'SEM'
+                    "
+                  >
+                    <template v-slot:body="props">
+                      <q-tr>
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.bono).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.descuento).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.accesorios).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                        <!-- <q-td style="text-align: center">
+                          {{
+                            Number(props.row.nuevos).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td> -->
+                        <q-td style="text-align: center">
+                          {{
+                            Number(props.row.totalAPagar).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
+                          }}
+                        </q-td>
+                      </q-tr>
+                    </template>
+                  </q-table>
+                </q-scroll-area>
+              </div>
+            </q-tab-panel>
+
+            <!-- <q-tab-panel name="bono">
                 <div v-if="!comisionBonoVendedor">
                   <q-card>
                     <q-card-section>
@@ -1198,7 +1518,7 @@
                       hide-bottom
                       class="my-sticky-header-column-table"
                       :rows="comisionBonoVendedor?.facturas"
-                      :columns="columnasFactuas"
+                      :columns="columnasFacturas"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
                       :pagination="pagination"
@@ -1711,8 +2031,8 @@
                     </q-table>
                   </q-scroll-area>
                 </div>
-              </q-tab-panel>
-            </q-tab-panels>
+              </q-tab-panel> -->
+            <!-- </q-tab-panels> -->
           </q-card>
         </div>
       </div>
@@ -1732,6 +2052,7 @@ import { notificacion } from "src/helpers/mensajes";
 import ModalEnviarComision from "src/components/ModalEnviarComision.vue";
 import { filtradoBusquedaObj } from "src/helpers/filtradoBusquedaObj";
 import { formatearFecha } from "src/helpers/formatearFecha";
+import { name } from "dayjs/locale/es";
 
 export default {
   components: {
@@ -1768,7 +2089,7 @@ export default {
 
     const modalEnviarComision = ref(null);
 
-    const columnasFactuas = [
+    const columnasFacturas = [
       {
         name: "folioFactura",
         label: "Folio",
@@ -1780,6 +2101,10 @@ export default {
       {
         name: "tasaCredito",
         label: "Tasa de crédito",
+      },
+      {
+        name: "condicion",
+        label: "Condición",
       },
       {
         name: "modelo",
@@ -1814,6 +2139,22 @@ export default {
         label: "Gasolina",
       },
       {
+        name: "garantia_extendida",
+        label: "Garantía extendida",
+      },
+      {
+        name: "acondicionamiento",
+        label: "Acondicionamiento",
+      },
+      {
+        name: "gestorias",
+        label: "Gestorías",
+      },
+      {
+        name: "toma_unidad",
+        label: "Toma unidad",
+      },
+      {
         name: "bonoub",
         label: "Bono",
       },
@@ -1837,6 +2178,10 @@ export default {
         label: "Tasa de crédito",
       },
       {
+        name: "condicion",
+        label: "Condición",
+      },
+      {
         name: "modelo",
         label: "Modelo",
       },
@@ -1847,6 +2192,26 @@ export default {
       {
         name: "utilidad",
         label: "Utilidad",
+      },
+      {
+        name: "previa",
+        label: "Previa",
+      },
+      {
+        name: "traslado",
+        label: "Traslado",
+      },
+      {
+        name: "descuentoVentas",
+        label: "Descuento ventas",
+      },
+      {
+        name: "cortesias",
+        label: "Cortesías",
+      },
+      {
+        name: "gasolina",
+        label: "Gasolina",
       },
       {
         name: "garantia_extendida",
@@ -1863,10 +2228,6 @@ export default {
       {
         name: "toma_unidad",
         label: "Toma unidad",
-      },
-      {
-        name: "cortesias",
-        label: "Cortesías",
       },
       {
         name: "bonoub",
@@ -1920,10 +2281,6 @@ export default {
       {
         name: "totalPvas",
         label: "Total PVA's",
-      },
-      {
-        name: "totalPlanPiso",
-        label: "Plan piso",
       },
       {
         name: "totalUtilidadBruta",
@@ -1999,13 +2356,13 @@ export default {
         name: "accesorios",
         label: "Accesorios",
       },
-      {
-        name: "seminuevos",
-        label: "Seminuevos",
-      },
+      // {
+      //   name: "seminuevos",
+      //   label: "Seminuevos",
+      // },
       {
         name: "totalAPagar",
-        label: "Total a pagar",
+        label: "Total a pagar bonos",
       },
     ];
 
@@ -2022,13 +2379,13 @@ export default {
         name: "accesorios",
         label: "Accesorios",
       },
-      {
-        name: "nuevos",
-        label: "Nuevos",
-      },
+      // {
+      //   name: "nuevos",
+      //   label: "Nuevos",
+      // },
       {
         name: "totalAPagar",
-        label: "Total a pagar",
+        label: "Total a pagar bonos",
       },
     ];
 
@@ -2234,22 +2591,22 @@ export default {
       } else {
         cargando.value = true;
 
-        const bucarBonoAprobado = {
-          idAsesor: vendedorSeleccionado.value.value.idAsesor,
-          anio: anioSeleccionado.value,
-          mes: obtenerNumerosDeMes(mesSeleccionado.value),
-        };
+        // const bucarBonoAprobado = {
+        //   idAsesor: vendedorSeleccionado.value.value.idAsesor,
+        //   anio: anioSeleccionado.value,
+        //   mes: obtenerNumerosDeMes(mesSeleccionado.value),
+        // };
 
-        await obtenerBonoAprobado(bucarBonoAprobado);
+        // await obtenerBonoAprobado(bucarBonoAprobado);
 
-        if (!bonoAprobado.value) {
-          notificacion(
-            "warning",
-            "No se puede calcular la comision debido a que el bono de venta de unidades no ha sido validado por el otro departamento"
-          );
-          cargando.value = false;
-          return;
-        }
+        // if (!bonoAprobado.value) {
+        //   notificacion(
+        //     "warning",
+        //     "No se puede calcular la comision debido a que el bono de venta de unidades no ha sido validado por el otro departamento"
+        //   );
+        //   cargando.value = false;
+        //   return;
+        // }
 
         const objBusqueda = {
           idErp: vendedorSeleccionado.value.value.idErp,
@@ -2269,7 +2626,7 @@ export default {
           desdeCalculador: true,
         };
 
-        await obtenerComisionBonoVendedor(busquedaBonoObj);
+        // await obtenerComisionBonoVendedor(busquedaBonoObj);
 
         if (comisionVendedor.value) {
           cargando.value = false;
@@ -2279,11 +2636,11 @@ export default {
           datosCargados.value = false;
         }
 
-        if (comisionBonoVendedor.value) {
-          hayBono.value = true;
-        } else {
-          hayBono.value = false;
-        }
+        // if (comisionBonoVendedor.value) {
+        //   hayBono.value = true;
+        // } else {
+        //   hayBono.value = false;
+        // }
       }
     };
 
@@ -2330,7 +2687,7 @@ export default {
       anioSeleccionado,
       mesSeleccionado,
       comisionVendedor,
-      columnasFactuas,
+      columnasFacturas,
       pagination,
       columnasPvas,
       columnasUtilidadBruta,

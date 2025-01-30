@@ -103,7 +103,7 @@ export default {
       }
 
       $q.loading.show({
-        message: "Cargando los ga...",
+        message: "Cargando las garantías...",
         spinner: QSpinnerIos,
       });
 
