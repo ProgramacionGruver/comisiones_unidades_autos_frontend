@@ -156,8 +156,8 @@ export default {
         }
 
         // await obtenerUrlComision(comisionVendedor.value, "vendedor");
-        const linkComision = `http://localhost:9000/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}/${autorizaciones.idAutorizacion}`;
-        // const linkComision = `https://www.gruver.com.mx/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}/${autorizaciones.idAutorizacion}`;
+        // const linkComision = `http://localhost:9000/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}/${autorizaciones.idAutorizacion}`;
+        const linkComision = `https://www.gruver.com.mx/portal_comisiones_unidades_autos/#/autorizacion/vendedor/${vendedorObj.value.idAsesor}/${mes}/${anioSeleccionado.value}/${autorizaciones.idAutorizacion}`;
         // const linkComision = `` // <--------- Cambiar a productivo
 
         const mesNombre = listaMeses[mes - 1];
