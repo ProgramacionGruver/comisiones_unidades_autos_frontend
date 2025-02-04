@@ -257,78 +257,82 @@ export default {
     const factura = ref({});
 
     const abrir = (objFactura) => {
-      if (objFactura.condicion === "nuevas") {
-        if (objFactura.descuentosUnidades.length === 0) {
-          objFactura.descuentosUnidades = [
-            {
-              previa: 0,
-              traslado: 0,
-              cortesia: 0,
-              gasolina: 0,
-              descVentas: 0,
-              bonoub: 0,
-              garantia_extendida: 0,
-              acondicionamiento: 0,
-              gestorias: 0,
-              toma_unidad: 0,
-            },
-          ];
+      try {
+        if (objFactura.condicion === "nuevas") {
+          if (objFactura.descuentosUnidades.length === 0) {
+            objFactura.descuentosUnidades = [
+              {
+                previa: 0,
+                traslado: 0,
+                cortesia: 0,
+                gasolina: 0,
+                descVentas: 0,
+                bonoub: 0,
+                garantia_extendida: 0,
+                acondicionamiento: 0,
+                gestorias: 0,
+                toma_unidad: 0,
+              },
+            ];
+          } else {
+            objFactura.descuentosUnidades = [
+              {
+                previa: objFactura.descuentosUnidades[0]?.previa ?? 0,
+                traslado: objFactura.descuentosUnidades[0]?.traslado ?? 0,
+                cortesia: objFactura.descuentosUnidades[0]?.cortesia ?? 0,
+                gasolina: objFactura.descuentosUnidades[0]?.gasolina ?? 0,
+                descVentas: objFactura.descuentosUnidades[0]?.descVentas ?? 0,
+                bonoub: objFactura.descuentosUnidades[0]?.bonoub ?? 0,
+                garantia_extendida:
+                  objFactura.descuentosUnidades[0]?.garantia_extendida ?? 0,
+                acondicionamiento:
+                  objFactura.descuentosUnidades[0]?.acondicionamiento ?? 0,
+                gestorias: objFactura.descuentosUnidades[0]?.gestorias ?? 0,
+                toma_unidad: objFactura.descuentosUnidades[0]?.toma_unidad ?? 0,
+              },
+            ];
+          }
         } else {
-          objFactura.descuentosUnidades = [
-            {
-              previa: objFactura.descuentosUnidades[0]?.previa ?? 0,
-              traslado: objFactura.descuentosUnidades[0]?.traslado ?? 0,
-              cortesia: objFactura.descuentosUnidades[0]?.cortesia ?? 0,
-              gasolina: objFactura.descuentosUnidades[0]?.gasolina ?? 0,
-              descVentas: objFactura.descuentosUnidades[0]?.descVentas ?? 0,
-              bonoub: objFactura.descuentosUnidades[0]?.bonoub ?? 0,
-              garantia_extendida:
-                objFactura.descuentosUnidades[0]?.garantia_extendida ?? 0,
-              acondicionamiento:
-                objFactura.descuentosUnidades[0]?.acondicionamiento ?? 0,
-              gestorias: objFactura.descuentosUnidades[0]?.gestorias ?? 0,
-              toma_unidad: objFactura.descuentosUnidades[0]?.toma_unidad ?? 0,
-            },
-          ];
+          if (objFactura.descuentosUnidadesSeminuevos.length === 0) {
+            objFactura.descuentosUnidadesSeminuevos = [
+              {
+                previa: 0,
+                traslado: 0,
+                cortesia: 0,
+                gasolina: 0,
+                descVentas: 0,
+                bonoub: 0,
+                garantia_extendida: 0,
+                acondicionamiento: 0,
+                gestorias: 0,
+                toma_unidad: 0,
+              },
+            ];
+          } else {
+            objFactura.descuentosUnidadesSeminuevos = [
+              {
+                previa: objFactura.descuentosUnidadesSeminuevos[0]?.previa ?? 0,
+                traslado: objFactura.descuentosUnidadesSeminuevos[0]?.traslado ?? 0,
+                cortesia: objFactura.descuentosUnidadesSeminuevos[0]?.cortesia ?? 0,
+                gasolina: objFactura.descuentosUnidadesSeminuevos[0]?.gasolina ?? 0,
+                descVentas: objFactura.descuentosUnidadesSeminuevos[0]?.descVentas ?? 0,
+                bonoub: objFactura.descuentosUnidadesSeminuevos[0]?.bonoub ?? 0,
+                garantia_extendida:
+                  objFactura.descuentosUnidadesSeminuevos[0]?.garantia_extendida ?? 0,
+                acondicionamiento:
+                  objFactura.descuentosUnidadesSeminuevos[0]?.acondicionamiento ?? 0,
+                gestorias: objFactura.descuentosUnidadesSeminuevos[0]?.gestorias ?? 0,
+                toma_unidad: objFactura.descuentosUnidadesSeminuevos[0]?.toma_unidad ?? 0,
+              },
+            ];
+          }
         }
-      } else {
-        if (objFactura.descuentosUnidadesSeminuevos.length === 0) {
-          objFactura.descuentosUnidadesSeminuevos = [
-            {
-              previa: 0,
-              traslado: 0,
-              cortesia: 0,
-              gasolina: 0,
-              descVentas: 0,
-              bonoub: 0,
-              garantia_extendida: 0,
-              acondicionamiento: 0,
-              gestorias: 0,
-              toma_unidad: 0,
-            },
-          ];
-        } else {
-          objFactura.descuentosUnidadesSeminuevos = [
-            {
-              previa: objFactura.descuentosUnidades[0]?.previa ?? 0,
-              traslado: objFactura.descuentosUnidades[0]?.traslado ?? 0,
-              cortesia: objFactura.descuentosUnidades[0]?.cortesia ?? 0,
-              gasolina: objFactura.descuentosUnidades[0]?.gasolina ?? 0,
-              descVentas: objFactura.descuentosUnidades[0]?.descVentas ?? 0,
-              bonoub: objFactura.descuentosUnidades[0]?.bonoub ?? 0,
-              garantia_extendida:
-                objFactura.descuentosUnidades[0]?.garantia_extendida ?? 0,
-              acondicionamiento:
-                objFactura.descuentosUnidades[0]?.acondicionamiento ?? 0,
-              gestorias: objFactura.descuentosUnidades[0]?.gestorias ?? 0,
-              toma_unidad: objFactura.descuentosUnidades[0]?.toma_unidad ?? 0,
-            },
-          ];
-        }
+  
+        factura.value = { ...objFactura };
+        modalDescuentos.value = true;
+      } catch (error) {
+        console.error(error);
       }
-
-      factura.value = { ...objFactura };
-      modalDescuentos.value = true;
     };
 
     const guardarDescuento = async () => {
