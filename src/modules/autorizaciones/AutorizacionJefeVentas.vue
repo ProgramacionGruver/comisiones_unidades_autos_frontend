@@ -43,7 +43,7 @@
                 {{ comisionVendedorSuAuto?.infoVendedor?.claveDepartamento }}
               </div>
             </div>
-            <div>
+            <!-- <div>
               <q-btn
                 icon="send"
                 color="primary"
@@ -51,7 +51,7 @@
                 class="q-mr-md"
                 @click="enviarComision"
               />
-            </div>
+            </div> -->
           </div>
         </q-card-section>
         <q-card-section>
@@ -162,7 +162,7 @@
                 {{ comisionVendedorSuAuto?.infoVendedor?.claveDepartamento }}
               </div>
             </div>
-            <div>
+            <!-- <div>
               <q-btn
                 icon="send"
                 color="primary"
@@ -170,7 +170,7 @@
                 class="q-mr-md"
                 @click="enviarComision"
               />
-            </div>
+            </div> -->
           </div>
         </q-card-section>
         <q-card-section>
@@ -322,7 +322,7 @@
                   />
                 </div>
               </div>
-              <div>
+              <!-- <div>
                 <q-btn
                   icon="send"
                   color="primary"
@@ -330,7 +330,7 @@
                   class="q-mr-md"
                   @click="enviarComision"
                 />
-              </div>
+              </div> -->
             </div>
           </div>
           <div>
@@ -1786,6 +1786,47 @@
                 </div>
               </q-tab-panel> -->
         <!-- </q-tab-panels> -->
+        <q-card-actions class="botones--div__comision">
+          <!-- <div class="boton--superior">
+            <q-btn
+              label="Descargar PDF"
+              color="primary"
+              @click="descargarPDF"
+              icon-right="cloud_download"
+              :loading="cargandoPDF"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+          </div> -->
+
+          <div class="botones--inferiores">
+            <q-btn
+              label="Confirmar"
+              color="green"
+              @click="enviarComision"
+              icon-right="check"
+              :loading="cargandoConfirmacion"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+
+            <q-btn
+              label="Rechazar"
+              color="red"
+              @click="rechazoComision"
+              icon-right="close"
+              :loading="cargandoRechazar"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+          </div>
+        </q-card-actions>
       </q-card>
     </div>
   </q-layout>
