@@ -351,8 +351,7 @@ export const useKpiStore = defineStore("kpi", () => {
           kpi.objetivosKpi.nombreKpi.includes("Penetracion") &&
           comisionVendedor.value.infoVendedor.claveDepartamento === "NUE"
         ) {
-          const numero =
-            totalFacturas * (kpi.objetivosKpi.objetivoCumplimiento / 100);
+          const numero = totalFacturas * 0.7;
 
           const objetivo = redondear(numero);
           kpi.objetivosKpi.objetivo = objetivo === 0 ? 1 : objetivo;
