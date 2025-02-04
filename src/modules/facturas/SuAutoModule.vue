@@ -171,7 +171,7 @@ export default {
 
       await obtenerContratosSuAuto({
         anio: anioSeleccionado.value,
-        mes: mesSeleccionado.value,
+        mes: Number(obtenerNumerosDeMes(mesSeleccionado.value)),
       });
 
       cargando.value = false;
