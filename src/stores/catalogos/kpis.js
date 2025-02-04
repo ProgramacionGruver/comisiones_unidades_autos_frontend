@@ -357,18 +357,18 @@ export const useKpiStore = defineStore("kpi", () => {
           kpi.objetivosKpi.objetivo = objetivo === 0 ? 1 : objetivo;
         }
 
-        if (kpi.objetivosKpi.nombreKpi.includes("entregas")) {
-          if (
-            comisionVendedor.value.infoVendedor.claveSucursal == "CHDM" ||
-            comisionVendedor.value.infoVendedor.claveSucursal == "CHMO"
-          ) {
-            kpi.objetivosKpi.objetivo = kpi.objetivosKpi.objetivo;
-          } else {
-            const objetivo = totalFacturas - 1 <= 0 ? 1 : totalFacturas - 1;
+        // if (kpi.objetivosKpi.nombreKpi.includes("entregas")) {
+        //   if (
+        //     comisionVendedor.value.infoVendedor.claveSucursal == "CHDM" ||
+        //     comisionVendedor.value.infoVendedor.claveSucursal == "CHMO"
+        //   ) {
+        //     kpi.objetivosKpi.objetivo = kpi.objetivosKpi.objetivo;
+        //   } else {
+        //     const objetivo = totalFacturas - 1 <= 0 ? 1 : totalFacturas - 1;
 
-            kpi.objetivosKpi.objetivo = objetivo;
-          }
-        }
+        //     kpi.objetivosKpi.objetivo = objetivo;
+        //   }
+        // }
 
         let desempenio = Math.floor(
           (kpi.valorReal * 100) / kpi.objetivosKpi.objetivo
