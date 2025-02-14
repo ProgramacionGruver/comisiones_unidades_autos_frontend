@@ -139,7 +139,9 @@
               </div>
             </q-card-section>
             <q-card-section>
-              <div class="text-center text-bold text-h4 q-mb-md">FACTURAS</div>
+              <div class="text-center text-bold text-h4 q-mb-md">
+                FACTURACIÓN SUAUTO
+              </div>
               <q-table
                 square
                 dense
@@ -155,8 +157,66 @@
               />
               <div v-else>
                 <div class="text-h4 text-center">
-                  Este asesor no cuenta con facturas de Su Auto para este
-                  período
+                  Este asesor no cuenta con facturación de unidades SuAuto para
+                  este periodo
+                </div>
+              </div>
+            </q-card-section>
+            <q-card-section>
+              <div class="text-center text-bold text-h4 q-mb-md">
+                FACTURACIÓN UNIDADES VENDIDAS
+              </div>
+              <q-table
+                square
+                dense
+                flat
+                hide-bottom
+                class="my-sticky-header-column-table"
+                :rows="comisionVendedorSuAuto?.unidadesVendidas.facturas"
+                :columns="columnasFacturas"
+                no-data-label="No se encontró informacion disponible."
+                no-results-label="No se encontraron coincidencias."
+                :pagination="pagination"
+                v-if="
+                  comisionVendedorSuAuto?.unidadesVendidas.facturas.length > 0
+                "
+              >
+                <template v-slot:body="props">
+                  <q-td v-for="col in props.cols" :key="col.name">
+                    <div
+                      v-if="
+                        col.name == 'utilidad' ||
+                        col.name == 'previa' ||
+                        col.name == 'traslado' ||
+                        col.name == 'descuentoVentas' ||
+                        col.name == 'cortesias' ||
+                        col.name == 'gasolina' ||
+                        col.name == 'garantia_extendida' ||
+                        col.name == 'acondicionamiento' ||
+                        col.name == 'gestorias' ||
+                        col.name == 'toma_unidad' ||
+                        col.name == 'bono' ||
+                        col.name == 'baseComision'
+                      "
+                      style="text-align: center"
+                    >
+                      {{
+                        props.row[col.name].toLocaleString("es-MX", {
+                          style: "currency",
+                          currency: "MXN",
+                        })
+                      }}
+                    </div>
+                    <div v-else style="text-align: center">
+                      {{ props.row[col.name] }}
+                    </div>
+                  </q-td>
+                </template>
+              </q-table>
+              <div v-else>
+                <div class="text-h4 text-center">
+                  Este asesor no cuenta con facturación de unidades vendidas
+                  para este periodo
                 </div>
               </div>
             </q-card-section>
@@ -175,7 +235,7 @@
                   }}
                 </div>
                 <div>
-                  <strong>Total base facturas:</strong>
+                  <strong>Total base facturas (SuAuto):</strong>
                   {{
                     comisionVendedorSuAuto?.totalFacturas?.toLocaleString(
                       "es-MX",
@@ -185,6 +245,33 @@
                       }
                     )
                   }}
+                </div>
+                <div
+                  v-if="
+                    comisionVendedorSuAuto?.unidadesVendidas.totalAPagar > 0
+                  "
+                >
+                  <strong>Total base facturas (venta de unidades):</strong>
+                  {{
+                    comisionVendedorSuAuto?.unidadesVendidas.totalUtilidadFacturas.toLocaleString(
+                      "es-MX",
+                      {
+                        style: "currency",
+                        currency: "MXN",
+                      }
+                    )
+                  }}
+                </div>
+                <div
+                  v-if="
+                    comisionVendedorSuAuto?.unidadesVendidas.totalAPagar > 0
+                  "
+                >
+                  <strong>Porcentaje UB:</strong>
+                  {{
+                    comisionVendedorSuAuto?.unidadesVendidas.esquema
+                      .porcentajeUB
+                  }}%
                 </div>
                 <div>
                   <strong>Total a pagar:</strong>
