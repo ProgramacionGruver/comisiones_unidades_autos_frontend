@@ -161,127 +161,65 @@ export const useKpiStore = defineStore("kpi", () => {
         }
       }
 
-      if (comisionVendedor.value.infoVendedor.claveDepartamento === "NUE") {
-        facturas.push({
-          folioFactura: "",
-          fechaFactura: "",
-          tasaCredito: "",
-          condicion: "",
-          modelo: "",
-          serie: "Total",
-          utilidad: comisionVendedor.value.facturas
-            .reduce((acc, utilidad) => acc + utilidad.utilidad, 0)
-            .toFixed(2),
-          previa: comisionVendedor.value.facturas
-            .reduce((acc, previa) => acc + previa.descuentos.previa, 0)
-            .toFixed(2),
-          traslado: comisionVendedor.value.facturas
-            .reduce((acc, traslado) => acc + traslado.descuentos.traslado, 0)
-            .toFixed(2),
-          descuentoVentas: comisionVendedor.value.facturas
-            .reduce(
-              (acc, descVentas) => acc + descVentas.descuentos.descVentas,
-              0
-            )
-            .toFixed(2),
-          cortesias: comisionVendedor.value.facturas
-            .reduce((acc, cortesia) => acc + cortesia.descuentos.cortesia, 0)
-            .toFixed(2),
-          gasolina: comisionVendedor.value.facturas
-            .reduce((acc, gasolina) => acc + gasolina.descuentos.gasolina, 0)
-            .toFixed(2),
-          bono: comisionVendedor.value.facturas
-            .reduce((acc, bono) => acc + bono.descuentos.bonoub, 0)
-            .toFixed(2),
-          garantia_extendida: comisionVendedor.value.facturas
-            .reduce(
-              (acc, garantia) => acc + garantia.descuentos.garantia_extendida,
-              0
-            )
-            .toFixed(2),
-          acondicionamiento: comisionVendedor.value.facturas
-            .reduce(
-              (acc, acondicionamiento) =>
-                acc + acondicionamiento.descuentos.acondicionamiento,
-              0
-            )
-            .toFixed(2),
-          gestorias: comisionVendedor.value.facturas
-            .reduce((acc, gestorias) => acc + gestorias.descuentos.gestorias, 0)
-            .toFixed(2),
-          toma_unidad: comisionVendedor.value.facturas
-            .reduce(
-              (acc, tomaUnidad) => acc + tomaUnidad.descuentos.toma_unidad,
-              0
-            )
-            .toFixed(2),
-          baseComision: facturas
-            .filter((factura) => factura.tipoRenglon === "dato")
-            .reduce((acc, baseComision) => acc + baseComision.baseComision, 0)
-            .toFixed(2),
-          tipoRenglon: "total",
-        });
-      } else {
-        facturas.push({
-          folioFactura: "",
-          fechaFactura: "",
-          tasaCredito: "",
-          condicion: "",
-          modelo: "",
-          serie: "Total",
-          utilidad: comisionVendedor.value.facturas
-            .reduce((acc, utilidad) => acc + utilidad.utilidad, 0)
-            .toFixed(2),
-          previa: comisionVendedor.value.facturas
-            .reduce((acc, previa) => acc + previa.descuentos.previa, 0)
-            .toFixed(2),
-          traslado: comisionVendedor.value.facturas
-            .reduce((acc, traslado) => acc + traslado.descuentos.traslado, 0)
-            .toFixed(2),
-          descuentoVentas: comisionVendedor.value.facturas
-            .reduce(
-              (acc, descVentas) => acc + descVentas.descuentos.descVentas,
-              0
-            )
-            .toFixed(2),
-          cortesias: comisionVendedor.value.facturas
-            .reduce((acc, cortesia) => acc + cortesia.descuentos.cortesia, 0)
-            .toFixed(2),
-          gasolina: comisionVendedor.value.facturas
-            .reduce((acc, gasolina) => acc + gasolina.descuentos.gasolina, 0)
-            .toFixed(2),
-          bono: comisionVendedor.value.facturas
-            .reduce((acc, bono) => acc + bono.descuentos.bonoub, 0)
-            .toFixed(2),
-          garantia_extendida: comisionVendedor.value.facturas
-            .reduce(
-              (acc, garantia) => acc + garantia.descuentos.garantia_extendida,
-              0
-            )
-            .toFixed(2),
-          acondicionamiento: comisionVendedor.value.facturas
-            .reduce(
-              (acc, acondicionamiento) =>
-                acc + acondicionamiento.descuentos.acondicionamiento,
-              0
-            )
-            .toFixed(2),
-          gestorias: comisionVendedor.value.facturas
-            .reduce((acc, gestorias) => acc + gestorias.descuentos.gestorias, 0)
-            .toFixed(2),
-          toma_unidad: comisionVendedor.value.facturas
-            .reduce(
-              (acc, tomaUnidad) => acc + tomaUnidad.descuentos.toma_unidad,
-              0
-            )
-            .toFixed(2),
-          baseComision: facturas
-            .filter((factura) => factura.tipoRenglon === "dato")
-            .reduce((acc, baseComision) => acc + baseComision.baseComision, 0)
-            .toFixed(2),
-          tipoRenglon: "total",
-        });
-      }
+      facturas.push({
+        folioFactura: "",
+        fechaFactura: "",
+        tasaCredito: "",
+        condicion: "",
+        modelo: "",
+        serie: "Total",
+        utilidad: comisionVendedor.value.facturas
+          .reduce((acc, utilidad) => acc + utilidad.utilidad, 0)
+          .toFixed(2),
+        previa: comisionVendedor.value.facturas
+          .reduce((acc, previa) => acc + previa.descuentos.previa, 0)
+          .toFixed(2),
+        traslado: comisionVendedor.value.facturas
+          .reduce((acc, traslado) => acc + traslado.descuentos.traslado, 0)
+          .toFixed(2),
+        descuentoVentas: comisionVendedor.value.facturas
+          .reduce(
+            (acc, descVentas) => acc + descVentas.descuentos.descVentas,
+            0
+          )
+          .toFixed(2),
+        cortesias: comisionVendedor.value.facturas
+          .reduce((acc, cortesia) => acc + cortesia.descuentos.cortesia, 0)
+          .toFixed(2),
+        gasolina: comisionVendedor.value.facturas
+          .reduce((acc, gasolina) => acc + gasolina.descuentos.gasolina, 0)
+          .toFixed(2),
+        bono: comisionVendedor.value.facturas
+          .reduce((acc, bono) => acc + bono.descuentos.bonoub, 0)
+          .toFixed(2),
+        garantia_extendida: comisionVendedor.value.facturas
+          .reduce(
+            (acc, garantia) => acc + garantia.descuentos.garantia_extendida,
+            0
+          )
+          .toFixed(2),
+        acondicionamiento: comisionVendedor.value.facturas
+          .reduce(
+            (acc, acondicionamiento) =>
+              acc + acondicionamiento.descuentos.acondicionamiento,
+            0
+          )
+          .toFixed(2),
+        gestorias: comisionVendedor.value.facturas
+          .reduce((acc, gestorias) => acc + gestorias.descuentos.gestorias, 0)
+          .toFixed(2),
+        toma_unidad: comisionVendedor.value.facturas
+          .reduce(
+            (acc, tomaUnidad) => acc + tomaUnidad.descuentos.toma_unidad,
+            0
+          )
+          .toFixed(2),
+        baseComision: facturas
+          .filter((factura) => factura.tipoRenglon === "dato")
+          .reduce((acc, baseComision) => acc + baseComision.baseComision, 0)
+          .toFixed(2),
+        tipoRenglon: "total",
+      });
 
       let pvas = [];
 
@@ -347,10 +285,7 @@ export const useKpiStore = defineStore("kpi", () => {
       for (const kpi of comisionVendedor.value.kpis) {
         let porcentajeUB = kpi.objetivosKpi.porcentajeub;
 
-        if (
-          kpi.objetivosKpi.nombreKpi.includes("Penetracion") &&
-          comisionVendedor.value.infoVendedor.claveDepartamento === "NUE"
-        ) {
+        if (kpi.objetivosKpi.nombreKpi.includes("Penetracion")) {
           const numero = totalFacturas * 0.7;
 
           const objetivo = redondear(numero);
