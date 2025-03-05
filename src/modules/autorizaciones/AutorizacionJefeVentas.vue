@@ -130,6 +130,46 @@
             </div>
           </div>
         </q-card-section>
+        <q-card-actions class="botones--div__comision">
+          <!-- <div class="boton--superior">
+            <q-btn
+              label="Descargar PDF"
+              color="primary"
+              @click="descargarPDF"
+              icon-right="cloud_download"
+              :loading="cargandoPDF"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+          </div> -->
+          <div class="botones--inferiores">
+            <q-btn
+              label="Confirmar"
+              color="green"
+              @click="enviarComision"
+              icon-right="check"
+              :loading="cargandoConfirmacion"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+
+            <q-btn
+              label="Rechazar"
+              color="red"
+              @click="rechazoComision"
+              icon-right="close"
+              :loading="cargandoRechazar"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+          </div>
+        </q-card-actions>
       </q-card>
 
       <q-card
@@ -249,6 +289,46 @@
             </div>
           </div>
         </q-card-section>
+        <q-card-actions class="botones--div__comision">
+          <!-- <div class="boton--superior">
+            <q-btn
+              label="Descargar PDF"
+              color="primary"
+              @click="descargarPDF"
+              icon-right="cloud_download"
+              :loading="cargandoPDF"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+          </div> -->
+          <div class="botones--inferiores">
+            <q-btn
+              label="Confirmar"
+              color="green"
+              @click="enviarComision"
+              icon-right="check"
+              :loading="cargandoConfirmacion"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+
+            <q-btn
+              label="Rechazar"
+              color="red"
+              @click="rechazoComision"
+              icon-right="close"
+              :loading="cargandoRechazar"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
+            </q-btn>
+          </div>
+        </q-card-actions>
       </q-card>
 
       <q-card v-else class="q-mt-md">
@@ -2442,6 +2522,8 @@ export default {
         const data = {
           idAutorizacionDetalle: autorizacionVendedor.idAutorizacionDetalle,
           comentario: comentario.value,
+          idAutorizacion: infoUrl.value.idAutorizacion,
+          autorizacionJefe: true,
         };
 
         await aceptarAutorizacion(data);
