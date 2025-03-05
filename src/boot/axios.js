@@ -10,7 +10,7 @@ import axios from "axios";
 const api = axios.create({
   baseURL: "https://backend.gruver.com.mx/comisiones/api",
   // baseURL: "http://localhost:4007/comisiones/api",
-});
+})
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
