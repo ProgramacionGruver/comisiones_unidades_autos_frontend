@@ -312,8 +312,8 @@
               :loading="cargandoConfirmacion"
             >
               <template v-slot:loading>
-                <q-spinner-facebook color="white" />
-              </template>
+                <q-spinner-facebook color="white" /> </template
+              >|
             </q-btn>
 
             <q-btn
