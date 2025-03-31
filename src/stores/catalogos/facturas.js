@@ -44,6 +44,8 @@ export const useFacturasStore = defineStore("facturas", () => {
   const opcionesVendedoresInversa = ref([]);
   const opcionesVendedoresJefes = ref([]);
 
+  const facturasSeminuevosSistema = ref([]);
+
   const comisionVendedorSuAuto = ref({});
 
   const useEmpresas = useEmpresasStore();
@@ -363,7 +365,58 @@ export const useFacturasStore = defineStore("facturas", () => {
     }
   };
 
+  const obtenerFacturasSeminuevosSistemas = async (busquedaObj) => {
+    try {
+      const { data } = await api.post("/facturas/unidades/autos/seminuevos/sistema", busquedaObj);
+
+      facturasSeminuevosSistema.value = data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const agregarActualizarBonoFijo = async (objBonoFijo) => {
+    try {
+      const index = facturasSeminuevosSistema.value.findIndex(
+        (factura) => factura.idFactura === objBonoFijo.idFactura
+      );
+
+      const { data } = await api.post("/bonos/fijos", objBonoFijo);
+
+      facturasSeminuevosSistema.value[index] = data;
+      notificacion("positive", "Bono fijo agregado correctamente");
+    } catch (error) {
+      notificacion("negative", error.response.data.message);
+    }
+  }
+
+  const obtenerBonoFijo = async (idFactura) => {
+    try {
+      const { data } = await api.post("/bonos/fijos/obtener", { idFactura });
+
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const revertirOperacionBonoFijo = async (objBonoFijo) => {
+    try {
+      const index = facturasSeminuevosSistema.value.findIndex(
+        (factura) => factura.idFactura === objBonoFijo.idFactura
+      );
+
+      const { data } = await api.post("/bonos/fijos/revertir", objBonoFijo);
+
+      facturasSeminuevosSistema.value[index] = data;
+      notificacion("positive", "Bono fijo eliminado correctamente");
+    } catch (error) {
+      notificacion("negative", error.response.data.message);
+    }
+  }
+
   return {
+    // States
     anioSeleccionado,
     mesSeleccionado,
     quincenaSeleccionada,
@@ -379,6 +432,11 @@ export const useFacturasStore = defineStore("facturas", () => {
     vendedores,
     opcionesVendedores,
     comisionVendedorSuAuto,
+    facturasSeminuevosSistema,
+    opcionesVendedoresInversa,
+    opcionesVendedoresJefes,
+    vendedoresAlt,
+    // Methods
     obtenerFacturas,
     guardarFacturas,
     obtenerClientes,
@@ -386,10 +444,11 @@ export const useFacturasStore = defineStore("facturas", () => {
     actualizarNivelAsesor,
     altaVendedor,
     obtenerVendedoresInversa,
-    opcionesVendedoresInversa,
-    opcionesVendedoresJefes,
     obtenerVendedoresYJefes,
-    vendedoresAlt,
     obtenerComisionesSuAuto,
+    obtenerFacturasSeminuevosSistemas,
+    agregarActualizarBonoFijo,
+    obtenerBonoFijo,
+    revertirOperacionBonoFijo,
   };
 });

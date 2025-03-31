@@ -414,7 +414,7 @@
             </div>
           </div>
           <div>
-            <q-scroll-area style="height: 80rem; width: 100%">
+            <q-scroll-area style="height: 110rem; width: 100%">
               <q-table
                 square
                 dense
@@ -449,6 +449,16 @@
                     </q-td>
                     <q-td>
                       {{ props.row.serie }}
+                    </q-td>
+                    <q-td style="text-align: center">
+                      {{
+                        props.row.bono_fijo
+                          ? props.row.bono_fijo.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          : ""
+                      }}
                     </q-td>
                     <q-td style="text-align: center">
                       {{
@@ -564,8 +574,11 @@
                     <q-td>
                       {{ props.row.modelo }}
                     </q-td>
-                    <q-td style="text-align: left; background-color: yellow">
+                    <q-td>
                       {{ props.row.serie }}
+                    </q-td>
+                    <q-td style="text-align: left; background-color: yellow">
+                      {{ props.row.bono_fijo }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
                       {{
@@ -713,6 +726,16 @@
                     </q-td>
                     <q-td style="text-align: center">
                       {{
+                        props.row.bono_fijo
+                          ? props.row.bono_fijo.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          : ""
+                      }}
+                    </q-td>
+                    <q-td style="text-align: center">
+                      {{
                         props.row.utilidad.toLocaleString("es-MX", {
                           style: "currency",
                           currency: "MXN",
@@ -825,8 +848,11 @@
                     <q-td>
                       {{ props.row.modelo }}
                     </q-td>
-                    <q-td style="text-align: left; background-color: yellow">
+                    <q-td>
                       {{ props.row.serie }}
+                    </q-td>
+                    <q-td style="text-align: left; background-color: yellow">
+                      {{ props.row.bono_fijo }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
                       {{
@@ -1322,6 +1348,74 @@
                   </q-tr>
                 </template>
               </q-table>
+
+              <div v-if="comisionVendedor?.desgloseDescuentos?.length > 0">
+                <div>
+                  Desglose de bonos y descuentos aplicados directos al vendedor
+                </div>
+                <div
+                  style="
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: flex-start;
+                    column-gap: 2rem;
+                  "
+                >
+                  <div
+                    style="width: 50%"
+                    v-if="
+                      comisionVendedor?.desgloseDescuentos?.filter(
+                        (item) => item.claveDepartamento === 'NUE'
+                      ).length > 0
+                    "
+                  >
+                    <span>Unidades nuevas:</span>
+                    <q-table
+                      square
+                      dense
+                      flat
+                      hide-bottom
+                      class="my-sticky-header-column-table q-mt-lg"
+                      :rows="
+                        comisionVendedor?.desgloseDescuentos?.filter(
+                          (item) => item.claveDepartamento === 'NUE'
+                        )
+                      "
+                      :columns="columnasDesgloseDescuentos"
+                      no-data-label="No se encontró informacion disponible."
+                      no-results-label="No se encontraron coincidencias."
+                      :pagination="pagination"
+                    />
+                  </div>
+                  <div
+                    style="width: 50%"
+                    v-if="
+                      comisionVendedor?.desgloseDescuentos?.filter(
+                        (item) => item.claveDepartamento === 'SEM'
+                      ).length > 0
+                    "
+                  >
+                    <span>Unidades seminuevas:</span>
+                    <q-table
+                      square
+                      dense
+                      flat
+                      hide-bottom
+                      class="my-sticky-header-column-table q-mt-lg"
+                      :rows="
+                        comisionVendedor?.desgloseDescuentos?.filter(
+                          (item) => item.claveDepartamento === 'SEM'
+                        )
+                      "
+                      :columns="columnasDesgloseDescuentos"
+                      no-data-label="No se encontró informacion disponible."
+                      no-results-label="No se encontraron coincidencias."
+                      :pagination="pagination"
+                    />
+                  </div>
+                </div>
+              </div>
             </q-scroll-area>
           </div>
         </q-tab-panel>
@@ -2008,6 +2102,10 @@ export default {
         label: "Serie",
       },
       {
+        name: "bono_fijo",
+        label: "Bono fijo seminuevos",
+      },
+      {
         name: "utilidad",
         label: "Utilidad",
       },
@@ -2081,6 +2179,10 @@ export default {
       {
         name: "serie",
         label: "Serie",
+      },
+      {
+        name: "bono_fijo",
+        label: "Bono fijo seminuevos",
       },
       {
         name: "utilidad",
@@ -2461,6 +2563,30 @@ export default {
       },
     ];
 
+    const columnasDesgloseDescuentos = [
+      {
+        name: "nombreDescuento",
+        label: "",
+        align: "center",
+        field: "nombreDescuento",
+      },
+      {
+        name: "valor",
+        label: "",
+        align: "center",
+        field: (row) =>
+          row.valor
+            ? row.valor.toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              })
+            : "0".toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN",
+              }),
+      },
+    ];
+
     const autorizaciones = ref(null);
 
     onMounted(async () => {
@@ -2603,6 +2729,7 @@ export default {
       columnasFacturasSuAuto,
       autorizaciones,
       comisionVendedorSuAuto,
+      columnasDesgloseDescuentos,
       // Methods
       enviarComision,
       descargarPDF,
@@ -2631,5 +2758,6 @@ export default {
   text-transform: uppercase;
   text-align: center;
   color: white;
+  text-wrap: wrap;
 }
 </style>

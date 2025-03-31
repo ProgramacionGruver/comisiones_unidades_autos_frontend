@@ -122,6 +122,7 @@ export const useKpiStore = defineStore("kpi", () => {
             toma_unidad: factura.descuentos.toma_unidad,
             baseComision: baseComision,
             tipoRenglon: "dato",
+            bono_fijo: factura.bono_fijo,
           });
         } else {
           let baseComision =
@@ -157,6 +158,7 @@ export const useKpiStore = defineStore("kpi", () => {
             toma_unidad: factura.descuentos.toma_unidad,
             baseComision: baseComision,
             tipoRenglon: "dato",
+            bono_fijo: factura.bono_fijo,
           });
         }
       }
@@ -167,7 +169,8 @@ export const useKpiStore = defineStore("kpi", () => {
         tasaCredito: "",
         condicion: "",
         modelo: "",
-        serie: "Total",
+        serie: "",
+        bono_fijo: "Totales",
         utilidad: comisionVendedor.value.facturas
           .reduce((acc, utilidad) => acc + utilidad.utilidad, 0)
           .toFixed(2),
@@ -464,6 +467,7 @@ export const useKpiStore = defineStore("kpi", () => {
         }
       }
 
+      comisionVendedor.value.desgloseDescuentos = comisionVendedor.value.descuentosVendedor.desgloseDescuentos;
       comisionVendedor.value.facturas = facturas;
       comisionVendedor.value.pvas = pvas;
       comisionVendedor.value.totalUtilidadBruta = totalUtilidadBruta;
@@ -813,7 +817,7 @@ export const useKpiStore = defineStore("kpi", () => {
           (totalBaseComision +
             totalPvas -
             comisionBonoVendedor.value.planPiso.monto) *
-            Number(comisionBonoVendedor.value.infoVendedor.porcentajeUB / 100) +
+          Number(comisionBonoVendedor.value.infoVendedor.porcentajeUB / 100) +
           totalBonos +
           bono -
           descuento +

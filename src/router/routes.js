@@ -93,6 +93,16 @@ const routes = [
           ),
       },
       {
+        path: "bonoFijoSeminuevos",
+        icono: "payments",
+        label: "Bono Fijo Seminuevos",
+        name: "bonoFijoSeminuevos",
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard" */ "src/modules/comisiones/BonoFijoSeminuevos.vue"
+          ),
+      },
+      {
         path: "objetivoValorReal",
         icono: "trending_up",
         label: "Valor de objetivo real",
