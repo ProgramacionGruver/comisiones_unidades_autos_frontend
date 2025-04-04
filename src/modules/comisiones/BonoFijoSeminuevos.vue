@@ -59,7 +59,7 @@
                 dense
                 icon="attach_money"
                 @click="agregarBonoFijo(props.row)"
-                :disable="!habilitarBoton || props.row.enviadaComision"
+                :disable="habilitarBoton && !props.row.enviadaComision"
               >
                 <q-tooltip v-if="!habilitarBoton" class="text-h6">
                   Este botón solo está habilitado en el periodo de comisiones
