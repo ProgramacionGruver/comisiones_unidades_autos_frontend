@@ -17,7 +17,7 @@
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
       <!-- drawer content -->
       <div class="row justify-center contenedor-menu">
-        <q-img src="../img/banner.jpg" id="target-img-1" style="height: 100px">
+        <q-img src="https://backend.gruver.com.mx/componentes/navbar-19.webp" id="target-img-1" style="height: 100px">
           <div
             class="absolute-bottom-right"
             style="border-top-left-radius: 5px"
