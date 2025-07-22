@@ -86,7 +86,6 @@ export const useKpiStore = defineStore("kpi", () => {
   const configurarTablaComision = async () => {
     try {
       let facturas = [];
-
       for (const factura of comisionVendedor.value.facturas) {
         if (comisionVendedor.value.infoVendedor.claveDepartamento === "NUE") {
           let baseComision =
@@ -223,6 +222,149 @@ export const useKpiStore = defineStore("kpi", () => {
           .toFixed(2),
         tipoRenglon: "total",
       });
+
+      let facturasFlotillas = [];
+      let pagarFlotillas = 0;
+      if (comisionVendedor.value.flotillas && comisionVendedor.value.flotillas.facturas.length > 0) {
+        for (const factura of comisionVendedor.value.flotillas.facturas) {
+          if (comisionVendedor.value.infoVendedor.claveDepartamento === "NUE") {
+            let baseComision =
+              factura.utilidad -
+              factura.descuentos.previa -
+              factura.descuentos.traslado -
+              factura.descuentos.descVentas -
+              factura.descuentos.cortesia -
+              factura.descuentos.gasolina +
+              factura.descuentos.bonoub -
+              factura.descuentos.garantia_extendida -
+              factura.descuentos.acondicionamiento -
+              factura.descuentos.gestorias -
+              factura.descuentos.toma_unidad;
+
+            facturasFlotillas.push({
+              folioFactura: factura.factura,
+              fechaFactura: formatearFecha(factura.fecha_facturacion),
+              tasaCredito: factura.tipo_venta,
+              condicion: factura.condicion,
+              modelo: factura.modelo,
+              serie: factura.vin,
+              utilidad: factura.utilidad,
+              previa: factura.descuentos.previa,
+              traslado: factura.descuentos.traslado,
+              descuentoVentas: factura.descuentos.descVentas,
+              cortesias: factura.descuentos.cortesia,
+              gasolina: factura.descuentos.gasolina,
+              bono: factura.descuentos.bonoub,
+              garantia_extendida: factura.descuentos.garantia_extendida,
+              acondicionamiento: factura.descuentos.acondicionamiento,
+              gestorias: factura.descuentos.gestorias,
+              toma_unidad: factura.descuentos.toma_unidad,
+              baseComision: baseComision,
+              tipoRenglon: "dato",
+              bono_fijo: factura.bono_fijo,
+            });
+          } else {
+            let baseComision =
+              factura.utilidad -
+              factura.descuentos.previa -
+              factura.descuentos.traslado -
+              factura.descuentos.descVentas -
+              factura.descuentos.cortesia -
+              factura.descuentos.gasolina +
+              factura.descuentos.bonoub -
+              factura.descuentos.garantia_extendida -
+              factura.descuentos.acondicionamiento -
+              factura.descuentos.gestorias -
+              factura.descuentos.toma_unidad;
+
+            facturasFlotillas.push({
+              folioFactura: factura.factura,
+              fechaFactura: formatearFecha(factura.fecha_facturacion),
+              tasaCredito: factura.tipo_venta,
+              condicion: factura.condicion,
+              modelo: factura.modelo,
+              serie: factura.vin,
+              utilidad: factura.utilidad,
+              previa: factura.descuentos.previa,
+              traslado: factura.descuentos.traslado,
+              descuentoVentas: factura.descuentos.descVentas,
+              cortesias: factura.descuentos.cortesia,
+              gasolina: factura.descuentos.gasolina,
+              bono: factura.descuentos.bonoub,
+              garantia_extendida: factura.descuentos.garantia_extendida,
+              acondicionamiento: factura.descuentos.acondicionamiento,
+              gestorias: factura.descuentos.gestorias,
+              toma_unidad: factura.descuentos.toma_unidad,
+              baseComision: baseComision,
+              tipoRenglon: "dato",
+              bono_fijo: factura.bono_fijo,
+            });
+          }
+        }
+
+        facturasFlotillas.push({
+          folioFactura: "",
+          fechaFactura: "",
+          tasaCredito: "",
+          condicion: "",
+          modelo: "",
+          serie: "",
+          bono_fijo: "Totales",
+          utilidad: comisionVendedor.value.flotillas.facturas
+            .reduce((acc, utilidad) => acc + utilidad.utilidad, 0)
+            .toFixed(2),
+          previa: comisionVendedor.value.flotillas.facturas
+            .reduce((acc, previa) => acc + previa.descuentos.previa, 0)
+            .toFixed(2),
+          traslado: comisionVendedor.value.flotillas.facturas
+            .reduce((acc, traslado) => acc + traslado.descuentos.traslado, 0)
+            .toFixed(2),
+          descuentoVentas: comisionVendedor.value.flotillas.facturas
+            .reduce(
+              (acc, descVentas) => acc + descVentas.descuentos.descVentas,
+              0
+            )
+            .toFixed(2),
+          cortesias: comisionVendedor.value.flotillas.facturas
+            .reduce((acc, cortesia) => acc + cortesia.descuentos.cortesia, 0)
+            .toFixed(2),
+          gasolina: comisionVendedor.value.flotillas.facturas
+            .reduce((acc, gasolina) => acc + gasolina.descuentos.gasolina, 0)
+            .toFixed(2),
+          bono: comisionVendedor.value.flotillas.facturas
+            .reduce((acc, bono) => acc + bono.descuentos.bonoub, 0)
+            .toFixed(2),
+          garantia_extendida: comisionVendedor.value.flotillas.facturas
+            .reduce(
+              (acc, garantia) => acc + garantia.descuentos.garantia_extendida,
+              0
+            )
+            .toFixed(2),
+          acondicionamiento: comisionVendedor.value.flotillas.facturas
+            .reduce(
+              (acc, acondicionamiento) =>
+                acc + acondicionamiento.descuentos.acondicionamiento,
+              0
+            )
+            .toFixed(2),
+          gestorias: comisionVendedor.value.flotillas.facturas
+            .reduce((acc, gestorias) => acc + gestorias.descuentos.gestorias, 0)
+            .toFixed(2),
+          toma_unidad: comisionVendedor.value.flotillas.facturas
+            .reduce(
+              (acc, tomaUnidad) => acc + tomaUnidad.descuentos.toma_unidad,
+              0
+            )
+            .toFixed(2),
+          baseComision: facturasFlotillas
+            .filter((factura) => factura.tipoRenglon === "dato")
+            .reduce((acc, baseComision) => acc + baseComision.baseComision, 0)
+            .toFixed(2),
+          tipoRenglon: "total",
+        });
+
+        pagarFlotillas = facturasFlotillas.filter((factura) => factura.tipoRenglon === "dato").reduce((acc, baseComision) => acc + baseComision.baseComision, 0) * (comisionVendedor.value.flotillas.porcentajeUB.porcentaje / 100);
+      }
 
       let pvas = [];
 
@@ -365,7 +507,7 @@ export const useKpiStore = defineStore("kpi", () => {
         montoAPagar: kpis.reduce(
           (acc, kpi) => acc + Number(kpi.montoAPagar),
           0
-        ),
+        ) + pagarFlotillas,
         tipoRenglon: "total",
       });
 
@@ -469,6 +611,11 @@ export const useKpiStore = defineStore("kpi", () => {
 
       comisionVendedor.value.desgloseDescuentos = comisionVendedor.value.descuentosVendedor.desgloseDescuentos;
       comisionVendedor.value.facturas = facturas;
+      comisionVendedor.value.flotillas = comisionVendedor.value.flotillas && comisionVendedor.value.flotillas.facturas.length > 0 ? {
+        facturas: facturasFlotillas,
+        porcentajeUB: comisionVendedor.value.flotillas.porcentajeUB,
+        pagarFlotillas: Number(pagarFlotillas.toFixed(2)),
+      } : null;
       comisionVendedor.value.pvas = pvas;
       comisionVendedor.value.totalUtilidadBruta = totalUtilidadBruta;
       comisionVendedor.value.kpis = kpis;
