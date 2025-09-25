@@ -17,6 +17,7 @@
               map-options
               option-value="name"
               style="width: 100%"
+              @update:model-value="datosCargados = false"
             />
           </div>
           <div class="col-3">
@@ -29,6 +30,7 @@
               map-options
               option-value="name"
               style="width: 100%"
+              @update:model-value="datosCargados = false"
             />
           </div>
           <div class="col-3">
@@ -46,6 +48,7 @@
               clearable
               use-input
               input-debounce="0"
+              @update:model-value="datosCargados = false"
             />
           </div>
           <div class="col-2">
@@ -501,6 +504,16 @@
                             })
                           }}
                         </q-td>
+                        <q-td v-if="Number(anioSeleccionado) > 2025 || ((Number(anioSeleccionado) === 2025) && Number(obtenerNumeroMes(mesSeleccionado)) >= 9)" style="text-align: center">
+                          {{
+                            props.row.gastoFinanciero
+                              ? props.row.gastoFinanciero.toLocaleString("es-MX", {
+                                  style: "currency",
+                                  currency: "MXN",
+                                })
+                              : ""
+                          }}
+                        </q-td>
                         <q-td style="text-align: center">
                           {{
                             props.row.previa.toLocaleString("es-MX", {
@@ -616,6 +629,14 @@
                         <q-td style="text-align: center; background-color: yellow">
                           {{
                             Number(props.row.utilidad).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td v-if="Number(anioSeleccionado) > 2025 || (Number(anioSeleccionado) == 2025 && Number(obtenerNumeroMes(mesSeleccionado)) >= 9)" style="text-align: center; background-color: yellow">
+                          {{
+                            Number(props.row.gastoFinanciero).toLocaleString("es-MX", {
                               style: "currency",
                               currency: "MXN",
                             })
@@ -764,6 +785,16 @@
                               style: "currency",
                               currency: "MXN",
                             })
+                          }}
+                        </q-td>
+                        <q-td v-if="Number(anioSeleccionado) > 2025 || ((Number(anioSeleccionado) === 2025) && Number(obtenerNumeroMes(mesSeleccionado)) >= 9)" style="text-align: center">
+                          {{
+                            props.row.gastoFinanciero
+                              ? props.row.gastoFinanciero.toLocaleString("es-MX", {
+                                  style: "currency",
+                                  currency: "MXN",
+                                })
+                              : ""
                           }}
                         </q-td>
                         <q-td style="text-align: center">
@@ -985,7 +1016,7 @@
                     hide-bottom
                     class="my-sticky-header-column-table q-mt-md"
                     :rows="comisionVendedor?.flotillas?.facturas"
-                    :columns="columnasFacturas"
+                    :columns="columnasFacturasFlotillas"
                     no-data-label="No se encontró informacion disponible."
                     no-results-label="No se encontraron coincidencias."
                     :pagination="pagination"
@@ -1027,6 +1058,16 @@
                               style: "currency",
                               currency: "MXN",
                             })
+                          }}
+                        </q-td>
+                        <q-td v-if="Number(anioSeleccionado) > 2025 || ((Number(anioSeleccionado) === 2025) && Number(obtenerNumeroMes(mesSeleccionado)) >= 9)" style="text-align: center">
+                          {{
+                            props.row.gastoFinanciero
+                              ? props.row.gastoFinanciero.toLocaleString("es-MX", {
+                                  style: "currency",
+                                  currency: "MXN",
+                                })
+                              : ""
                           }}
                         </q-td>
                         <q-td style="text-align: center">
@@ -1147,6 +1188,16 @@
                               style: "currency",
                               currency: "MXN",
                             })
+                          }}
+                        </q-td>
+                        <q-td v-if="Number(anioSeleccionado) > 2025 || ((Number(anioSeleccionado) === 2025) && Number(obtenerNumeroMes(mesSeleccionado)) >= 9)" style="text-align: center; background-color: yellow">
+                          {{
+                            props.row.gastoFinanciero
+                              ? Number(props.row.gastoFinanciero).toLocaleString("es-MX", {
+                                  style: "currency",
+                                  currency: "MXN",
+                                })
+                              : ""
                           }}
                         </q-td>
                         <q-td style="text-align: center; background-color: yellow">
@@ -1756,7 +1807,7 @@
                       hide-bottom
                       class="my-sticky-header-column-table"
                       :rows="comisionBonoVendedor?.facturas"
-                      :columns="columnasFacturas"
+                      :columns="columnasFacturasSeminuevas"
                       no-data-label="No se encontró informacion disponible."
                       no-results-label="No se encontraron coincidencias."
                       :pagination="pagination"
@@ -2280,16 +2331,17 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
 import { storeToRefs } from "pinia";
 import { listaMeses, listaAnios } from "src/helpers/listas";
 import { useKpiStore } from "src/stores/catalogos/kpis";
-import { obtenerNumerosDeMes } from "src/constant/constantes";
+import { obtenerNumeroMes, obtenerNumerosDeMes } from "src/constant/constantes";
 import { notificacion } from "src/helpers/mensajes";
 import ModalEnviarComision from "src/components/ModalEnviarComision.vue";
 import { filtradoBusquedaObj } from "src/helpers/filtradoBusquedaObj";
 import { formatearFecha } from "src/helpers/formatearFecha";
+import { da } from "date-fns/locale";
 
 export default {
   components: {
@@ -2325,7 +2377,19 @@ export default {
 
     const modalEnviarComision = ref(null);
 
-    const columnasFacturas = [
+    // Función para verificar si alguna factura requiere mostrar gasto financiero
+    const requiereGastoFinanciero = (facturas) => {
+      if (!facturas || facturas.length === 0) return false;
+      return facturas.some(factura => {
+        if (!factura.fechaFactura) return false;
+        const fechaFactura = new Date(factura.fechaFactura);
+        return fechaFactura.getFullYear() >= 2025 &&
+          (fechaFactura.getFullYear() > 2025 || fechaFactura.getMonth() >= 8);
+      });
+    };
+
+    // Columnas base de facturas
+    const columnasFacturasBase = [
       {
         name: "folioFactura",
         label: "Folio",
@@ -2358,6 +2422,23 @@ export default {
         name: "utilidad",
         label: "Utilidad",
       },
+    ];
+
+    // Columna de gasto financiero
+    const columnaGastoFinanciero = {
+      name: "gastoFinanciero",
+      label: "Gasto financiero",
+      format: (val, row) => {
+        if (!val || val === null) return "N/A";
+        return val.toLocaleString("es-MX", {
+          style: "currency",
+          currency: "MXN",
+        });
+      },
+    };
+
+    // Resto de columnas después de utilidad
+    const columnasFacturasDespuesUtilidad = [
       {
         name: "previa",
         label: "Previa",
@@ -2404,84 +2485,32 @@ export default {
       },
     ];
 
-    const columnasFacturasSeminuevas = [
-      {
-        name: "folioFactura",
-        label: "Folio",
-      },
-      {
-        name: "fechaFactura",
-        label: "Fecha",
-      },
-      {
-        name: "tasaCredito",
-        label: "Tasa de crédito",
-      },
-      {
-        name: "condicion",
-        label: "Condición",
-      },
-      {
-        name: "modelo",
-        label: "Modelo",
-      },
-      {
-        name: "serie",
-        label: "Serie",
-      },
-      {
-        name: "bono_fijo",
-        label: "Bono fijo seminuevos",
-      },
-      {
-        name: "utilidad",
-        label: "Utilidad",
-      },
-      {
-        name: "previa",
-        label: "Previa",
-      },
-      {
-        name: "traslado",
-        label: "Traslado",
-      },
-      {
-        name: "descuentoVentas",
-        label: "Descuento ventas",
-      },
-      {
-        name: "cortesias",
-        label: "Cortesías",
-      },
-      {
-        name: "gasolina",
-        label: "Gasolina",
-      },
-      {
-        name: "garantia_extendida",
-        label: "Garantía extendida",
-      },
-      {
-        name: "acondicionamiento",
-        label: "Acondicionamiento",
-      },
-      {
-        name: "gestorias",
-        label: "Gestorías",
-      },
-      {
-        name: "toma_unidad",
-        label: "Toma unidad",
-      },
-      {
-        name: "bonoub",
-        label: "Bono",
-      },
-      {
-        name: "baseComision",
-        label: "Base comisión",
-      },
-    ];
+    // Función para generar columnas de facturas dinámicamente
+    const generarColumnasFacturas = (facturas) => {
+      const columnas = [...columnasFacturasBase];
+
+      if (requiereGastoFinanciero(facturas)) {
+        columnas.push(columnaGastoFinanciero);
+      }
+
+      columnas.push(...columnasFacturasDespuesUtilidad);
+      return columnas;
+    };
+
+    // Columnas dinámicas para facturas
+    const columnasFacturas = computed(() => {
+      return generarColumnasFacturas(comisionVendedor.value?.facturas);
+    });
+
+    // Columnas dinámicas para facturas seminuevas
+    const columnasFacturasSeminuevas = computed(() => {
+      return generarColumnasFacturas(comisionBonoVendedor.value?.facturas);
+    });
+
+    // Columnas dinámicas para facturas de flotillas
+    const columnasFacturasFlotillas = computed(() => {
+      return generarColumnasFacturas(comisionVendedor.value?.flotillas?.facturas);
+    });
 
     const columnasPvas = [
       {
@@ -2957,6 +2986,7 @@ export default {
       columnasDescuentosVendedor,
       modalEnviarComision,
       columnasFacturasSeminuevas,
+      columnasFacturasFlotillas,
       columnasDescuentosVendedorSeminuevos,
       columnasUtilidadBrutaSeminuevos,
       columansDescuentosNoExisten,
@@ -2971,6 +3001,7 @@ export default {
       buscarComisiones,
       enviarComision,
       parametrosFiltradosVendedores,
+      obtenerNumeroMes,
     };
   },
 };
