@@ -698,19 +698,32 @@ export const useKpiStore = defineStore("kpi", () => {
 
   const configurarTablaComisionBono = async () => {
     try {
+      // Función auxiliar para validar si aplica gasto financiero
+      const debeAplicarGastoFinanciero = (fechaString) => {
+        const [año, mes, dia] = fechaString.split('-').map(Number);
+
+        // Aplicar desde septiembre 2025 en adelante
+        const aplica = año >= 2025 && (año > 2025 || mes >= 9);
+
+        return aplica;
+      };
+
       let facturas = [];
 
       for (const factura of comisionBonoVendedor.value.facturas) {
         if (
           comisionBonoVendedor.value.infoVendedor.claveDepartamento === "SEM"
         ) {
+          const aplicarGastoFinanciero = debeAplicarGastoFinanciero(factura.fecha_facturacion);
+
           let baseComision =
             factura.utilidad -
             factura.descuentos.previa -
             factura.descuentos.traslado -
             factura.descuentos.descVentas -
             factura.descuentos.cortesia -
-            factura.descuentos.gasolina;
+            factura.descuentos.gasolina -
+            (aplicarGastoFinanciero && factura.descuentos.gastoFinanciero ? factura.descuentos.gastoFinanciero : 0);
 
           facturas.push({
             folioFactura: factura.factura,
@@ -727,8 +740,11 @@ export const useKpiStore = defineStore("kpi", () => {
             bono: factura.descuentos.bonoub,
             baseComision: baseComision,
             tipoRenglon: "dato",
+            gastoFinanciero: aplicarGastoFinanciero && factura.descuentos.gastoFinanciero ? factura.descuentos.gastoFinanciero : null,
           });
         } else {
+          const aplicarGastoFinanciero = debeAplicarGastoFinanciero(factura.fecha_facturacion);
+
           let baseComision =
             factura.utilidad -
             factura.descuentos.garantia_extendida -
@@ -736,7 +752,8 @@ export const useKpiStore = defineStore("kpi", () => {
             factura.descuentos.gestorias -
             factura.descuentos.toma_unidad -
             factura.descuentos.cortesias +
-            factura.descuentos.bonoub;
+            factura.descuentos.bonoub -
+            (aplicarGastoFinanciero && factura.descuentos.gastoFinanciero ? factura.descuentos.gastoFinanciero : 0);
 
           facturas.push({
             folioFactura: factura.factura,
@@ -753,6 +770,7 @@ export const useKpiStore = defineStore("kpi", () => {
             bono: factura.descuentos.bonoub,
             baseComision: baseComision,
             tipoRenglon: "dato",
+            gastoFinanciero: aplicarGastoFinanciero && factura.descuentos.gastoFinanciero ? factura.descuentos.gastoFinanciero : null,
           });
         }
       }
@@ -764,6 +782,10 @@ export const useKpiStore = defineStore("kpi", () => {
           tasaCredito: "",
           modelo: "",
           serie: "Total",
+          gastoFinanciero: comisionBonoVendedor.value.facturas.reduce((acc, gasto) => {
+            const aplicarGastoFinanciero = debeAplicarGastoFinanciero(gasto.fecha_facturacion);
+            return acc + (aplicarGastoFinanciero && gasto.descuentos.gastoFinanciero ? gasto.descuentos.gastoFinanciero : 0);
+          }, 0).toFixed(2),
           utilidad: comisionBonoVendedor.value.facturas
             .reduce((acc, utilidad) => acc + utilidad.utilidad, 0)
             .toFixed(2),
@@ -801,6 +823,10 @@ export const useKpiStore = defineStore("kpi", () => {
           tasaCredito: "",
           modelo: "",
           serie: "Total",
+          gastoFinanciero: comisionBonoVendedor.value.facturas.reduce((acc, gasto) => {
+            const aplicarGastoFinanciero = debeAplicarGastoFinanciero(gasto.fecha_facturacion);
+            return acc + (aplicarGastoFinanciero && gasto.descuentos.gastoFinanciero ? gasto.descuentos.gastoFinanciero : 0);
+          }, 0).toFixed(2),
           utilidad: comisionBonoVendedor.value.facturas
             .reduce((acc, utilidad) => acc + utilidad.utilidad, 0)
             .toFixed(2),

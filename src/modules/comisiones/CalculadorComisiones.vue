@@ -787,7 +787,10 @@
                             })
                           }}
                         </q-td>
-                        <q-td v-if="Number(anioSeleccionado) > 2025 || ((Number(anioSeleccionado) === 2025) && Number(obtenerNumeroMes(mesSeleccionado)) >= 9)" style="text-align: center">
+                        <q-td
+                          v-if="requiereGastoFinanciero(comisionVendedor?.facturas)"
+                          style="text-align: center"
+                        >
                           {{
                             props.row.gastoFinanciero
                               ? props.row.gastoFinanciero.toLocaleString("es-MX", {
@@ -912,6 +915,17 @@
                         <q-td style="text-align: center; background-color: yellow">
                           {{
                             Number(props.row.utilidad).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          }}
+                        </q-td>
+                        <q-td
+                          v-if="requiereGastoFinanciero(comisionVendedor?.facturas)"
+                          style="text-align: center; background-color: yellow"
+                        >
+                          {{
+                            Number(props.row.gastoFinanciero).toLocaleString("es-MX", {
                               style: "currency",
                               currency: "MXN",
                             })
@@ -2504,7 +2518,7 @@ export default {
 
     // Columnas dinámicas para facturas seminuevas
     const columnasFacturasSeminuevas = computed(() => {
-      return generarColumnasFacturas(comisionBonoVendedor.value?.facturas);
+      return generarColumnasFacturas(comisionVendedor.value?.facturas);
     });
 
     // Columnas dinámicas para facturas de flotillas
@@ -3002,6 +3016,7 @@ export default {
       enviarComision,
       parametrosFiltradosVendedores,
       obtenerNumeroMes,
+      requiereGastoFinanciero,
     };
   },
 };

@@ -300,7 +300,9 @@
               icon-right="check"
               :loading="cargandoConfirmacion"
             >
-              <template v-slot:loading> <q-spinner-facebook color="white" /> </template>|
+              <template v-slot:loading>
+                <q-spinner-facebook color="white" />
+              </template>
             </q-btn>
 
             <q-btn
@@ -451,6 +453,22 @@
                         })
                       }}
                     </q-td>
+<q-td
+                      v-if="
+                        Number(infoUrl.anio) > 2025 ||
+                        (Number(infoUrl.anio) === 2025 && Number(infoUrl.mes) >= 9)
+                      "
+                      style="text-align: center"
+                    >
+                      {{
+                        props.row.gastoFinanciero
+                          ? props.row.gastoFinanciero.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          : ""
+                      }}
+                    </q-td>
                     <q-td style="text-align: center">
                       {{
                         props.row.previa.toLocaleString("es-MX", {
@@ -566,6 +584,20 @@
                     <q-td style="text-align: center; background-color: yellow">
                       {{
                         Number(props.row.utilidad).toLocaleString("es-MX", {
+                          style: "currency",
+                          currency: "MXN",
+                        })
+                      }}
+                    </q-td>
+<q-td
+                      v-if="
+                        Number(infoUrl.anio) > 2025 ||
+                        (Number(infoUrl.anio) == 2025 && Number(infoUrl.mes) >= 9)
+                      "
+                      style="text-align: center; background-color: yellow"
+                    >
+                      {{
+                        Number(props.row.gastoFinanciero).toLocaleString("es-MX", {
                           style: "currency",
                           currency: "MXN",
                         })
@@ -714,6 +746,19 @@
                         })
                       }}
                     </q-td>
+<q-td
+                      v-if="requiereGastoFinanciero(comisionVendedor?.facturas)"
+                      style="text-align: center"
+                    >
+                      {{
+                        props.row.gastoFinanciero
+                          ? props.row.gastoFinanciero.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          : ""
+                      }}
+                    </q-td>
                     <q-td style="text-align: center">
                       {{
                         props.row.previa.toLocaleString("es-MX", {
@@ -829,6 +874,17 @@
                     <q-td style="text-align: center; background-color: yellow">
                       {{
                         Number(props.row.utilidad).toLocaleString("es-MX", {
+                          style: "currency",
+                          currency: "MXN",
+                        })
+                      }}
+                    </q-td>
+<q-td
+                      v-if="requiereGastoFinanciero(comisionVendedor?.facturas)"
+                      style="text-align: center; background-color: yellow"
+                    >
+                      {{
+                        Number(props.row.gastoFinanciero).toLocaleString("es-MX", {
                           style: "currency",
                           currency: "MXN",
                         })
@@ -933,11 +989,14 @@
                 hide-bottom
                 class="my-sticky-header-column-table q-mt-md"
                 :rows="comisionVendedor?.flotillas?.facturas"
-                :columns="columnasFacturas"
+                :columns="columnasFacturasFlotillas"
                 no-data-label="No se encontró informacion disponible."
                 no-results-label="No se encontraron coincidencias."
                 :pagination="pagination"
-                v-if="comisionVendedor?.flotillas && comisionVendedor?.flotillas?.facturas.length > 0"
+                v-if="
+                  comisionVendedor?.flotillas &&
+                  comisionVendedor?.flotillas?.facturas.length > 0
+                "
               >
                 <template v-slot:body="props">
                   <q-tr v-if="props.row.tipoRenglon === 'dato'" :props="props">
@@ -975,6 +1034,22 @@
                           style: "currency",
                           currency: "MXN",
                         })
+                      }}
+                    </q-td>
+<q-td
+                      v-if="
+                        Number(infoUrl.anio) > 2025 ||
+                        (Number(infoUrl.anio) === 2025 && Number(infoUrl.mes) >= 9)
+                      "
+                      style="text-align: center"
+                    >
+                      {{
+                        props.row.gastoFinanciero
+                          ? props.row.gastoFinanciero.toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          : ""
                       }}
                     </q-td>
                     <q-td style="text-align: center">
@@ -1095,6 +1170,22 @@
                           style: "currency",
                           currency: "MXN",
                         })
+                      }}
+                    </q-td>
+<q-td
+                      v-if="
+                        Number(infoUrl.anio) > 2025 ||
+                        (Number(infoUrl.anio) === 2025 && Number(infoUrl.mes) >= 9)
+                      "
+                      style="text-align: center; background-color: yellow"
+                    >
+                      {{
+                        props.row.gastoFinanciero
+                          ? Number(props.row.gastoFinanciero).toLocaleString("es-MX", {
+                              style: "currency",
+                              currency: "MXN",
+                            })
+                          : ""
                       }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
@@ -2264,7 +2355,7 @@
 <script>
 import { useFormulariosStore } from "src/stores/formularios";
 import { storeToRefs } from "pinia";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useKpiStore } from "src/stores/catalogos/kpis";
 import { useRouter } from "vue-router";
 import { listaMeses } from "src/helpers/listas";
@@ -2272,6 +2363,7 @@ import { useAutorizacionesStore } from "src/stores/autorizaciones";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
 import { formatearFecha } from "src/helpers/formatearFecha";
 import { notificacion } from "src/helpers/mensajes";
+import { obtenerNumeroMes, obtenerNumerosDeMes } from "src/constant/constantes";
 
 export default {
   setup() {
@@ -2330,164 +2422,6 @@ export default {
     const comentario = ref("");
 
     const infoVendedorAutorizacion = ref(null);
-
-    const columnasFacturas = [
-      {
-        name: "folioFactura",
-        label: "Folio",
-      },
-      {
-        name: "fechaFactura",
-        label: "Fecha",
-      },
-      {
-        name: "tasaCredito",
-        label: "Tasa de crédito",
-      },
-      {
-        name: "condicion",
-        label: "Condición",
-      },
-      {
-        name: "modelo",
-        label: "Modelo",
-      },
-      {
-        name: "serie",
-        label: "Serie",
-      },
-      {
-        name: "bono_fijo",
-        label: "Bono fijo seminuevos",
-      },
-      {
-        name: "utilidad",
-        label: "Utilidad",
-      },
-      {
-        name: "previa",
-        label: "Previa",
-      },
-      {
-        name: "traslado",
-        label: "Traslado",
-      },
-      {
-        name: "descuentoVentas",
-        label: "Descuento ventas",
-      },
-      {
-        name: "cortesias",
-        label: "Cortesías",
-      },
-      {
-        name: "gasolina",
-        label: "Gasolina",
-      },
-      {
-        name: "garantia_extendida",
-        label: "Garantía extendida",
-      },
-      {
-        name: "acondicionamiento",
-        label: "Acondicionamiento",
-      },
-      {
-        name: "gestorias",
-        label: "Gestorías",
-      },
-      {
-        name: "toma_unidad",
-        label: "Toma unidad",
-      },
-      {
-        name: "bonoub",
-        label: "Bono",
-      },
-      {
-        name: "baseComision",
-        label: "Base comisión",
-      },
-    ];
-
-    const columnasFacturasSeminuevas = [
-      {
-        name: "folioFactura",
-        label: "Folio",
-      },
-      {
-        name: "fechaFactura",
-        label: "Fecha",
-      },
-      {
-        name: "tasaCredito",
-        label: "Tasa de crédito",
-      },
-      {
-        name: "condicion",
-        label: "Condición",
-      },
-      {
-        name: "modelo",
-        label: "Modelo",
-      },
-      {
-        name: "serie",
-        label: "Serie",
-      },
-      {
-        name: "bono_fijo",
-        label: "Bono fijo seminuevos",
-      },
-      {
-        name: "utilidad",
-        label: "Utilidad",
-      },
-      {
-        name: "previa",
-        label: "Previa",
-      },
-      {
-        name: "traslado",
-        label: "Traslado",
-      },
-      {
-        name: "descuentoVentas",
-        label: "Descuento ventas",
-      },
-      {
-        name: "cortesias",
-        label: "Cortesías",
-      },
-      {
-        name: "gasolina",
-        label: "Gasolina",
-      },
-      {
-        name: "garantia_extendida",
-        label: "Garantía extendida",
-      },
-      {
-        name: "acondicionamiento",
-        label: "Acondicionamiento",
-      },
-      {
-        name: "gestorias",
-        label: "Gestorías",
-      },
-      {
-        name: "toma_unidad",
-        label: "Toma unidad",
-      },
-      {
-        name: "bonoub",
-        label: "Bono",
-      },
-      {
-        name: "baseComision",
-        label: "Base comisión",
-      },
-    ];
 
     const columnasPvas = [
       {
@@ -2951,6 +2885,143 @@ export default {
 
     const tabs = ref("comision");
 
+    // Columnas dinámicas para facturas
+    const columnasFacturas = computed(() => {
+      return generarColumnasFacturas(comisionVendedor.value?.facturas);
+    });
+
+    // Columnas dinámicas para facturas seminuevas
+    const columnasFacturasSeminuevas = computed(() => {
+      return generarColumnasFacturas(comisionVendedor.value?.facturas);
+    });
+
+    // Columnas dinámicas para facturas de flotillas
+    const columnasFacturasFlotillas = computed(() => {
+      return generarColumnasFacturas(comisionVendedor.value?.flotillas?.facturas);
+    });
+
+    // Función para generar columnas de facturas dinámicamente
+    const generarColumnasFacturas = (facturas) => {
+      const columnas = [...columnasFacturasBase];
+
+      if (requiereGastoFinanciero(facturas)) {
+        columnas.push(columnaGastoFinanciero);
+      }
+
+      columnas.push(...columnasFacturasDespuesUtilidad);
+      return columnas;
+    };
+
+    // Columnas base de facturas
+    const columnasFacturasBase = [
+      {
+        name: "folioFactura",
+        label: "Folio",
+      },
+      {
+        name: "fechaFactura",
+        label: "Fecha",
+      },
+      {
+        name: "tasaCredito",
+        label: "Tasa de crédito",
+      },
+      {
+        name: "condicion",
+        label: "Condición",
+      },
+      {
+        name: "modelo",
+        label: "Modelo",
+      },
+      {
+        name: "serie",
+        label: "Serie",
+      },
+      {
+        name: "bono_fijo",
+        label: "Bono fijo seminuevos",
+      },
+      {
+        name: "utilidad",
+        label: "Utilidad",
+      },
+    ];
+
+    // Función para verificar si alguna factura requiere mostrar gasto financiero
+    const requiereGastoFinanciero = (facturas) => {
+      if (!facturas || facturas.length === 0) return false;
+      return facturas.some((factura) => {
+        if (!factura.fechaFactura) return false;
+        const fechaFactura = new Date(factura.fechaFactura);
+        return (
+          fechaFactura.getFullYear() >= 2025 &&
+          (fechaFactura.getFullYear() > 2025 || fechaFactura.getMonth() >= 8)
+        );
+      });
+    };
+
+    // Columna de gasto financiero
+    const columnaGastoFinanciero = {
+      name: "gastoFinanciero",
+      label: "Gasto financiero",
+      format: (val, row) => {
+        if (!val || val === null) return "N/A";
+        return val.toLocaleString("es-MX", {
+          style: "currency",
+          currency: "MXN",
+        });
+      },
+    };
+
+    // Resto de columnas después de utilidad
+    const columnasFacturasDespuesUtilidad = [
+      {
+        name: "previa",
+        label: "Previa",
+      },
+      {
+        name: "traslado",
+        label: "Traslado",
+      },
+      {
+        name: "descuentoVentas",
+        label: "Descuento ventas",
+      },
+      {
+        name: "cortesias",
+        label: "Cortesías",
+      },
+      {
+        name: "gasolina",
+        label: "Gasolina",
+      },
+      {
+        name: "garantia_extendida",
+        label: "Garantía extendida",
+      },
+      {
+        name: "acondicionamiento",
+        label: "Acondicionamiento",
+      },
+      {
+        name: "gestorias",
+        label: "Gestorías",
+      },
+      {
+        name: "toma_unidad",
+        label: "Toma unidad",
+      },
+      {
+        name: "bonoub",
+        label: "Bono",
+      },
+      {
+        name: "baseComision",
+        label: "Base comisión",
+      },
+    ];
+
     return {
       // States
       comisionVendedor,
@@ -2980,10 +3051,16 @@ export default {
       autorizaciones,
       comisionVendedorSuAuto,
       columnasDesgloseDescuentos,
+      urlComision,
+      infoUrl,
+      columnaGastoFinanciero,
+      columnasFacturasFlotillas,
       // Methods
       enviarComision,
       descargarPDF,
       rechazoComision,
+      generarColumnasFacturas,
+      requiereGastoFinanciero,
     };
   },
 };
