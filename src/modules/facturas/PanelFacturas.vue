@@ -16,6 +16,7 @@
         v-model:selected="facturaSeleccionada"
         selection="single"
         row-key="indice"
+        :visible-columns="columnasVisibles"
       >
         <template v-slot:top>
           <div class="fit row q-gutter-sm q-mb-sm justify-end">
@@ -250,6 +251,7 @@ import {
   formatearPorcentajeDecimal,
 } from "src/helpers/formatos";
 import ModalConfirmarEnvio from "src/components/ModalConfirmarEnvio.vue";
+import { obtenerNumeroMes } from "src/constant/constantes";
 
 export default {
   components: {
@@ -328,36 +330,23 @@ export default {
         align: "left",
         sortable: true,
       },
-      // {
-      //   name: "gastoFinanciero",
-      //   label: "Gasto Financiero",
-      //   field: (row) =>
-      //     row.gastoFinanciero
-      //       ? formatearMonto(row.gastoFinanciero)
-      //       : formatearMonto(0),
-      //   align: "left",
-      //   sortable: true,
-      // },
-      // {
-      //   name: "utilidadCalculada",
-      //   label: "Utilidad",
-      //   field: (row) =>
-      //     row.utilidadCalculada
-      //       ? formatearMonto(row.utilidadCalculada)
-      //       : formatearMonto(0),
-      //   align: "left",
-      //   sortable: true,
-      // },
-      // {
-      //   name: "porcentaje",
-      //   label: "Porcentaje",
-      //   field: (row) =>
-      //     row.porcentaje
-      //       ? formatearPorcentajeDecimal(row.porcentaje)
-      //       : formatearPorcentajeDecimal(0),
-      //   align: "left",
-      //   sortable: true,
-      // },
+      {
+        name: 'costo',
+        label: 'Costo',
+        field: (row) => row.costo ? formatearMonto(row.costo) : formatearMonto(0),
+        align: 'left',
+        sortable: true,
+      },
+      {
+        name: "gastoFinanciero",
+        label: "Gasto Financiero",
+        field: (row) =>
+          row.gastoFinanciero
+            ? formatearMonto(row.gastoFinanciero)
+            : formatearMonto(0),
+        align: "left",
+        sortable: true,
+      },
     ];
 
     const columnsDetalles = [
@@ -463,6 +452,8 @@ export default {
       },
     ];
 
+    const columnasVisibles = ref([])
+
     onMounted(async () => {
       await obtenerEmpresas();
       await obtenerSucursales();
@@ -552,6 +543,12 @@ export default {
       } else {
         usuarioAutorizado.value = false;
       }
+
+      if (anioSeleccionado.value > 2025 || (anioSeleccionado.value == 2025 && Number(obtenerNumeroMes(mesSeleccionado.value)) >= 9)) {
+        columnasVisibles.value = ['factura', 'fecha_facturacion', 'tipo_venta', 'modelo', 'utilidad', 'costo', 'gastoFinanciero']
+      } else {
+        columnasVisibles.value = ['factura', 'fecha_facturacion', 'tipo_venta', 'modelo', 'utilidad']
+      }
     };
 
     const enviarComisiones = async () => {
@@ -596,6 +593,7 @@ export default {
       expanded: ref(true),
       enviarComisiones,
       modalConfirmarEnvio,
+      columnasVisibles,
     };
   },
 };
