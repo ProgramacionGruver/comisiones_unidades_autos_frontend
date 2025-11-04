@@ -96,11 +96,11 @@ export default {
       await obtenerEmpresas();
       await obtenerSucursales();
       await obtenerDepartamentos();
-      await obtenerVendedores();
+      // await obtenerVendedores();
       await obtenerCatalogoAseguradoras();
-      await obtenerClientes();
+      // await obtenerClientes();
       await obtenerAutorizadores();
-      await obtenerUsuariosModulo(ID_SERVIDOR);
+      // await obtenerUsuariosModulo(ID_SERVIDOR);
     });
 
     const logout = () => {

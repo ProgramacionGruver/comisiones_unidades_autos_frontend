@@ -139,6 +139,7 @@ import { useRouter } from "vue-router";
 import ModalPermisosUsuario from "src/components/ModalPermisosUsuario.vue";
 import { useModulosStore } from "src/stores/permisosModulos";
 import { obtenerURLImage } from "src/helpers/abrirURL.js";
+import { ID_SERVIDOR } from "src/constant/servidor";
 
 export default {
   components: {
@@ -146,6 +147,7 @@ export default {
   },
   setup() {
     const useModulos = useModulosStore();
+    const { obtenerUsuariosModulo } = useModulos;
     const {
       usuariosModulos,
       usuariosAcceso,
@@ -159,7 +161,9 @@ export default {
     const filterModulo = ref("");
     const link = ref("");
 
-    onMounted(() => {
+    onMounted(async () => {
+      await obtenerUsuariosModulo(ID_SERVIDOR);
+
       listaModulos.value = router.options.routes.find((r) => {
         return r.name === "principal";
       }).children;

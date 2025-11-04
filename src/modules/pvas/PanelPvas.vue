@@ -201,7 +201,7 @@ export default {
   },
   setup() {
     const useFacturas = useFacturasStore();
-    const { obtenerVendedoresYJefes } = useFacturas;
+    const { obtenerVendedoresYJefes, obtenerClientes } = useFacturas;
     const { anioSeleccionado, mesSeleccionado, quincenaSeleccionada } =
       storeToRefs(useFacturas);
 
@@ -283,6 +283,7 @@ export default {
       departamentoSeleccionado.value = departamentos.value[0];
 
       await obtenerVendedoresYJefes();
+      await obtenerClientes();
       await filtrarPvas();
     });
 
@@ -292,8 +293,8 @@ export default {
       // );
       objPvaInit.value.mes = obtenerNumerosDeMes(mesSeleccionado.value);
       objPvaInit.value.anio = anioSeleccionado.value;
-      objPvaInit.value.departamento =
-        departamentoSeleccionado.value.value.claveDepartamento;
+      // objPvaInit.value.departamento =
+      //   departamentoSeleccionado.value.value.claveDepartamento;
 
       await obtenerPvas(objPvaInit.value);
     };

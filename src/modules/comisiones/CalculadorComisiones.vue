@@ -2345,7 +2345,7 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
 import { storeToRefs } from "pinia";
 import { listaMeses, listaAnios } from "src/helpers/listas";
@@ -2974,6 +2974,12 @@ export default {
     const pagination = ref({
       rowsPerPage: 10000,
     });
+
+    const { obtenerVendedores } = useFacturas;
+
+    onMounted(async () => {
+      await obtenerVendedores();
+    })
 
     const parametrosFiltradosVendedores = (val, update) => {
       filtradoBusquedaObj(val, update, opcionesVendedores.value, opcionesEmpleados);
