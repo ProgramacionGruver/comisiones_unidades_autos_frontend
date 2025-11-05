@@ -197,7 +197,7 @@
               </div>
               <div v-else-if="col.name === 'monto'">
                 {{
-                  props.row[col.name] > 0
+                  props.row[col.name]
                     ? props.row[col.name].toLocaleString("es-MX", {
                         style: "currency",
                         currency: "MXN",
