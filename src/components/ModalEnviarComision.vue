@@ -24,7 +24,7 @@
       </q-card-section>
       <q-card-actions align="right">
         <q-btn label="Cancelar" color="red" v-close-popup icon-right="close" />
-        <q-btn
+        <!-- <q-btn
           label="Copiar Link"
           color="primary"
           flat
@@ -35,7 +35,7 @@
           <template v-slot:loading>
             <q-spinner-facebook color="primary" />
           </template>
-        </q-btn>
+        </q-btn> -->
         <q-btn
           label="Enviar"
           color="primary"

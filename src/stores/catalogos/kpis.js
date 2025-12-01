@@ -86,10 +86,15 @@ export const useKpiStore = defineStore("kpi", () => {
   const configurarTablaComision = async () => {
     try {
       // Función auxiliar para validar si aplica gasto financiero
-      const debeAplicarGastoFinanciero = (fechaString) => {
+      const debeAplicarGastoFinanciero = (fechaString, esFlotilla = false) => {
         const [año, mes, dia] = fechaString.split('-').map(Number);
 
-        // Aplicar desde septiembre 2025 en adelante
+        // Las flotillas no aplican gasto financiero desde noviembre 2025
+        if (esFlotilla && (año > 2025 || (año === 2025 && mes >= 11))) {
+          return false;
+        }
+
+        // Aplicar desde septiembre 2025 en adelante para facturas normales
         const aplica = año >= 2025 && (año > 2025 || mes >= 9);
 
         return aplica;
@@ -250,7 +255,7 @@ export const useKpiStore = defineStore("kpi", () => {
       if (comisionVendedor.value.flotillas && comisionVendedor.value.flotillas.facturas.length > 0) {
         for (const factura of comisionVendedor.value.flotillas.facturas) {
           if (comisionVendedor.value.infoVendedor.claveDepartamento === "NUE") {
-            const aplicarGastoFinanciero = debeAplicarGastoFinanciero(factura.fecha_facturacion);
+            const aplicarGastoFinanciero = debeAplicarGastoFinanciero(factura.fecha_facturacion, true);
 
             let baseComision =
               factura.utilidad -
@@ -290,7 +295,7 @@ export const useKpiStore = defineStore("kpi", () => {
               gastoFinanciero: aplicarGastoFinanciero && factura.descuentos.gastoFinanciero ? factura.descuentos.gastoFinanciero : null,
             });
           } else {
-            const aplicarGastoFinanciero = debeAplicarGastoFinanciero(factura.fecha_facturacion);
+            const aplicarGastoFinanciero = debeAplicarGastoFinanciero(factura.fecha_facturacion, true);
 
             let baseComision =
               factura.utilidad -
@@ -341,7 +346,7 @@ export const useKpiStore = defineStore("kpi", () => {
           serie: "",
           bono_fijo: "Totales",
           gastoFinanciero: comisionVendedor.value.flotillas.facturas.reduce((acc, gasto) => {
-            const aplicarGastoFinanciero = debeAplicarGastoFinanciero(gasto.fecha_facturacion);
+            const aplicarGastoFinanciero = debeAplicarGastoFinanciero(gasto.fecha_facturacion, true);
             return acc + (aplicarGastoFinanciero && gasto.descuentos.gastoFinanciero ? gasto.descuentos.gastoFinanciero : 0);
           }, 0).toFixed(2),
           utilidad: comisionVendedor.value.flotillas.facturas
@@ -699,11 +704,17 @@ export const useKpiStore = defineStore("kpi", () => {
   const configurarTablaComisionBono = async () => {
     try {
       // Función auxiliar para validar si aplica gasto financiero
+      // Los bonos no aplican gasto financiero desde noviembre 2025
       const debeAplicarGastoFinanciero = (fechaString) => {
         const [año, mes, dia] = fechaString.split('-').map(Number);
 
-        // Aplicar desde septiembre 2025 en adelante
-        const aplica = año >= 2025 && (año > 2025 || mes >= 9);
+        // No aplicar gasto financiero desde noviembre 2025 para bonos
+        if (año > 2025 || (año === 2025 && mes >= 11)) {
+          return false;
+        }
+
+        // Aplicar desde septiembre 2025 hasta octubre 2025
+        const aplica = año === 2025 && mes >= 9 && mes <= 10;
 
         return aplica;
       };

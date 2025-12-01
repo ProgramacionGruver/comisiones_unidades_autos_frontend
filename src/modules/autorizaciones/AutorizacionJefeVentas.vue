@@ -14,7 +14,11 @@
       <span>Espere un momento a que los datos sean cargados...</span>
     </div>
     <div>
-      <q-card v-if="comisionVendedorSuAuto?.infoVendedor?.claveDepartamento === 'SUAUTO'">
+      <q-card
+        v-if="
+          comisionVendedorSuAuto?.infoVendedor?.claveDepartamento === 'SUAUTO'
+        "
+      >
         <q-card-section>
           <div
             style="
@@ -97,10 +101,13 @@
             <div>
               <strong>Total base contratos:</strong>
               {{
-                comisionVendedorSuAuto?.totalContratos?.toLocaleString("es-MX", {
-                  style: "currency",
-                  currency: "MXN",
-                })
+                comisionVendedorSuAuto?.totalContratos?.toLocaleString(
+                  "es-MX",
+                  {
+                    style: "currency",
+                    currency: "MXN",
+                  }
+                )
               }}
             </div>
             <div>
@@ -167,7 +174,8 @@
 
       <q-card
         v-else-if="
-          comisionVendedorSuAuto?.infoVendedor?.claveDepartamento === 'COOR SUAUTO'
+          comisionVendedorSuAuto?.infoVendedor?.claveDepartamento ===
+          'COOR SUAUTO'
         "
       >
         <q-card-section>
@@ -252,10 +260,13 @@
             <div>
               <strong>Total base contratos:</strong>
               {{
-                comisionVendedorSuAuto?.totalContratos?.toLocaleString("es-MX", {
-                  style: "currency",
-                  currency: "MXN",
-                })
+                comisionVendedorSuAuto?.totalContratos?.toLocaleString(
+                  "es-MX",
+                  {
+                    style: "currency",
+                    currency: "MXN",
+                  }
+                )
               }}
             </div>
             <div>
@@ -364,7 +375,9 @@
                     label="ORO"
                   />
                   <q-chip
-                    v-else-if="comisionVendedor?.infoVendedor?.nivel === 'plata'"
+                    v-else-if="
+                      comisionVendedor?.infoVendedor?.nivel === 'plata'
+                    "
                     color="grey"
                     text-color="white"
                     label="PLATA"
@@ -413,7 +426,9 @@
                 no-data-label="No se encontró informacion disponible."
                 no-results-label="No se encontraron coincidencias."
                 :pagination="pagination"
-                v-if="comisionVendedor?.infoVendedor?.claveDepartamento === 'NUE'"
+                v-if="
+                  comisionVendedor?.infoVendedor?.claveDepartamento === 'NUE'
+                "
               >
                 <template v-slot:body="props">
                   <q-tr v-if="props.row.tipoRenglon === 'dato'" :props="props">
@@ -453,10 +468,11 @@
                         })
                       }}
                     </q-td>
-<q-td
+                    <q-td
                       v-if="
                         Number(infoUrl.anio) > 2025 ||
-                        (Number(infoUrl.anio) === 2025 && Number(infoUrl.mes) >= 9)
+                        (Number(infoUrl.anio) === 2025 &&
+                          Number(infoUrl.mes) >= 9)
                       "
                       style="text-align: center"
                     >
@@ -589,18 +605,22 @@
                         })
                       }}
                     </q-td>
-<q-td
+                    <q-td
                       v-if="
                         Number(infoUrl.anio) > 2025 ||
-                        (Number(infoUrl.anio) == 2025 && Number(infoUrl.mes) >= 9)
+                        (Number(infoUrl.anio) == 2025 &&
+                          Number(infoUrl.mes) >= 9)
                       "
                       style="text-align: center; background-color: yellow"
                     >
                       {{
-                        Number(props.row.gastoFinanciero).toLocaleString("es-MX", {
-                          style: "currency",
-                          currency: "MXN",
-                        })
+                        Number(props.row.gastoFinanciero).toLocaleString(
+                          "es-MX",
+                          {
+                            style: "currency",
+                            currency: "MXN",
+                          }
+                        )
                       }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
@@ -621,10 +641,13 @@
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
                       {{
-                        Number(props.row.descuentoVentas).toLocaleString("es-MX", {
-                          style: "currency",
-                          currency: "MXN",
-                        })
+                        Number(props.row.descuentoVentas).toLocaleString(
+                          "es-MX",
+                          {
+                            style: "currency",
+                            currency: "MXN",
+                          }
+                        )
                       }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
@@ -645,18 +668,24 @@
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
                       {{
-                        Number(props.row.garantia_extendida).toLocaleString("es-MX", {
-                          style: "currency",
-                          currency: "MXN",
-                        })
+                        Number(props.row.garantia_extendida).toLocaleString(
+                          "es-MX",
+                          {
+                            style: "currency",
+                            currency: "MXN",
+                          }
+                        )
                       }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
                       {{
-                        Number(props.row.acondicionamiento).toLocaleString("es-MX", {
-                          style: "currency",
-                          currency: "MXN",
-                        })
+                        Number(props.row.acondicionamiento).toLocaleString(
+                          "es-MX",
+                          {
+                            style: "currency",
+                            currency: "MXN",
+                          }
+                        )
                       }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
@@ -706,7 +735,9 @@
                 no-data-label="No se encontró informacion disponible."
                 no-results-label="No se encontraron coincidencias."
                 :pagination="pagination"
-                v-else-if="comisionVendedor?.infoVendedor?.claveDepartamento === 'SEM'"
+                v-else-if="
+                  comisionVendedor?.infoVendedor?.claveDepartamento === 'SEM'
+                "
               >
                 <template v-slot:body="props">
                   <q-tr v-if="props.row.tipoRenglon === 'dato'" :props="props">
@@ -746,7 +777,7 @@
                         })
                       }}
                     </q-td>
-<q-td
+                    <q-td
                       v-if="requiereGastoFinanciero(comisionVendedor?.facturas)"
                       style="text-align: center"
                     >
@@ -879,15 +910,18 @@
                         })
                       }}
                     </q-td>
-<q-td
+                    <q-td
                       v-if="requiereGastoFinanciero(comisionVendedor?.facturas)"
                       style="text-align: center; background-color: yellow"
                     >
                       {{
-                        Number(props.row.gastoFinanciero).toLocaleString("es-MX", {
-                          style: "currency",
-                          currency: "MXN",
-                        })
+                        Number(props.row.gastoFinanciero).toLocaleString(
+                          "es-MX",
+                          {
+                            style: "currency",
+                            currency: "MXN",
+                          }
+                        )
                       }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
@@ -908,10 +942,13 @@
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
                       {{
-                        Number(props.row.descuentoVentas).toLocaleString("es-MX", {
-                          style: "currency",
-                          currency: "MXN",
-                        })
+                        Number(props.row.descuentoVentas).toLocaleString(
+                          "es-MX",
+                          {
+                            style: "currency",
+                            currency: "MXN",
+                          }
+                        )
                       }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
@@ -932,18 +969,24 @@
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
                       {{
-                        Number(props.row.garantia_extendida).toLocaleString("es-MX", {
-                          style: "currency",
-                          currency: "MXN",
-                        })
+                        Number(props.row.garantia_extendida).toLocaleString(
+                          "es-MX",
+                          {
+                            style: "currency",
+                            currency: "MXN",
+                          }
+                        )
                       }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
                       {{
-                        Number(props.row.acondicionamiento).toLocaleString("es-MX", {
-                          style: "currency",
-                          currency: "MXN",
-                        })
+                        Number(props.row.acondicionamiento).toLocaleString(
+                          "es-MX",
+                          {
+                            style: "currency",
+                            currency: "MXN",
+                          }
+                        )
                       }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
@@ -1036,10 +1079,11 @@
                         })
                       }}
                     </q-td>
-<q-td
+                    <q-td
                       v-if="
-                        Number(infoUrl.anio) > 2025 ||
-                        (Number(infoUrl.anio) === 2025 && Number(infoUrl.mes) >= 9)
+                        requiereGastoFinancieroFlotillas(
+                          comisionVendedor?.flotillas?.facturas
+                        )
                       "
                       style="text-align: center"
                     >
@@ -1172,19 +1216,23 @@
                         })
                       }}
                     </q-td>
-<q-td
+                    <q-td
                       v-if="
-                        Number(infoUrl.anio) > 2025 ||
-                        (Number(infoUrl.anio) === 2025 && Number(infoUrl.mes) >= 9)
+                        requiereGastoFinancieroFlotillas(
+                          comisionVendedor?.flotillas?.facturas
+                        )
                       "
                       style="text-align: center; background-color: yellow"
                     >
                       {{
                         props.row.gastoFinanciero
-                          ? Number(props.row.gastoFinanciero).toLocaleString("es-MX", {
-                              style: "currency",
-                              currency: "MXN",
-                            })
+                          ? Number(props.row.gastoFinanciero).toLocaleString(
+                              "es-MX",
+                              {
+                                style: "currency",
+                                currency: "MXN",
+                              }
+                            )
                           : ""
                       }}
                     </q-td>
@@ -1206,10 +1254,13 @@
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
                       {{
-                        Number(props.row.descuentoVentas).toLocaleString("es-MX", {
-                          style: "currency",
-                          currency: "MXN",
-                        })
+                        Number(props.row.descuentoVentas).toLocaleString(
+                          "es-MX",
+                          {
+                            style: "currency",
+                            currency: "MXN",
+                          }
+                        )
                       }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
@@ -1230,18 +1281,24 @@
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
                       {{
-                        Number(props.row.garantia_extendida).toLocaleString("es-MX", {
-                          style: "currency",
-                          currency: "MXN",
-                        })
+                        Number(props.row.garantia_extendida).toLocaleString(
+                          "es-MX",
+                          {
+                            style: "currency",
+                            currency: "MXN",
+                          }
+                        )
                       }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
                       {{
-                        Number(props.row.acondicionamiento).toLocaleString("es-MX", {
-                          style: "currency",
-                          currency: "MXN",
-                        })
+                        Number(props.row.acondicionamiento).toLocaleString(
+                          "es-MX",
+                          {
+                            style: "currency",
+                            currency: "MXN",
+                          }
+                        )
                       }}
                     </q-td>
                     <q-td style="text-align: center; background-color: yellow">
@@ -1282,7 +1339,10 @@
 
               <div
                 align="right"
-                v-if="comisionVendedor?.flotillas && comisionVendedor?.flotillas?.facturas?.length > 0"
+                v-if="
+                  comisionVendedor?.flotillas &&
+                  comisionVendedor?.flotillas?.facturas?.length > 0
+                "
                 class="q-mt-sm"
               >
                 <table>
@@ -1294,7 +1354,9 @@
                     </td>
                     <td>
                       <div class="text-center">
-                        {{ comisionVendedor?.flotillas?.porcentajeUB?.porcentaje }}%
+                        {{
+                          comisionVendedor?.flotillas?.porcentajeUB?.porcentaje
+                        }}%
                       </div>
                     </td>
                   </tr>
@@ -1388,7 +1450,9 @@
                 no-data-label="No se encontró informacion disponible."
                 no-results-label="No se encontraron coincidencias."
                 :pagination="pagination"
-                v-if="comisionVendedor?.infoVendedor?.claveDepartamento === 'NUE'"
+                v-if="
+                  comisionVendedor?.infoVendedor?.claveDepartamento === 'NUE'
+                "
               >
                 <template v-slot:body="props">
                   <q-tr>
@@ -1431,7 +1495,9 @@
                 no-data-label="No se encontró informacion disponible."
                 no-results-label="No se encontraron coincidencias."
                 :pagination="pagination"
-                v-if="comisionVendedor?.infoVendedor?.claveDepartamento === 'SEM'"
+                v-if="
+                  comisionVendedor?.infoVendedor?.claveDepartamento === 'SEM'
+                "
               >
                 <template v-slot:body="props">
                   <q-tr>
@@ -1511,10 +1577,13 @@
                     </q-td>
                     <q-td style="text-align: center">
                       {{
-                        Number(props.row.utilidadBruta).toLocaleString("es-MX", {
-                          style: "currency",
-                          currency: "MXN",
-                        })
+                        Number(props.row.utilidadBruta).toLocaleString(
+                          "es-MX",
+                          {
+                            style: "currency",
+                            currency: "MXN",
+                          }
+                        )
                       }}
                     </q-td>
                     <q-td style="text-align: center">
@@ -1571,7 +1640,9 @@
                 no-data-label="No se encontró informacion disponible."
                 no-results-label="No se encontraron coincidencias."
                 :pagination="pagination"
-                v-if="comisionVendedor?.infoVendedor?.claveDepartamento === 'NUE'"
+                v-if="
+                  comisionVendedor?.infoVendedor?.claveDepartamento === 'NUE'
+                "
               >
                 <template v-slot:body="props">
                   <q-tr>
@@ -1649,7 +1720,9 @@
                 no-data-label="No se encontró informacion disponible."
                 no-results-label="No se encontraron coincidencias."
                 :pagination="pagination"
-                v-else-if="comisionVendedor?.infoVendedor?.claveDepartamento === 'SEM'"
+                v-else-if="
+                  comisionVendedor?.infoVendedor?.claveDepartamento === 'SEM'
+                "
               >
                 <template v-slot:body="props">
                   <q-tr>
@@ -1698,7 +1771,9 @@
               </q-table>
 
               <div v-if="comisionVendedor?.desgloseDescuentos?.length > 0">
-                <div>Desglose de bonos y descuentos aplicados directos al vendedor</div>
+                <div>
+                  Desglose de bonos y descuentos aplicados directos al vendedor
+                </div>
                 <div
                   style="
                     width: 100%;
@@ -2785,7 +2860,9 @@ export default {
         infoUrl.value.idAsesor
       );
 
-      autorizaciones.value = await obtenerInfoAutorizacion(infoUrl.value.idAutorizacion);
+      autorizaciones.value = await obtenerInfoAutorizacion(
+        infoUrl.value.idAutorizacion
+      );
 
       await buscarComision();
 
@@ -2814,7 +2891,8 @@ export default {
           idAsesor: infoUrl.value.idAsesor,
           anio: infoUrl.value.anio,
           mes: infoUrl.value.mes,
-          claveDepartamentoVendedor: infoVendedorAutorizacion.value.claveDepartamento,
+          claveDepartamentoVendedor:
+            infoVendedorAutorizacion.value.claveDepartamento,
           desdeCalculador: true,
         };
 
@@ -2826,9 +2904,10 @@ export default {
       try {
         cargandoConfirmacion.value = true;
 
-        const autorizacionVendedor = autorizaciones.value.autorizaciones_comisiones_autos_detalles.find(
-          (autorizacion) => autorizacion.tipoEmpleado === "JEFE"
-        );
+        const autorizacionVendedor =
+          autorizaciones.value.autorizaciones_comisiones_autos_detalles.find(
+            (autorizacion) => autorizacion.tipoEmpleado === "JEFE"
+          );
 
         const data = {
           idAutorizacionDetalle: autorizacionVendedor.idAutorizacionDetalle,
@@ -2854,9 +2933,10 @@ export default {
     const rechazoComision = async () => {
       cargandoRechazar.value = true;
 
-      const autorizacionVendedor = autorizaciones.value.autorizaciones_comisiones_autos_detalles.find(
-        (autorizacion) => autorizacion.tipoEmpleado === "JEFE"
-      );
+      const autorizacionVendedor =
+        autorizaciones.value.autorizaciones_comisiones_autos_detalles.find(
+          (autorizacion) => autorizacion.tipoEmpleado === "JEFE"
+        );
 
       const data = {
         idAutorizacionDetalle: autorizacionVendedor.idAutorizacionDetalle,
@@ -2897,7 +2977,9 @@ export default {
 
     // Columnas dinámicas para facturas de flotillas
     const columnasFacturasFlotillas = computed(() => {
-      return generarColumnasFacturas(comisionVendedor.value?.flotillas?.facturas);
+      return generarColumnasFacturasFlotillas(
+        comisionVendedor.value?.flotillas?.facturas
+      );
     });
 
     // Función para generar columnas de facturas dinámicamente
@@ -2905,6 +2987,18 @@ export default {
       const columnas = [...columnasFacturasBase];
 
       if (requiereGastoFinanciero(facturas)) {
+        columnas.push(columnaGastoFinanciero);
+      }
+
+      columnas.push(...columnasFacturasDespuesUtilidad);
+      return columnas;
+    };
+
+    // Función para generar columnas de facturas de flotillas dinámicamente
+    const generarColumnasFacturasFlotillas = (facturas) => {
+      const columnas = [...columnasFacturasBase];
+
+      if (requiereGastoFinancieroFlotillas(facturas)) {
         columnas.push(columnaGastoFinanciero);
       }
 
@@ -2958,6 +3052,21 @@ export default {
           fechaFactura.getFullYear() >= 2025 &&
           (fechaFactura.getFullYear() > 2025 || fechaFactura.getMonth() >= 8)
         );
+      });
+    };
+
+    // Función para verificar si flotillas requieren mostrar gasto financiero
+    // Las flotillas NO aplican gasto financiero desde noviembre 2025
+    const requiereGastoFinancieroFlotillas = (facturas) => {
+      if (!facturas || facturas.length === 0) return false;
+      return facturas.some((factura) => {
+        if (!factura.fechaFactura) return false;
+        const fechaFactura = new Date(factura.fechaFactura);
+        const anio = fechaFactura.getFullYear();
+        const mes = fechaFactura.getMonth(); // 0-11
+
+        // Solo aplicar desde septiembre (mes 8) hasta octubre (mes 9) de 2025
+        return anio === 2025 && mes >= 8 && mes <= 9;
       });
     };
 
@@ -3061,6 +3170,7 @@ export default {
       rechazoComision,
       generarColumnasFacturas,
       requiereGastoFinanciero,
+      requiereGastoFinancieroFlotillas,
     };
   },
 };
