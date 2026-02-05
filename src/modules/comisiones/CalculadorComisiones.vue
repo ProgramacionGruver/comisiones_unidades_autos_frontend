@@ -721,9 +721,7 @@
                         </q-td>
                         <q-td
                           v-if="
-                            Number(anioSeleccionado) > 2025 ||
-                            (Number(anioSeleccionado) == 2025 &&
-                              Number(obtenerNumeroMes(mesSeleccionado)) >= 9)
+                            requiereGastoFinanciero(comisionVendedor?.facturas)
                           "
                           style="text-align: center; background-color: yellow"
                         >
@@ -2761,8 +2759,9 @@ export default {
     const requiereGastoFinanciero = (facturas) => {
       if (!facturas || facturas.length === 0) return false;
       return facturas.some((factura) => {
-        if (!factura.fechaFactura) return false;
-        const fechaFactura = new Date(factura.fechaFactura);
+        if (!factura.fecha_facturacion) return false;
+        const fechaFactura = new Date(factura.fecha_facturacion);
+
         return (
           fechaFactura.getFullYear() >= 2025 &&
           (fechaFactura.getFullYear() > 2025 || fechaFactura.getMonth() >= 8)
@@ -2775,8 +2774,8 @@ export default {
     const requiereGastoFinancieroFlotillas = (facturas) => {
       if (!facturas || facturas.length === 0) return false;
       return facturas.some((factura) => {
-        if (!factura.fechaFactura) return false;
-        const fechaFactura = new Date(factura.fechaFactura);
+        if (!factura.fecha_facturacion) return false;
+        const fechaFactura = new Date(factura.fecha_facturacion);
         const anio = fechaFactura.getFullYear();
         const mes = fechaFactura.getMonth(); // 0-11
 

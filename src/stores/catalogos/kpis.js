@@ -121,6 +121,7 @@ export const useKpiStore = defineStore("kpi", () => {
 
           facturas.push({
             folioFactura: factura.factura,
+            fecha_facturacion: factura.fecha_facturacion,
             fechaFactura: formatearFecha(factura.fecha_facturacion),
             tasaCredito: factura.tipo_venta,
             condicion: factura.condicion,
@@ -161,6 +162,7 @@ export const useKpiStore = defineStore("kpi", () => {
 
           facturas.push({
             folioFactura: factura.factura,
+            fecha_facturacion: factura.fecha_facturacion,
             fechaFactura: formatearFecha(factura.fecha_facturacion),
             tasaCredito: factura.tipo_venta,
             condicion: factura.condicion,
@@ -273,6 +275,7 @@ export const useKpiStore = defineStore("kpi", () => {
 
             facturasFlotillas.push({
               folioFactura: factura.factura,
+              fecha_facturacion: factura.fecha_facturacion,
               fechaFactura: formatearFecha(factura.fecha_facturacion),
               tasaCredito: factura.tipo_venta,
               condicion: factura.condicion,
@@ -313,6 +316,7 @@ export const useKpiStore = defineStore("kpi", () => {
 
             facturasFlotillas.push({
               folioFactura: factura.factura,
+              fecha_facturacion: factura.fecha_facturacion,
               fechaFactura: formatearFecha(factura.fecha_facturacion),
               tasaCredito: factura.tipo_venta,
               condicion: factura.condicion,

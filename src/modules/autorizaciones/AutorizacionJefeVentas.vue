@@ -469,11 +469,7 @@
                       }}
                     </q-td>
                     <q-td
-                      v-if="
-                        Number(infoUrl.anio) > 2025 ||
-                        (Number(infoUrl.anio) === 2025 &&
-                          Number(infoUrl.mes) >= 9)
-                      "
+                      v-if="requiereGastoFinanciero(comisionVendedor?.facturas)"
                       style="text-align: center"
                     >
                       {{
@@ -606,11 +602,7 @@
                       }}
                     </q-td>
                     <q-td
-                      v-if="
-                        Number(infoUrl.anio) > 2025 ||
-                        (Number(infoUrl.anio) == 2025 &&
-                          Number(infoUrl.mes) >= 9)
-                      "
+                      v-if="requiereGastoFinanciero(comisionVendedor?.facturas)"
                       style="text-align: center; background-color: yellow"
                     >
                       {{
@@ -3046,8 +3038,8 @@ export default {
     const requiereGastoFinanciero = (facturas) => {
       if (!facturas || facturas.length === 0) return false;
       return facturas.some((factura) => {
-        if (!factura.fechaFactura) return false;
-        const fechaFactura = new Date(factura.fechaFactura);
+        if (!factura.fecha_facturacion) return false;
+        const fechaFactura = new Date(factura.fecha_facturacion);
         return (
           fechaFactura.getFullYear() >= 2025 &&
           (fechaFactura.getFullYear() > 2025 || fechaFactura.getMonth() >= 8)
