@@ -98,7 +98,7 @@
                 outlined
                 dense
                 :disable="cargando"
-                :options="departamentos"
+                :options="departamentosFiltrados"
                 v-model="departamentoSeleccionado"
                 @update:model-value="filtrarFacturas(true)"
                 map-options
@@ -271,7 +271,7 @@ export default {
 
     const useDepartamentos = useDepartamentosStore();
     const { obtenerDepartamentos } = useDepartamentos;
-    const { departamentos, departamentoSeleccionado } =
+    const { departamentos, departamentosFiltrados, departamentoSeleccionado } =
       storeToRefs(useDepartamentos);
 
     const useFacturas = useFacturasStore();
@@ -331,10 +331,11 @@ export default {
         sortable: true,
       },
       {
-        name: 'costo',
-        label: 'Costo',
-        field: (row) => row.costo ? formatearMonto(row.costo) : formatearMonto(0),
-        align: 'left',
+        name: "costo",
+        label: "Costo",
+        field: (row) =>
+          row.costo ? formatearMonto(row.costo) : formatearMonto(0),
+        align: "left",
         sortable: true,
       },
       {
@@ -452,7 +453,7 @@ export default {
       },
     ];
 
-    const columnasVisibles = ref([])
+    const columnasVisibles = ref([]);
 
     onMounted(async () => {
       await obtenerEmpresas();
@@ -475,7 +476,6 @@ export default {
         };
       });
 
-      //Declaro la primera empresa, sucursal y departamento
       empresaSeleccionada.value = opcionesEmpresas.value[0];
       sucursalSeleccionada.value = opcionesSucursales.value[0].value;
       departamentoSeleccionado.value = departamentos.value[0];
@@ -493,35 +493,9 @@ export default {
 
       grupoEmpresas.value = [empresaSeleccionada.value.claveEmpresa];
 
-      //TODAS LAS SUCURSALES PERTENECIENTES A LA EMPRESA
-      // opcionesSucursales.value = filtrarElementos(
-      //   grupoEmpresas,
-      //   sucursales,
-      //   "claveEmpresa"
-      // ).map((sucursal) => {
-      //   return {
-      //     label: formatearCapitalCase(sucursal.nombreSucursal),
-      //     value: { ...sucursal },
-      //   };
-      // });
-
-      //SOLO SUCURSALES CON FACTURAS
-      // opcionesSucursales.value = opcionesSucursales.value.filter((sucursal) =>
-      //   valoresUnicosSucursal.value.includes(sucursal.value.idErp)
-      // );
-
-      // if (buscarFacturas) {
-      //   sucursalSeleccionada.value = opcionesSucursales.value[0].value;
-      // } else {
-      //   sucursalSeleccionada.value = opcionesSucursales.value.find(
-      //     (sucursal) =>
-      //       sucursal.value.idErp === sucursalSeleccionada.value.idErp
-      //   ).value;
-      // }
-
-      //Filtro por sucursal
       facturasFiltrada.value = facturas.value.filter(
-        (factura) => factura.id_plaza === sucursalSeleccionada.value.idErp
+        (factura) =>
+          factura.claveSucursal == sucursalSeleccionada.value.abreviacion
       );
 
       let indice = 0;
@@ -544,10 +518,28 @@ export default {
         usuarioAutorizado.value = false;
       }
 
-      if (anioSeleccionado.value > 2025 || (anioSeleccionado.value == 2025 && Number(obtenerNumeroMes(mesSeleccionado.value)) >= 9)) {
-        columnasVisibles.value = ['factura', 'fecha_facturacion', 'tipo_venta', 'modelo', 'utilidad', 'costo', 'gastoFinanciero']
+      if (
+        anioSeleccionado.value > 2025 ||
+        (anioSeleccionado.value == 2025 &&
+          Number(obtenerNumeroMes(mesSeleccionado.value)) >= 9)
+      ) {
+        columnasVisibles.value = [
+          "factura",
+          "fecha_facturacion",
+          "tipo_venta",
+          "modelo",
+          "utilidad",
+          "costo",
+          "gastoFinanciero",
+        ];
       } else {
-        columnasVisibles.value = ['factura', 'fecha_facturacion', 'tipo_venta', 'modelo', 'utilidad']
+        columnasVisibles.value = [
+          "factura",
+          "fecha_facturacion",
+          "tipo_venta",
+          "modelo",
+          "utilidad",
+        ];
       }
     };
 
@@ -576,6 +568,7 @@ export default {
 
       departamentos,
       departamentoSeleccionado,
+      departamentosFiltrados,
 
       listaAnios,
       listaMeses,

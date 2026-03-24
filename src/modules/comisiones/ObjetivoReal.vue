@@ -58,7 +58,7 @@
               <q-select
                 outlined
                 dense
-                :options="departamentos"
+                :options="departamentosFiltrados"
                 v-model="departamentoSeleccionado"
                 @update:model-value="filtrarKpis"
                 map-options
@@ -146,12 +146,9 @@ import { onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { listaMeses, listaAnios, listaQuincenas } from "src/helpers/listas";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
-import {
-  obtenerNumeroQuincena,
-  obtenerNumerosDeMes,
-} from "src/constant/constantes";
-import ModalValoresKpis from "./../../components/ModalValoresKpis.vue";
+import { obtenerNumerosDeMes } from "src/constant/constantes";
 import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
+import ModalValoresKpis from "./../../components/ModalValoresKpis.vue";
 
 export default {
   components: {
@@ -166,7 +163,8 @@ export default {
     const { anioSeleccionado, mesSeleccionado } = storeToRefs(useFacturas);
 
     const useDepartamentos = useDepartamentosStore();
-    const { departamentos, departamentoSeleccionado } =
+    const { obtenerDepartamentos } = useDepartamentos;
+    const { departamentos, departamentosFiltrados, departamentoSeleccionado } =
       storeToRefs(useDepartamentos);
 
     const columns = [
@@ -188,11 +186,6 @@ export default {
         align: "left",
         field: "nombreEmpleado",
       },
-      {
-        name: "nivel",
-        label: "Nivel",
-        align: "center",
-      },
       // {
       //   name: "acciones",
       //   label: "Acciones",
@@ -208,7 +201,9 @@ export default {
     const modalValoresKpis = ref(null);
 
     onMounted(async () => {
-      departamentoSeleccionado.value = departamentos.value[0];
+      await obtenerDepartamentos();
+
+      departamentoSeleccionado.value = departamentosFiltrados.value[0];
 
       await filtrarKpis();
     });
@@ -217,7 +212,7 @@ export default {
       objKpis.value.mes = obtenerNumerosDeMes(mesSeleccionado.value);
       objKpis.value.anio = anioSeleccionado.value;
       objKpis.value.claveDepartamento =
-        departamentoSeleccionado.value?.value?.claveDepartamento;
+        departamentoSeleccionado.value.claveDepartamento;
 
       await obtenerValoresRealesKpis(objKpis.value);
     };
@@ -242,6 +237,7 @@ export default {
       columns,
       modalValoresKpis,
       departamentos,
+      departamentosFiltrados,
       departamentoSeleccionado,
       // Methods
       filtrarKpis,

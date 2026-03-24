@@ -8,8 +8,8 @@ import axios from "axios";
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({
-  baseURL: "https://backend.gruver.com.mx/comisiones/api",
-  // baseURL: "http://localhost:4007/comisiones/api",
+  baseURL: "https://backend.gruver.com.mx/comisiones/autos/api",
+  // baseURL: "http://localhost:4028/comisiones/autos/api/",
 })
 
 export default boot(({ app }) => {

@@ -10,20 +10,10 @@
         :columns="columns"
         :rows="descuentos"
         :filter="buscar"
-        :no-data-label="
-          datosCargados
-            ? 'No se encontraron datos'
-            : 'Seleccione un rango de fechas para buscar'
-        "
         loading-label="Buscando información . . ."
         row-key="idDescuentoVendedor"
+        :loading="cargandoDescuentos"
       >
-        <template v-slot:body-cell-fechaDescuento="props">
-          <td style="text-align: center">
-            {{ formatearFecha(props.row.fechaDescuento) }}
-          </td>
-        </template>
-
         <template v-slot:body-cell-acciones="props">
           <td align="center">
             <q-btn
@@ -87,18 +77,6 @@
                 option-value="name"
               />
             </div>
-            <div class="col q-ma-sm">
-              <q-select
-                outlined
-                dense
-                :disable="cargando"
-                :options="departamentos"
-                v-model="departamentoSeleccionado"
-                @update:model-value="obtenerDescuentos"
-                map-options
-                option-value="name"
-              />
-            </div>
           </div>
         </template>
       </q-table>
@@ -112,13 +90,13 @@
 import { storeToRefs } from "pinia";
 import { useDescuentosStore } from "src/stores/descuentos";
 import { onMounted, ref } from "vue";
-import ModalCrearNuevoDescuento from "src/components/ModalCrearNuevoDescuento.vue";
-import ModalDescuentosVendedor from "src/components/ModalDescuentosVendedor.vue";
 import { formatearFecha } from "src/helpers/formatearFecha";
-import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
-import { listaMeses, listaAnios, listaQuincenas } from "src/helpers/listas";
+import { listaMeses, listaAnios } from "src/helpers/listas";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
 import { obtenerNumeroMes } from "src/constant/constantes";
+import { formatearMonto } from "src/helpers/formatos";
+import ModalCrearNuevoDescuento from "src/components/ModalCrearNuevoDescuento.vue";
+import ModalDescuentosVendedor from "src/components/ModalDescuentosVendedor.vue";
 
 export default {
   components: {
@@ -128,46 +106,51 @@ export default {
   setup() {
     const useDescuentos = useDescuentosStore();
     ModalCrearNuevoDescuento;
-    const {
-      obtenerTodosDescuentosVendedores,
-      obtenerDescuentosVendedoresByFechas,
-      obtenerFormularioDescuento,
-      obtenerDetalleDescuentoVendedor,
-    } = useDescuentos;
+    const { obtenerDescuentosVendedores } = useDescuentos;
     const { descuentos } = storeToRefs(useDescuentos);
-
-    const useDepartamentos = useDepartamentosStore();
-    const { obtenerDepartamentos } = useDepartamentos;
-    const { departamentos, departamentoSeleccionado } =
-      storeToRefs(useDepartamentos);
 
     const useFacturas = useFacturasStore();
     const { anioSeleccionado, mesSeleccionado } = storeToRefs(useFacturas);
 
     const columns = [
       {
-        name: "idDescuentoVendedor",
-        label: "#",
-        align: "center",
-        field: "idDescuentoVendedor",
-        sortable: true,
-      },
-      {
         name: "no_empleado",
         label: "Número de Empleado",
         align: "center",
-        field: "no_empleado",
+        field: "numeroEmpleado",
       },
       {
         name: "nombre",
         label: "Nombre",
         align: "left",
-        field: "nombre",
+        field: "nombreEmpleado",
       },
       {
-        name: "fechaDescuento",
-        label: "Fecha de descuento",
+        name: "fecha",
+        label: "Fecha",
         align: "center",
+        field: (row) => formatearFecha(row.descuentos_vendedores[0]?.createdAt),
+      },
+      {
+        name: "total",
+        label: "Total descuentos/bonos",
+        align: "center",
+        field: (row) => {
+          const totalDescuentos = row.descuentos_vendedores.reduce(
+            (total, descuento) => {
+              const monto = descuento.idFormularioDescuentos
+                ? descuento.catalogoFormularioDescuento.sumarRestar
+                  ? descuento.monto
+                  : -descuento.monto
+                : 0;
+
+              return total + monto;
+            },
+            0
+          );
+          return totalDescuentos;
+        },
+        format: (val) => formatearMonto(val),
       },
       {
         name: "acciones",
@@ -186,28 +169,15 @@ export default {
     const datosCargados = ref(false);
 
     onMounted(async () => {
-      await obtenerDepartamentos();
-
-      departamentoSeleccionado.value = departamentos.value[0];
-
-      if (departamentoSeleccionado.value) {
-        await obtenerDescuentos();
-      }
+      await obtenerDescuentos();
     });
 
     const obtenerDescuentos = async () => {
       cargandoDescuentos.value = true;
 
-      const claveDepartamento =
-        departamentoSeleccionado.value.value.claveDepartamento;
+      const mes = obtenerNumeroMes(mesSeleccionado.value);
 
-      const mes = Number(obtenerNumeroMes(mesSeleccionado.value));
-
-      await obtenerDescuentosVendedoresByFechas(
-        mes,
-        anioSeleccionado.value,
-        claveDepartamento
-      );
+      await obtenerDescuentosVendedores(mes, anioSeleccionado.value);
 
       if (descuentos.value.length === 0) {
         datosCargados.value = true;
@@ -217,17 +187,11 @@ export default {
     };
 
     const nuevoDescuento = async () => {
-      cargando.value = true;
-
       modalCrearNuevoDescuento.value.abrir();
-
-      cargando.value = false;
     };
 
     const editarDescuento = async (descuento) => {
-      await obtenerDetalleDescuentoVendedor(descuento.idDescuentoVendedor);
-
-      modalDescuentosVendedor.value.abrirModalDescuento(descuento);
+      modalCrearNuevoDescuento.value.abrir(descuento);
     };
 
     return {
@@ -241,9 +205,6 @@ export default {
       cargando,
       cargandoDescuentos,
       modalDescuentosVendedor,
-      datosCargados,
-      departamentos,
-      departamentoSeleccionado,
       listaAnios,
       listaMeses,
       anioSeleccionado,

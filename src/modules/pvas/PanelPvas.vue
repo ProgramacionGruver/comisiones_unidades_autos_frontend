@@ -11,12 +11,27 @@
         :filter="buscar"
         :rows="pvas"
         no-data-label="No se encontró información disponible."
-        loading-label="Buscando información . . ."
         v-model:selected="pvaSeleccionado"
         selection="single"
         row-key="idPva"
         :pagination="pagination"
+        :loading="cargando"
       >
+        <template v-slot:loading>
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              padding: 2rem;
+            "
+          >
+            <q-spinner color="primary" size="100px" />
+            <span class="text-h6 q-mt-md">Cargando PVAS...</span>
+          </div>
+        </template>
+
         <template v-slot:top>
           <div class="fit row q-gutter-sm q-mb-sm justify-end">
             <q-btn
@@ -26,6 +41,7 @@
               label="Cargar PVAS"
               no-caps
               @click="nuevoPva"
+              :disable="cargando"
             />
             <q-btn
               dense
@@ -66,34 +82,13 @@
                 @update:model-value="filtrarPvas"
               />
             </div>
-            <!-- <div class="col q-ma-sm">
-              <q-select
-                outlined
-                dense
-                :options="departamentos"
-                v-model="departamentoSeleccionado"
-                @update:model-value="filtrarPvas"
-                map-options
-                option-value="name"
-              />
-            </div> -->
-            <!-- <div class="col q-ma-sm">
-              <q-select
-                outlined
-                dense
-                v-model="quincenaSeleccionada"
-                :options="listaQuincenas"
-                option-label="descripcion"
-                @update:model-value="filtrarPvas"
-              >
-              </q-select>
-            </div> -->
             <div>
               <q-btn
                 color="green"
                 label="Exportar Excel"
                 icon="get_app"
                 @click="exportarExcel(pvas)"
+                :disable="pvas.length === 0 || cargando"
               />
             </div>
           </div>
@@ -159,7 +154,11 @@
             </div>
             <div style="display: flex; flex-direction: column">
               <label class="text-bold">Vendedor:</label>
-              <span>{{ pvaSeleccionado[0].nombreEmpleado }}</span>
+              <span>{{
+                pvaSeleccionado[0].asesore
+                  ? pvaSeleccionado[0].asesore.nombreEmpleado
+                  : ""
+              }}</span>
             </div>
             <div style="display: flex; flex-direction: column">
               <label class="text-bold">F&I:</label>
@@ -201,9 +200,13 @@ export default {
   },
   setup() {
     const useFacturas = useFacturasStore();
-    const { obtenerVendedoresYJefes, obtenerClientes } = useFacturas;
-    const { anioSeleccionado, mesSeleccionado, quincenaSeleccionada } =
-      storeToRefs(useFacturas);
+    const { obtenerVendedores, obtenerClientes } = useFacturas;
+    const {
+      anioSeleccionado,
+      mesSeleccionado,
+      quincenaSeleccionada,
+      opcionesVendedores,
+    } = storeToRefs(useFacturas);
 
     const usePva = usePvaStore();
     const { obtenerPvas } = usePva;
@@ -232,7 +235,7 @@ export default {
       {
         name: "nombreEmpleado",
         label: "Nombre",
-        field: "nombreEmpleado",
+        field: (row) => (row.asesore ? row.asesore.nombreEmpleado : ""),
         align: "left",
         sortable: true,
       },
@@ -279,22 +282,26 @@ export default {
       anio: anioSeleccionado.value,
     });
 
+    const cargando = ref(false);
+
     onMounted(async () => {
+      cargando.value = true;
+
       departamentoSeleccionado.value = departamentos.value[0];
 
-      await obtenerVendedoresYJefes();
+      if (opcionesVendedores.value.length === 0) {
+        await obtenerVendedores();
+      }
+
       await obtenerClientes();
       await filtrarPvas();
+
+      cargando.value = false;
     });
 
     const filtrarPvas = async () => {
-      // objPvaInit.value.quincena = obtenerNumeroQuincena(
-      //   quincenaSeleccionada.value
-      // );
       objPvaInit.value.mes = obtenerNumerosDeMes(mesSeleccionado.value);
       objPvaInit.value.anio = anioSeleccionado.value;
-      // objPvaInit.value.departamento =
-      //   departamentoSeleccionado.value.value.claveDepartamento;
 
       await obtenerPvas(objPvaInit.value);
     };
@@ -381,6 +388,7 @@ export default {
       cargaMasivaGarantias,
       modalCargarGarantias,
       pagination: ref({ rowsPerPage: 10 }),
+      cargando,
     };
   },
 };

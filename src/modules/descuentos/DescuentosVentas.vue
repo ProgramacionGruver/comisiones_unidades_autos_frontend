@@ -1,9 +1,7 @@
 <template>
   <q-layout>
     <div class="q-pa-md">
-      <div class="q-pa-md">
-        <h2>Descuentos en Libro de Ventas</h2>
-      </div>
+      <h2>Descuentos en Libro de Ventas</h2>
       <q-separator color="primary" class="q-my-md" />
       <q-table
         :loading="cargando"
@@ -15,6 +13,7 @@
         no-data-label="No se encontró información disponible."
         no-results-label="No se encontraron coincidencias."
         loading-label="Buscando información . . ."
+        table-header-class="bg-primary text-white"
       >
         <template v-slot:body-cell-acciones="props">
           <q-td>
@@ -27,200 +26,6 @@
               <q-tooltip>Agregar Descuento</q-tooltip>
             </q-btn>
           </q-td>
-        </template>
-
-        <template v-slot:body-cell-previa="props">
-          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
-            {{
-              props.row.descuentosUnidades?.length > 0
-                ? formatearMonto(props.row.descuentosUnidades[0].previa)
-                : formatearMonto(0)
-            }}
-          </td>
-          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
-            {{
-              props.row.descuentosUnidadesSeminuevos?.length > 0
-                ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0].previa
-                  )
-                : formatearMonto(0)
-            }}
-          </td>
-        </template>
-
-        <template v-slot:body-cell-traslado="props">
-          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
-            {{
-              props.row.descuentosUnidades?.length > 0
-                ? formatearMonto(props.row.descuentosUnidades[0].traslado)
-                : formatearMonto(0)
-            }}
-          </td>
-          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
-            {{
-              props.row.descuentosUnidadesSeminuevos?.length > 0
-                ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0].traslado
-                  )
-                : formatearMonto(0)
-            }}
-          </td>
-        </template>
-
-        <template v-slot:body-cell-descVentas="props">
-          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
-            {{
-              props.row.descuentosUnidades?.length > 0
-                ? formatearMonto(props.row.descuentosUnidades[0].descVentas)
-                : formatearMonto(0)
-            }}
-          </td>
-          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
-            {{
-              props.row.descuentosUnidadesSeminuevos?.length > 0
-                ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0].descVentas
-                  )
-                : formatearMonto(0)
-            }}
-          </td>
-        </template>
-
-        <template v-slot:body-cell-cortesia="props">
-          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
-            {{
-              props.row.descuentosUnidades?.length > 0
-                ? formatearMonto(props.row.descuentosUnidades[0].cortesia)
-                : formatearMonto(0)
-            }}
-          </td>
-          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
-            {{
-              props.row.descuentosUnidadesSeminuevos?.length > 0
-                ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0].cortesia
-                  )
-                : formatearMonto(0)
-            }}
-          </td>
-        </template>
-
-        <template v-slot:body-cell-gasolina="props">
-          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
-            {{
-              props.row.descuentosUnidades?.length > 0
-                ? formatearMonto(props.row.descuentosUnidades[0].gasolina)
-                : formatearMonto(0)
-            }}
-          </td>
-          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
-            {{
-              props.row.descuentosUnidadesSeminuevos?.length > 0
-                ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0].gasolina
-                  )
-                : formatearMonto(0)
-            }}
-          </td>
-        </template>
-
-        <template v-slot:body-cell-bonoub="props">
-          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
-            {{
-              props.row.descuentosUnidades?.length > 0
-                ? formatearMonto(props.row.descuentosUnidades[0].bonoub)
-                : formatearMonto(0)
-            }}
-          </td>
-          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
-            {{
-              props.row.descuentosUnidadesSeminuevos?.length > 0
-                ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0].bonoub
-                  )
-                : formatearMonto(0)
-            }}
-          </td>
-        </template>
-
-        <template v-slot:body-cell-garantia_extendida="props">
-          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
-            {{
-              props.row.descuentosUnidades?.length > 0
-                ? formatearMonto(
-                    props.row.descuentosUnidades[0].garantia_extendida
-                  )
-                : formatearMonto(0)
-            }}
-          </td>
-          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
-            {{
-              props.row.descuentosUnidadesSeminuevos?.length > 0
-                ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0].garantia_extendida
-                  )
-                : formatearMonto(0)
-            }}
-          </td>
-        </template>
-
-        <template v-slot:body-cell-acondicionamiento="props">
-          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
-            {{
-              props.row.descuentosUnidades?.length > 0
-                ? formatearMonto(
-                    props.row.descuentosUnidades[0].acondicionamiento
-                  )
-                : formatearMonto(0)
-            }}
-          </td>
-          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
-            {{
-              props.row.descuentosUnidadesSeminuevos?.length > 0
-                ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0].acondicionamiento
-                  )
-                : formatearMonto(0)
-            }}
-          </td>
-        </template>
-
-        <template v-slot:body-cell-gestorias="props">
-          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
-            {{
-              props.row.descuentosUnidades?.length > 0
-                ? formatearMonto(props.row.descuentosUnidades[0].gestorias)
-                : formatearMonto(0)
-            }}
-          </td>
-          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
-            {{
-              props.row.descuentosUnidadesSeminuevos?.length > 0
-                ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0].gestorias
-                  )
-                : formatearMonto(0)
-            }}
-          </td>
-        </template>
-
-        <template v-slot:body-cell-toma_unidad="props">
-          <td v-if="departamentoSeleccionado.label === 'NUEVAS'">
-            {{
-              props.row.descuentosUnidades?.length > 0
-                ? formatearMonto(props.row.descuentosUnidades[0].toma_unidad)
-                : formatearMonto(0)
-            }}
-          </td>
-          <td v-else-if="departamentoSeleccionado.label === 'SEMINUEVOS'">
-            {{
-              props.row.descuentosUnidadesSeminuevos?.length > 0
-                ? formatearMonto(
-                    props.row.descuentosUnidadesSeminuevos[0].toma_unidad
-                  )
-                : formatearMonto(0)
-            }}
-          </td>
         </template>
 
         <template v-slot:top>
@@ -294,7 +99,7 @@
                 outlined
                 dense
                 :disable="cargando"
-                :options="departamentos"
+                :options="departamentosFiltrados"
                 v-model="departamentoSeleccionado"
                 @update:model-value="filtrarFacturas"
                 map-options
@@ -342,7 +147,6 @@ import { useEmpresasStore } from "src/stores/catalogos/empresas";
 import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
 import { useComisionesStore } from "src/stores/catalogos/comisionesUnidades";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
-import { filtrarElementos } from "src/helpers/filtros";
 import { formatearFecha } from "src/helpers/formatearFecha";
 import { listaMeses, listaAnios, listaQuincenas } from "src/helpers/listas";
 import { formatearCapitalCase, formatearMonto } from "src/helpers/formatos";
@@ -370,7 +174,7 @@ export default {
 
     const useDepartamentos = useDepartamentosStore();
     const { obtenerDepartamentos } = useDepartamentos;
-    const { departamentos, departamentoSeleccionado } =
+    const { departamentos, departamentosFiltrados, departamentoSeleccionado } =
       storeToRefs(useDepartamentos);
 
     const useComisiones = useComisionesStore();
@@ -420,67 +224,73 @@ export default {
       {
         name: "previa",
         label: "Previa",
-        align: "left",
-        sortable: true,
+        align: "center",
+        field: (row) => formatearMonto(row.descuentos.previa),
       },
       {
         name: "traslado",
         label: "Traslado",
-        align: "left",
-        sortable: true,
+        align: "center",
+        field: (row) => formatearMonto(row.descuentos.traslado),
       },
       {
         name: "descVentas",
         label: "Desc/Ventas",
-        align: "left",
-        sortable: true,
+        align: "center",
+        field: (row) => formatearMonto(row.descuentos.descVentas),
       },
       {
         name: "gasolina",
         label: "Gasolina",
-        align: "left",
-        sortable: true,
+        align: "center",
+        field: (row) => formatearMonto(row.descuentos.gasolina),
       },
       {
         name: "bonoub",
         label: "Bono U.B.",
-        align: "left",
-        sortable: true,
+        align: "center",
+        field: (row) => formatearMonto(row.descuentos.bonoub),
       },
       {
         name: "garantia_extendida",
         label: "Garantía Extendida",
-        align: "left",
-        sortable: true,
+        align: "center",
+        field: (row) => formatearMonto(row.descuentos.garantia_extendida),
       },
       {
         name: "acondicionamiento",
         label: "Acondicionamiento",
-        align: "left",
-        sortable: true,
+        align: "center",
+        field: (row) => formatearMonto(row.descuentos.acondicionamiento),
       },
       {
         name: "gestorias",
         label: "Gestorías",
-        align: "left",
-        sortable: true,
+        align: "center",
+        field: (row) => formatearMonto(row.descuentos.gestorias),
       },
       {
         name: "toma_unidad",
         label: "Toma Unidad",
-        align: "left",
-        sortable: true,
+        align: "center",
+        field: (row) => formatearMonto(row.descuentos.toma_unidad),
       },
       {
         name: "cortesia",
         label: "Cortesia",
-        align: "left",
-        sortable: true,
+        align: "center",
+        field: (row) => formatearMonto(row.descuentos.cortesia),
+      },
+      {
+        name: "gastoFinanciero",
+        label: "Gasto Financiero",
+        align: "center",
+        field: (row) => formatearMonto(row.descuentos.gastoFinanciero),
       },
       {
         name: "acciones",
+        label: "Acciones",
         align: "left",
-        sortable: true,
       },
     ];
 
@@ -505,7 +315,7 @@ export default {
       //Declaro la primera empresa, sucursal y departamento
       empresaSeleccionada.value = opcionesEmpresas.value[0];
       sucursalSeleccionada.value = opcionesSucursales.value[0].value;
-      departamentoSeleccionado.value = departamentos.value[0];
+      departamentoSeleccionado.value = departamentosFiltrados.value[0];
       grupoEmpresas.value = [empresaSeleccionada.value.claveEmpresa];
 
       await filtrarEmpresas();
@@ -519,33 +329,13 @@ export default {
     });
 
     const filtrarEmpresas = async () => {
-      objComisionesInit.value = {
-        claveEmpresa: empresaSeleccionada.value.value.claveEmpresa,
-        condicion: departamentoSeleccionado.value.value.nombreDepartamento,
-        quincena: obtenerNumeroQuincena(quincenaSeleccionada.value),
-        mes: obtenerNumerosDeMes(mesSeleccionado.value),
-        anio: anioSeleccionado.value,
-      };
-
-      await obtenerComisionesUnidades(objComisionesInit.value);
       grupoEmpresas.value = [empresaSeleccionada.value.claveEmpresa];
-      //TODAS LAS SUCURSALES PERTENECIENTES A LA EMPRESA
-      // opcionesSucursales.value = filtrarElementos(
-      //   grupoEmpresas,
-      //   sucursales,
-      //   "claveEmpresa"
-      // ).map((sucursal) => {
-      //   return {
-      //     label: formatearCapitalCase(sucursal.nombreSucursal),
-      //     value: { ...sucursal },
-      //   };
-      // });
     };
 
     const filtrarFacturas = async () => {
       objComisionesInit.value = {
         claveEmpresa: empresaSeleccionada.value.value.claveEmpresa,
-        condicion: departamentoSeleccionado.value.value.nombreDepartamento,
+        condicion: departamentoSeleccionado.value.label.toLowerCase(),
         quincena: obtenerNumeroQuincena(quincenaSeleccionada.value),
         mes: obtenerNumerosDeMes(mesSeleccionado.value),
         anio: anioSeleccionado.value,
@@ -554,7 +344,8 @@ export default {
       await obtenerComisionesUnidades(objComisionesInit.value);
 
       comisionesFiltradas.value = comisionesUnidades.value.filter(
-        (factura) => factura.id_plaza === sucursalSeleccionada.value.idErp
+        (factura) =>
+          factura.claveSucursal === sucursalSeleccionada.value.abreviacion
       );
     };
 
@@ -597,6 +388,7 @@ export default {
       expanded: ref(true),
       agregarDescuentos,
       modalDescuento,
+      departamentosFiltrados,
     };
   },
 };
