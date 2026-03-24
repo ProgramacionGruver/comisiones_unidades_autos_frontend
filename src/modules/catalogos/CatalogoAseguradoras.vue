@@ -112,23 +112,23 @@ export default {
 
     const columns = [
       {
-        name: "id_catalogo_aseguradoras",
+        name: "idAseguradora",
         label: "ID",
         align: "center",
-        field: "id_catalogo_aseguradoras",
+        field: "idAseguradora",
         sortable: true,
       },
       {
-        name: "nombre_aseguradora",
+        name: "nombreAseguradora",
         label: "Nombre",
         align: "center",
-        field: "nombre_aseguradora",
+        field: "nombreAseguradora",
       },
       {
-        name: "nombre_corto",
+        name: "nombreCorto",
         label: "Nombre Corto",
         align: "center",
-        field: "nombre_corto",
+        field: "nombreCorto",
       },
       {
         name: "estatus",

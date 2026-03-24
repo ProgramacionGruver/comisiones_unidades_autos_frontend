@@ -73,19 +73,6 @@ export const useFacturasStore = defineStore("facturas", () => {
       cargando.value = true;
       facturaSeleccionada.value = [];
 
-      //ARMO LOS OBJETOS DE BÚSQUEDA
-      const ObjBusquedaGasto = {
-        claveEmpresa: empresaSeleccionada.value.value.claveEmpresa,
-        claveSucursal: sucursalSeleccionada.value.abreviacion,
-        claveDepartamento:
-          departamentoSeleccionado.value.value.claveDepartamento,
-        fecha: formatoFecha(
-          obtenerNumeroQuincena(quincenaSeleccionada.value),
-          obtenerNumerosDeMes(mesSeleccionado.value),
-          anioSeleccionado.value
-        ),
-      };
-
       const ObjBusquedaFacturas = {
         claveEmpresa: empresaSeleccionada.value.value.claveEmpresa,
         quincena: obtenerNumeroQuincena(quincenaSeleccionada.value),
@@ -93,113 +80,22 @@ export const useFacturasStore = defineStore("facturas", () => {
         anio: anioSeleccionado.value,
       };
 
-      const ObjComisiones = {
-        claveEmpresa: empresaSeleccionada.value.value.claveEmpresa,
-        condicion: departamentoSeleccionado.value.value.nombreDepartamento,
-        quincena: obtenerNumeroQuincena(quincenaSeleccionada.value),
-        mes: obtenerNumerosDeMes(mesSeleccionado.value),
-        anio: anioSeleccionado.value,
-      };
-
-      //OBTENGO GASTO FINANCIERO
-      // await obtenerGastoFinanciero(ObjBusquedaGasto);
-
-      // if (gastoFinancieroSeleccionado.value) {
       //OBTENGO FACTURAS DEL ERP
-      if (departamentoSeleccionado.value.value.claveDepartamento === "NUE") {
+      if (departamentoSeleccionado.value.claveDepartamento === "NUE") {
         const { data } = await api.post(
           "/facturas/unidades/autos/nuevos",
           ObjBusquedaFacturas
         );
-        facturasFiltradas.value = [...data];
+        facturas.value = [...data];
+        facturasFiltrada.value = [...data];
       } else {
         const { data } = await api.post(
           "/facturas/unidades/autos/seminuevos",
           ObjBusquedaFacturas
         );
+        facturas.value = [...data];
         facturasFiltradas.value = [...data];
       }
-
-      //OBTENGO FACTURAS DEL SISTEMA
-      await obtenerComisionesUnidades(ObjComisiones);
-
-      //FILTRAR ELEMENTOS QUE YA ESTEN REGISTRADOS
-      filtro.value = facturasFiltradas.value;
-      // filtro.value = facturasFiltradas.value.filter((factura) => {
-      //   return !comisionesUnidades.value.some(
-      //     (comision) => comision.factura === factura.factura
-      //   );
-      // });
-
-      if (filtro.value.length === 0) {
-        notificacion("warning", "No hay facturas para registrar");
-        filtro.value = [];
-        facturas.value = [];
-        return;
-      }
-
-      // if (registrosEnviados.value.length > 0) {
-      //   filtro.value = [
-      //     ...comisionesUnidades.value.filter(
-      //       (comision) =>
-      //         !facturasFiltradas.value.some(
-      //           (factura) => factura.factura === comision.factura
-      //         )
-      //     ),
-      //     ...facturasFiltradas.value.filter(
-      //       (factura) =>
-      //         !comisionesUnidades.value.some(
-      //           (comision) => comision.factura === factura.factura
-      //         )
-      //     ),
-      //   ];
-      // } else {
-      //   filtro.value = [
-      //     ...facturasFiltradas.value.filter(
-      //       (factura) =>
-      //         !comisionesUnidades.value.some(
-      //           (comision) => comision.factura === factura.factura
-      //         )
-      //     ),
-      //   ];
-      // }
-
-      //CALCULO UTILIDAD, GASTO FINANCIERO Y PORCENTAJE
-      facturas.value = filtro.value.map((factura) => {
-        // const costoFactura = parseFloat(factura.costo);
-        // const tasaInteres = parseFloat(
-        //   gastoFinancieroSeleccionado.value.tasaInteres
-        // );
-        // const facturaUtilidad = parseFloat(factura.utilidad);
-        // const multiplicacion = parseFloat(costoFactura * tasaInteres);
-        // const dividir = parseFloat(multiplicacion / 360);
-        // const gastoFinanciero = parseFloat(dividir * 60);
-        // const utilidadCalculada = parseFloat(facturaUtilidad - gastoFinanciero);
-        // const porcentaje = parseFloat(utilidadCalculada / costoFactura);
-
-        if (departamentoSeleccionado.value.value.claveDepartamento === "NUE") {
-          factura.condicion = "nuevas";
-        } else {
-          factura.condicion = "seminuevos";
-        }
-
-        return {
-          ...factura,
-          // utilidadCalculada: utilidadCalculada,
-          // gastoFinanciero: gastoFinanciero,
-          // porcentaje: porcentaje,
-          usuario: usuarioAutenticado.value.usuario,
-          fecha_creacion: fecha,
-        };
-      });
-
-      valoresUnicosSucursal.value = facturas.value
-        .map((factura) => factura.id_plaza)
-        .filter((valor, index, self) => self.indexOf(valor) === index);
-      // } else {
-      //   cargando.value = false;
-      //   facturas.value = null;
-      // }
     } catch (error) {
       console.log(error);
     } finally {
@@ -245,24 +141,8 @@ export const useFacturasStore = defineStore("facturas", () => {
 
   const obtenerVendedores = async () => {
     try {
-      const { data } = await api.get("/vendedores/unidades/autos");
+      const { data } = await api.get("/unidades/asesores");
       vendedores.value = [...data];
-
-      // if (
-      //   perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
-      //   "AUXILIAR NUEVAS"
-      // ) {
-      //   vendedores.value = vendedores.value.filter((vendedor) => {
-      //     return vendedor.claveDepartamento === "NUE";
-      //   });
-      // } else if (
-      //   perfilUsuario.value.catalogo_perfiles_comisiones_auto.nombrePerfil ===
-      //   "AUXILIAR SEMINUEVAS"
-      // ) {
-      //   vendedores.value = vendedores.value.filter((vendedor) => {
-      //     return vendedor.claveDepartamento === "SEM";
-      //   });
-      // }
 
       //Opciones departamentos
       opcionesVendedores.value = vendedores.value.map((vendedor) => {
@@ -367,7 +247,7 @@ export const useFacturasStore = defineStore("facturas", () => {
 
   const obtenerFacturasSeminuevosSistemas = async (busquedaObj) => {
     try {
-      const { data } = await api.post("/facturas/unidades/autos/seminuevos/sistema", busquedaObj);
+      const { data } = await api.post("/facturas/unidades/bonoSeminuevos", busquedaObj);
 
       facturasSeminuevosSistema.value = data;
     } catch (error) {
@@ -381,7 +261,7 @@ export const useFacturasStore = defineStore("facturas", () => {
         (factura) => factura.idFactura === objBonoFijo.idFactura
       );
 
-      const { data } = await api.post("/bonos/fijos", objBonoFijo);
+      const { data } = await api.post("/facturas/unidades/bonoSeminuevos/agregarActualizar", objBonoFijo);
 
       facturasSeminuevosSistema.value[index] = data;
       notificacion("positive", "Bono fijo agregado correctamente");
@@ -406,7 +286,7 @@ export const useFacturasStore = defineStore("facturas", () => {
         (factura) => factura.idFactura === objBonoFijo.idFactura
       );
 
-      const { data } = await api.post("/bonos/fijos/revertir", objBonoFijo);
+      const { data } = await api.post("/facturas/unidades/bonoSeminuevos/revertir", objBonoFijo);
 
       facturasSeminuevosSistema.value[index] = data;
       notificacion("positive", "Bono fijo eliminado correctamente");

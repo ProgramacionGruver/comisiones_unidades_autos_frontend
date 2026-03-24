@@ -142,16 +142,16 @@ const routes = [
             /* webpackChunkName: "dashboard" */ "src/modules/autorizaciones/AutorizacionesComisiones.vue"
           ),
       },
-      {
-        path: "kpis",
-        icono: "checklist",
-        label: "Catálogo KPIS",
-        name: "catalogoKpis",
-        component: () =>
-          import(
-            /* webpackChunkName: "dashboard" */ "src/modules/catalogos/PanelKpis.vue"
-          ),
-      },
+      // {
+      //   path: "kpis",
+      //   icono: "checklist",
+      //   label: "Catálogo KPIS",
+      //   name: "catalogoKpis",
+      //   component: () =>
+      //     import(
+      //       /* webpackChunkName: "dashboard" */ "src/modules/catalogos/PanelKpis.vue"
+      //     ),
+      // },
       {
         path: "catalogoAsesores",
         icono: "group",
@@ -162,16 +162,16 @@ const routes = [
             /* webpackChunkName: "dashboard" */ "src/modules/catalogos/CatalogoAsesores.vue"
           ),
       },
-      {
-        path: "catalogoAutorizadoresJefes",
-        icono: "group",
-        label: "Catálogo de Autorizadores",
-        name: "catalogoAutorizadoresJefes",
-        component: () =>
-          import(
-            /* webpackChunkName: "dashboard" */ "src/modules/catalogos/CatalogoAutorizadores.vue"
-          ),
-      },
+      // {
+      //   path: "catalogoAutorizadoresJefes",
+      //   icono: "group",
+      //   label: "Catálogo de Autorizadores",
+      //   name: "catalogoAutorizadoresJefes",
+      //   component: () =>
+      //     import(
+      //       /* webpackChunkName: "dashboard" */ "src/modules/catalogos/CatalogoAutorizadores.vue"
+      //     ),
+      // },
       {
         path: "catalogoAseguradoras",
         icono: "shield",
@@ -195,16 +195,15 @@ const routes = [
     ],
   },
   {
-    path: "/autorizacion/vendedor/:idAsesor/:mes/:anio/:idAutorizacion",
-    name: "autorizacionVendedor",
-    component: () =>
-      import("src/modules/autorizaciones/AutorizacionVendedor.vue"),
+    path: "/loginAutorizaciones/:idAsesor/:mes/:anio/:idAutorizacion",
+    name: "loginAutorizacion",
+    component: () => import("src/pages/LoginAutorizacion.vue"),
   },
   {
-    path: "/autorizacion/jefe/:idAsesor/:mes/:anio/:idAutorizacion",
-    name: "autorizacionJefe",
+    path: "/autorizacionComision/:idAsesor/:mes/:anio/:idAutorizacion",
+    name: "autorizacion",
     component: () =>
-      import("src/modules/autorizaciones/AutorizacionJefeVentas.vue"),
+      import("src/modules/autorizaciones/AutorizacionVista.vue"),
   },
   {
     path: "/:catchAll(.*)*",

@@ -75,9 +75,8 @@ export const useKpiStore = defineStore("kpi", () => {
 
   const obtenerComisionVendedor = async (objKpi) => {
     try {
-      const { data } = await api.post("/comision/vendedor", objKpi);
+      const { data } = await api.post("/unidades/comision", objKpi);
       comisionVendedor.value = data;
-      await configurarTablaComision();
     } catch (error) {
       notificacion("negative", error.response.data.message);
     }
@@ -677,7 +676,7 @@ export const useKpiStore = defineStore("kpi", () => {
         objKpi
       );
 
-      valoresRealesKpis.value = [...valoresRealesKpis.value, data];
+      valoresRealesKpis.value.push(data);
       notificacion("positive", "Valores reales insertados");
     } catch (error) {
       console.log(error);
@@ -1146,7 +1145,7 @@ export const useKpiStore = defineStore("kpi", () => {
 
   const obtenerInfoVendedor = async (idAsesor) => {
     try {
-      const { data } = await api.get(`/asesor/autos/${idAsesor}`);
+      const { data } = await api.get(`/unidades/asesores/info/${idAsesor}`);
 
       informacionVendedor.value = data;
     } catch (error) {

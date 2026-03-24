@@ -51,7 +51,7 @@ export const obtenerNumeroMes = (mes) => meses.indexOf(mes) + 1;
 
 export const obtenerNumerosDeMes = (mes) => {
   const numeroMes = meses.indexOf(mes) + 1;
-  return numeroMes.toString().padStart(2, "0");
+  return numeroMes;
 };
 
 export const obtenerNumeroQuincena = (quincena) =>

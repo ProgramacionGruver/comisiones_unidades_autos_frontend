@@ -35,21 +35,6 @@
               style="width: 100%"
             />
           </div>
-          <!-- <div>
-            <label>Seleccione una sucursal</label>
-            <q-select
-              v-model="sucursalSeleccionada"
-              :options="opcionesSucursales"
-              label="Sucursal"
-              emit-value
-              map-options
-              option-value="value"
-              option-label="label"
-              dense
-              outlined
-              @update:model-value="obtenerFormulario"
-            />
-          </div> -->
         </div>
         <div
           v-if="!habilitarFormulario"
@@ -89,10 +74,7 @@
                 min="0"
                 dense
                 outlined
-                :disable="
-                  objetivo.nombreKpi.includes('objetivo de ventas') ||
-                  objetivo.nombreKpi.includes('seminuevos')
-                "
+                :disable="objetivo.bloquearFormulario"
               />
             </div>
           </template>
@@ -188,7 +170,6 @@ export default {
         });
 
         const obj = {
-          claveDepartamento: empleadoSeleccionado.value.claveDepartamento,
           idAsesor: empleadoSeleccionado.value.idAsesor,
           anio: anioSeleccionado.value,
           mes: obtenerNumerosDeMes(mesSeleccionado.value),
@@ -196,9 +177,11 @@ export default {
 
         await obtenerObjetivosFormulario(obj);
 
-        // for (const objetivo of obtjetivosFormulario.value) {
-        //   objetivo.valorReal = 0;
-        // }
+        for (const objetivo of obtjetivosFormulario.value) {
+          if (!objetivo.valorReal) {
+            objetivo.valorReal = 0;
+          }
+        }
 
         habilitarFormulario.value = true;
         $q.loading.hide();

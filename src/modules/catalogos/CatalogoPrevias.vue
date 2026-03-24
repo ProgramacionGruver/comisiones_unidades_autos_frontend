@@ -15,13 +15,13 @@
       >
         <template v-slot:top>
           <div class="fit row q-gutter-md">
-            <q-btn
+            <!-- <q-btn
               color="primary"
               label="Registrar Previa"
               @click="registrarPrevia"
               icon="add"
               class="col-auto"
-            />
+            /> -->
             <q-input
               v-model="buscar"
               debounce="300"
@@ -99,12 +99,12 @@ export default {
             currency: "MXN",
           }),
       },
-      {
-        name: "acciones",
-        label: "Acciones",
-        align: "center",
-        field: "acciones",
-      },
+      // {
+      //   name: "acciones",
+      //   label: "Acciones",
+      //   align: "center",
+      //   field: "acciones",
+      // },
     ];
 
     const modalPrevias = ref(null);

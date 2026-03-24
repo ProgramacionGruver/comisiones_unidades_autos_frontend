@@ -1,61 +1,52 @@
-import { defineStore } from "pinia";
-import { api } from "src/boot/axios.js";
-import { ref } from "vue";
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import { apiUsuarios } from 'src/boot/axiosUsuarios'
+import { filtrarElementosDuplicados, llenarOpcionesDepartamentos } from 'src/helpers/filtros'
 
-export const useDepartamentosStore = defineStore("departamentos", () => {
-  const departamentos = ref([]);
-  const departamentosFiltrados = ref([]);
-  const departamentoSeleccionado = ref([]);
+export const useDepartamentosStore = defineStore('departamentos', () => {
+  const departamentos = ref([])
+  const departamentoSeleccionado = ref(null)
+  const departamentosFiltrados = ref([])
+  const modelDepartamentosSeleccionados = ref([])
+  const todosDepartamentosSeleccionados = ref(true)
+  const opcionesDepartamentos = ref([])
+  const listaClavesDepartamentos = ref([])
 
-  const obtenerDepartamentos = async (perfilUsuario = null) => {
+  const obtenerDepartamentos = async () => {
     try {
-      const { data } = await api.get("/departamentos");
+      const { data } = await apiUsuarios.get('/departamentosSucursal')
+      departamentos.value = data
+        .filter((departamento) => departamento.sucursale.claveEmpresa == 'CH' && (departamento.claveDepartamento == 'NUE' || departamento.claveDepartamento == 'SEM'))
+        .map(departamento => {
+          return {
+            ...departamento,
+            label: departamento.departamento.nombreDepartamento,
+            value: departamento.claveDepartamento
+          }
+        })
+        .sort((a, b) => {
+          const prioridad = { NUE: 0, SEM: 1 }
+          return prioridad[a.claveDepartamento] - prioridad[b.claveDepartamento]
+        })
 
-      //Departamentos
-      let departamento = data.filter((departamento) => {
-        return (
-          departamento.claveDepartamento === "NUE" ||
-          departamento.claveDepartamento === "SEM"
-        );
-      });
+      departamentosFiltrados.value = filtrarElementosDuplicados(departamentos.value, 'claveDepartamento')
 
-      // if (perfilUsuario) {
-      //   let claveDepartamento = "";
-
-      //   if (
-      //     perfilUsuario.catalogo_perfiles_comisiones_auto.nombrePerfil ===
-      //     "AUXILIAR NUEVAS"
-      //   ) {
-      //     claveDepartamento = "NUE";
-      //   } else if (
-      //     perfilUsuario.catalogo_perfiles_comisiones_auto.nombrePerfil ===
-      //     "AUXILIAR SEMINUEVAS"
-      //   ) {
-      //     claveDepartamento = "SEM";
-      //   }
-
-      //   departamento = departamento.filter((departamento) => {
-      //     return departamento.claveDepartamento === claveDepartamento;
-      //   });
-      // }
-
-      departamentosFiltrados.value = [...departamento];
-
-      //Opciones departamentos
-      departamentos.value = departamentosFiltrados.value.map((departamento) => {
-        return {
-          label: `${departamento.nombreDepartamento}`,
-          value: departamento,
-        };
-      });
+      listaClavesDepartamentos.value = departamentosFiltrados.value.map(departamento => {
+        return departamento.value
+      })
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   return {
     departamentos,
-    departamentoSeleccionado,
+    departamentosFiltrados,
+    modelDepartamentosSeleccionados,
+    todosDepartamentosSeleccionados,
+    opcionesDepartamentos,
+    listaClavesDepartamentos,
     obtenerDepartamentos,
-  };
-});
+    departamentoSeleccionado
+  }
+})

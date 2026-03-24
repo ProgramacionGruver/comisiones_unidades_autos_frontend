@@ -63,41 +63,6 @@
           </div>
         </template>
 
-        <template v-slot:body-cell-nivel="props">
-          <td
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <q-chip
-              v-if="props.row.nivel === 'oro'"
-              label="ORO"
-              color="orange"
-              text-color="white"
-              class="text-bold"
-            />
-            <q-chip
-              v-else-if="props.row.nivel === 'plata'"
-              label="PLATA"
-              color="grey"
-              text-color="white"
-              class="text-bold"
-            />
-            <q-chip
-              v-else-if="props.row.nivel === 'bronce'"
-              label="BRONCE"
-              color="brown"
-              text-color="white"
-              class="text-bold"
-            />
-            <q-chip
-              v-else-if="props.row.nivel === 'asesor'"
-              label="ASESOR"
-              color="green"
-              text-color="white"
-              class="text-bold"
-            />
-          </td>
-        </template>
-
         <template v-slot:body-cell-acciones="props">
           <q-td>
             <div
@@ -168,11 +133,6 @@ export default {
         label: "Correo",
         align: "center",
         field: "correo",
-      },
-      {
-        name: "nivel",
-        label: "Nivel",
-        align: "center",
       },
       {
         name: "acciones",

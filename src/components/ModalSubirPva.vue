@@ -98,26 +98,6 @@
               </div>
             </div>
             <div>
-              <!-- <div>
-                <label>Monto financiado</label>
-              </div>
-              <div class="row justify-around">
-                <q-input
-                  outlined
-                  dense
-                  label="Monto financiado"
-                  v-model="objPva.monto_financiado"
-                  type="number"
-                  :rules="[(val) => !!val || 'Se requiere llenar este campo']"
-                  style="width: 100%"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="paid" />
-                  </template>
-                </q-input>
-              </div> -->
-            </div>
-            <div>
               <div>
                 <label>Garantía</label>
               </div>
@@ -288,7 +268,6 @@ export default {
       quincenaSeleccionada,
       opcionesClientes,
       opcionesVendedores,
-      opcionesVendedoresJefes,
     } = storeToRefs(useFacturas);
 
     const useSucursales = useSucursalesStore();
@@ -308,11 +287,11 @@ export default {
     const formulario = ref(null);
     const opcionesSucursales = ref([]);
 
-    const opcionesEmpleados = ref(opcionesVendedoresJefes.value);
+    const opcionesEmpleados = ref(opcionesVendedores.value);
     const opcionesCliente = ref(opcionesClientes.value);
     const opcionesAseguradoras = ref(
       aseguradoras.value.map((aseguradora) => {
-        return aseguradora.nombre_corto;
+        return aseguradora.nombreCorto;
       })
     );
 
@@ -368,7 +347,7 @@ export default {
       filtradoBusquedaObj(
         val,
         update,
-        opcionesVendedoresJefes.value,
+        opcionesVendedores.value,
         opcionesEmpleados
       );
     };
@@ -389,14 +368,11 @@ export default {
         objPva.value.on_star_gap = gapsSeleccionados.value.join(" / ");
       }
 
-      objPva.value.nombreEmpleado =
-        vendedorSeleccionado.value.value.nombre.toUpperCase();
       objPva.value.numeroEmpleado =
         vendedorSeleccionado.value.value.numeroEmpleado;
       objPva.value.cliente = clienteSeleccionado.value.value.cliente;
       objPva.value.fi = sucursalSeleccionada.value.value.abreviacion;
       objPva.value.usuario = usuarioAutenticado.value.usuario;
-      objPva.value.quincena = obtenerNumeroQuincena(quincenaSeleccionada.value);
       objPva.value.mes = obtenerNumerosDeMes(mesSeleccionado.value);
       objPva.value.anio = anioSeleccionado.value;
       objPva.value.garantia = objPva.value.garantia ? "SI" : "NO";

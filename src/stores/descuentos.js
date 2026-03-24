@@ -11,6 +11,8 @@ export const useDescuentosStore = defineStore("descuentos", () => {
 
   const planPisoRegistrados = ref([]);
 
+  const formulario = ref([])
+
   const obtenerTodosDescuentosVendedores = async () => {
     try {
       const { data } = await api.get("/descuentos/vendedores");
@@ -21,16 +23,14 @@ export const useDescuentosStore = defineStore("descuentos", () => {
     }
   };
 
-  const obtenerDescuentosVendedoresByFechas = async (
+  const obtenerDescuentosVendedores = async (
     mes,
     anio,
-    claveDepartamento
   ) => {
     try {
-      const { data } = await api.post("/descuentos/vendedores/fecha", {
+      const { data } = await api.post("/unidades/asesores/descuentos", {
         mes,
         anio,
-        claveDepartamento,
       });
 
       descuentos.value = [...data];
@@ -53,10 +53,17 @@ export const useDescuentosStore = defineStore("descuentos", () => {
 
   const guardarNuevoDescuentoVendedor = async (descuento) => {
     try {
-      const { data } = await api.post("/descuentos/vendedores", descuento);
+      const { data } = await api.post("/unidades/asesores/descuentos/guardar", descuento);
 
-      descuentoCreado.value = data;
-      descuentos.value.push(data);
+      const index = descuentos.value.findIndex(
+        (d) => d.numeroEmpleado === data.numeroEmpleado
+      );
+
+      if (index !== -1) {
+        descuentos.value[index] = data;
+      } else {
+        descuentos.value = [...descuentos.value, data];
+      }
 
       notificacion("positive", "Descuento guardado correctamente");
       return;
@@ -111,6 +118,16 @@ export const useDescuentosStore = defineStore("descuentos", () => {
     }
   };
 
+  const obtenerFormularioByDepartamento = async (claveDepartamento) => {
+    try {
+      const { data } = await api.get(`/unidades/asesores/formulario/${claveDepartamento}`);
+
+      formulario.value = [...data];
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return {
     // States / Vars
     descuentos,
@@ -118,14 +135,16 @@ export const useDescuentosStore = defineStore("descuentos", () => {
     formularioDescuento,
     descuentoCreado,
     planPisoRegistrados,
+    formulario,
     // Methods
     obtenerTodosDescuentosVendedores,
-    obtenerDescuentosVendedoresByFechas,
+    obtenerDescuentosVendedores,
     obtenerDetalleDescuentoVendedor,
     guardarNuevoDescuentoVendedor,
     actualizarDescuentoVendedor,
     obtenerFormularioDescuento,
     obtenerPlanPisoRegistrados,
     guardarPlanPiso,
+    obtenerFormularioByDepartamento
   };
 });

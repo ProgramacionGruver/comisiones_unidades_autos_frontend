@@ -28,12 +28,12 @@ export const useAseguradorasStore = defineStore("aseguradoras", () => {
   const editarAseguradora = async (aseguradora) => {
     try {
       const { data } = await api.put(
-        `/catalogo/aseguradoras/${aseguradora.id_catalogo_aseguradoras}`,
+        `/catalogo/aseguradoras/${aseguradora.id_catalogo_aseguradora}`,
         aseguradora
       );
       const index = aseguradoras.value.findIndex(
         (item) =>
-          item.id_catalogo_aseguradoras === data.id_catalogo_aseguradoras
+          item.idAseguradora === data.idAseguradora
       );
 
       aseguradoras.value[index] = data;

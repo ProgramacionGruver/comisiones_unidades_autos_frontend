@@ -94,27 +94,13 @@ export default {
 
       try {
         await guardarFacturas(facturasFiltrada.value);
-        await realizarTareaAsincrona();
         $q.loading.hide();
       } catch (error) {
         console.error("Error:", error);
         $q.loading.hide();
       }
-      facturasFiltrada.value = [];
-      facturas.value = facturas.value.filter(
-        (factura) =>
-          factura.id_plaza != sucursalSeleccionada.value.idContabilidad
-      );
-      abrirModal.value = false;
-    };
 
-    const realizarTareaAsincrona = async () => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          console.log("Tarea asincrónica completa");
-          resolve();
-        }, 1000);
-      });
+      abrirModal.value = false;
     };
 
     return {

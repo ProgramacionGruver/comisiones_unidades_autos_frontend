@@ -5,46 +5,50 @@
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          <q-avatar class="logo-inicio">
-            <img src="../img/logog.png" />
+          <q-avatar class="logo-inicio bg-white">
+            <img src="../img/logog.png" class="q-pa-xs" />
           </q-avatar>
-          Portal Comisiones Unidades
+          Portal Comisiones Unidades (Autos)
         </q-toolbar-title>
-        <q-btn flat @click="logout">Cerrar Sesión</q-btn>
+        <q-btn flat @click="logout"> Cerrar sesión</q-btn>
       </q-toolbar>
     </q-header>
 
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
-      <!-- drawer content -->
-      <div class="row justify-center contenedor-menu">
-        <q-img src="https://backend.gruver.com.mx/componentes/navbar-19.webp" id="target-img-1" style="height: 100px">
-          <div
-            class="absolute-bottom-right"
-            style="border-top-left-radius: 5px"
-          >
-            <q-avatar class="avatar">
-              <!-- <img src="../img/yo.png" /> -->
-              {{ inicialesUsuarios || null }}
-              <!-- {{ usuarioAutenticado?.nombre }} -->
-              <span style="font-weight: bold"></span>
+    <q-drawer
+      show-if-above
+      v-model="leftDrawerOpen"
+      side="left"
+      bordered
+      :width="270"
+    >
+      <div class="contenedor-perfil">
+        <div
+          style="background-color: rgba(0, 0, 0, 0.5)"
+          class="q-px-md q-py-sm"
+        >
+          <div style="display: flex; justify-content: center">
+            <q-avatar size="7rem">
+              <q-img
+                :src="calcularURLFoto(usuarioAutenticado?.numero_empleado)"
+                spinner-color="white"
+              />
             </q-avatar>
-            {{ usuarioAutenticado?.nombre }}
-            <span style="font-weight: bold"></span>
           </div>
-        </q-img>
+          <div style="display: flex; justify-content: center">
+            {{ usuarioAutenticado?.nombre }}
+          </div>
+        </div>
       </div>
       <NavBar></NavBar>
     </q-drawer>
-
     <q-page-container>
-      <router-view></router-view>
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
 import { ref, onMounted, computed } from "vue";
-import NavBar from "../components/NavBar.vue";
 import { storeToRefs } from "pinia";
 import { useAutenticacionStore } from "../stores/autenticaciones";
 import { useRouter } from "vue-router";
@@ -53,11 +57,8 @@ import { useEmpresasStore } from "src/stores/catalogos/empresas";
 import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
 import { useAseguradorasStore } from "src/stores/catalogos/aseguradoras";
-import { useKpiStore } from "src/stores/catalogos/kpis";
-import { useAutorizacionesStore } from "src/stores/autorizaciones";
-import { useModulosStore } from "src/stores/permisosModulos";
-import { ID_SERVIDOR } from "src/constant/servidor";
-//import { useDashboardStore } from "../stores/dashboard";
+
+import NavBar from "../components/NavBar.vue";
 
 export default {
   components: {
@@ -86,21 +87,12 @@ export default {
     const useAseguradoras = useAseguradorasStore();
     const { obtenerCatalogoAseguradoras } = useAseguradoras;
 
-    const useAutorizaciones = useAutorizacionesStore();
-    const { obtenerAutorizadores } = useAutorizaciones;
-
-    const useModulos = useModulosStore();
-    const { obtenerUsuariosModulo } = useModulos;
-
     onMounted(async () => {
       await obtenerEmpresas();
       await obtenerSucursales();
       await obtenerDepartamentos();
       await obtenerVendedores();
       await obtenerCatalogoAseguradoras();
-      // await obtenerClientes();
-      await obtenerAutorizadores();
-      // await obtenerUsuariosModulo(ID_SERVIDOR);
     });
 
     const logout = () => {
@@ -108,24 +100,20 @@ export default {
       cerrarSesion();
     };
 
-    const inicialesUsuarios = computed(() => {
-      const nombreArray = usuarioAutenticado?.value?.nombre.split(" ");
-      if (!nombreArray) return;
-      const iniciales = `${nombreArray[0]?.charAt(0)}${nombreArray[1]?.charAt(
-        0
-      )}`;
-      return iniciales;
-    });
+    const calcularURLFoto = (numeroEmpleado) => {
+      const idFormateado = String(numeroEmpleado).padStart(7, "0");
+      const url = `https://backend.gruver.com.mx/rh/api/fotos/${idFormateado}.jpg`;
+      return url;
+    };
 
     return {
       leftDrawerOpen,
-      // inicialesUsuario,
       usuarioAutenticado,
       logout,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
-      inicialesUsuarios,
+      calcularURLFoto,
     };
   },
 };

@@ -16,8 +16,23 @@
         selection="single"
         row-key="idAutorizacion"
         :pagination="pagination"
+        :filter="buscar"
       >
         <template v-slot:top>
+          <div class="fit row">
+            <q-input
+              outlined
+              dense
+              v-model="buscar"
+              label="Buscar"
+              class="q-mb-md col"
+            >
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </div>
+
           <div class="fit row q-gutter-md">
             <div class="col">
               <label>Seleccione el año</label>
@@ -90,18 +105,10 @@
             </q-td>
             <q-td v-for="col in props.cols" :key="col.name" :props="props">
               <div v-if="col.name === 'numeroEmpleado'">
-                {{
-                  props.row.autorizaciones_comisiones_autos_detalles.find(
-                    (autorizacion) => autorizacion.tipoEmpleado === "VENDEDOR"
-                  ).numeroEmpleado
-                }}
+                {{ props.row.asesore.numeroEmpleado }}
               </div>
               <div v-else-if="col.name === 'nombreEmpleado'">
-                {{
-                  props.row.autorizaciones_comisiones_autos_detalles.find(
-                    (autorizacion) => autorizacion.tipoEmpleado === "VENDEDOR"
-                  ).nombreEmpleado
-                }}
+                {{ props.row.asesore.nombreEmpleado }}
               </div>
               <div v-else-if="col.name === 'autorizaciones'">
                 <div
@@ -112,8 +119,7 @@
                   "
                 >
                   <template
-                    v-for="autorizacion in props.row
-                      .autorizaciones_comisiones_autos_detalles"
+                    v-for="autorizacion in props.row.autorizaciones_detalles"
                     :key="autorizacion.idAutorizacionDetalle"
                   >
                     <q-icon
@@ -148,21 +154,21 @@
                 >
                   <div>
                     <q-chip
-                      v-if="props.row.estatus === 0"
+                      v-if="props.row.idEstatusAutorizacion === 1"
                       color="gray"
                       text-color="black"
                       label="PENDIENTE"
                     />
 
                     <q-chip
-                      v-else-if="props.row.estatus === 1"
+                      v-else-if="props.row.idEstatusAutorizacion === 2"
                       color="green"
                       text-color="white"
                       label="AUTORIZADA"
                     />
 
                     <q-chip
-                      v-else-if="props.row.estatus === 2"
+                      v-else-if="props.row.idEstatusAutorizacion === 3"
                       color="red"
                       text-color="white"
                       label="RECHAZADA"
@@ -237,7 +243,7 @@
                 <q-card-section>
                   <q-table
                     :columns="columnsDetalles"
-                    :rows="props.row.autorizaciones_comisiones_autos_detalles"
+                    :rows="props.row.autorizaciones_detalles"
                     hide-bottom
                   >
                     <template v-slot:body-cell-tipoAutorizacion="props">
@@ -338,6 +344,8 @@ export default {
 
     const modalCopiarUrl = ref(null);
 
+    const buscar = ref("");
+
     const columns = [
       {
         name: "idAutorizacion",
@@ -349,13 +357,13 @@ export default {
         name: "numeroEmpleado",
         label: "Número de empleado",
         align: "center",
-        field: "autorizaciones_comisiones_autos_detalles",
+        field: "autorizaciones_detalles",
       },
       {
         name: "nombreEmpleado",
         label: "Nombre del empleado",
         align: "center",
-        field: "autorizaciones_comisiones_autos_detalles",
+        field: "autorizaciones_detalles",
       },
       {
         name: "folio",
@@ -478,7 +486,11 @@ export default {
     });
 
     const copiarURL = async (autorizacionObj) => {
-      modalCopiarUrl.value.abrir(autorizacionObj);
+      const url = autorizacionObj.urlComision;
+
+      await navigator.clipboard.writeText(url);
+
+      notificacion("positive", "URL copiada al portapapeles");
     };
 
     const descargarLayoutNomina = () => {
@@ -523,19 +535,17 @@ export default {
 
       const datos = autorizacionesAutorizadas.map((autorizacion) => {
         return {
-          numeroEmpleado:
-            autorizacion.autorizaciones_comisiones_autos_detalles.find(
-              (autorizacion) => autorizacion.tipoEmpleado === "VENDEDOR"
-            ).numeroEmpleado,
+          numeroEmpleado: autorizacion.autorizaciones_detalles.find(
+            (autorizacion) => autorizacion.tipoEmpleado === "VENDEDOR"
+          ).numeroEmpleado,
           idComision: "NUEVAS",
           monto: autorizacion.monto,
           totalBonos: autorizacion.totalBonos,
           numQuincenas: 2,
           fechaInicial: "",
-          nombreEmpleado:
-            autorizacion.autorizaciones_comisiones_autos_detalles.find(
-              (autorizacion) => autorizacion.tipoEmpleado === "VENDEDOR"
-            ).nombreEmpleado,
+          nombreEmpleado: autorizacion.autorizaciones_detalles.find(
+            (autorizacion) => autorizacion.tipoEmpleado === "VENDEDOR"
+          ).nombreEmpleado,
         };
       });
 
@@ -562,6 +572,7 @@ export default {
       pagination,
       cargandoCopiar,
       modalCopiarUrl,
+      buscar,
       // Methods
       obtenerAutorizaciones,
       descargarPDF,

@@ -5,9 +5,9 @@
     transition-hide="scale"
     persistent
   >
-    <q-card class="full-width">
+    <q-card style="max-width: 60vw !important; min-width: 30vw !important">
       <q-card-section class="bg-primary text-white row items-center q-pb-none">
-        <p>Nuevo descuento</p>
+        <p>{{ titulo }}</p>
         <q-space />
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
@@ -24,93 +24,104 @@
           :options="opcionesEmpleados"
           lazy-rules
           :rules="[(val) => !!val || 'Se requiere llenar este campo']"
+          @update:model-value="obtenerFormulario"
+          :disable="buscando"
         />
-        <q-input
-          v-model="fechaDescuento"
-          outlined
-          label="Fecha del descuento"
-          type="date"
-          class="q-mt-md"
-        />
-        <div style="width: 100%; display: block" class="q-mt-md">
-          <label
-            >Seleccione el departamento donde se aplicara el descuento</label
+      </q-card-section>
+      <q-card-section>
+        <div v-if="buscando" class="fit column justify-center items-center">
+          <q-spinner-ios color="primary" size="7rem" class="q-mb-md" />
+          <p>Buscando formulario...</p>
+        </div>
+        <div v-else-if="formularioFormateado.length > 0" class="fit">
+          <template
+            v-for="form in formularioFormateado"
+            :key="form.idFormularioDescuentos"
           >
-          <q-select
-            outlined
-            dense
-            :options="departamentos"
-            v-model="departamentoSeleccionado"
-            map-options
-            option-value="name"
-            style="width: 100%"
-          />
+            <span>{{ form.nombreDescuento }}</span>
+            <div class="row q-col-gutter-md q-mb-md">
+              <div class="col">
+                <q-input
+                  v-model="form.monto"
+                  outlined
+                  label="Valor"
+                  type="number"
+                >
+                  <template v-slot:append>
+                    <q-icon name="attach_money" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="col">
+                <q-input
+                  v-model="form.descripcion"
+                  outlined
+                  label="Descripción"
+                />
+              </div>
+            </div>
+          </template>
         </div>
       </q-card-section>
-      <q-card-actions>
-        <div style="width: 100%">
-          <div
-            style="
-              display: flex;
-              justify-content: flex-end;
-              align-items: center;
-              column-gap: 2rem;
-              margin: 0 1rem 1rem 0;
-            "
-          >
-            <q-btn
-              flat
-              color="primary"
-              label="Cancelar"
-              icon="close"
-              v-close-popup
-            />
-            <q-btn
-              color="primary"
-              label="Guardar"
-              icon="save"
-              @click="guardarDescuento"
-              :loading="cargando"
-            >
-              <template v-slot:loading>
-                <q-spinner-facebook />
-              </template>
-            </q-btn>
-          </div>
-        </div>
+      <q-card-actions align="right">
+        <q-btn
+          icon="close"
+          flat
+          color="negative"
+          label="Cancelar"
+          v-close-popup
+        />
+        <q-btn
+          color="primary"
+          label="Guardar"
+          icon="save"
+          :disable="
+            cargando ||
+            buscando ||
+            !vendedorSeleccionado ||
+            formularioFormateado.length === 0
+          "
+          @click="guardarDescuento"
+          :loading="cargando"
+        >
+          <template v-slot:loading>
+            <q-spinner-facebook />
+          </template>
+        </q-btn>
       </q-card-actions>
     </q-card>
   </q-dialog>
-  <ModalDescuentosVendedor ref="modalDescuentosVendedor" />
 </template>
 
 <script>
+import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useFacturasStore } from "src/stores/catalogos/facturas";
 import { useDescuentosStore } from "src/stores/descuentos";
 import { filtradoBusquedaObj } from "src/helpers/filtradoBusquedaObj";
-import { ref } from "vue";
 import { formatearFechaGuiones } from "src/helpers/formatearFecha";
-import ModalDescuentosVendedor from "./ModalDescuentosVendedor.vue";
 import { useDepartamentosStore } from "src/stores/catalogos/departamentos";
+import { useAutenticacionStore } from "src/stores/autenticaciones";
+import { obtenerNumeroMes } from "src/constant/constantes";
 
 export default {
-  components: {
-    ModalDescuentosVendedor,
-  },
   setup() {
+    const useAutenticacion = useAutenticacionStore();
+    const { usuarioAutenticado } = storeToRefs(useAutenticacion);
+
     const abrirModal = ref(false);
 
     const useDescuentos = useDescuentosStore();
     const {
       guardarNuevoDescuentoVendedor,
-      obtenerDetalleDescuentoVendedor,
+      obtenerFormularioByDepartamento,
       obtenerFormularioDescuento,
     } = useDescuentos;
-    const { formularioDescuento, descuentoCreado } = storeToRefs(useDescuentos);
+    const { formulario } = storeToRefs(useDescuentos);
 
     const useFacturas = useFacturasStore();
-    const { opcionesVendedores } = storeToRefs(useFacturas);
+    const { opcionesVendedores, mesSeleccionado, anioSeleccionado } =
+      storeToRefs(useFacturas);
 
     const useDepartamentos = useDepartamentosStore();
     const { departamentos, departamentoSeleccionado } =
@@ -124,9 +135,40 @@ export default {
 
     const modalDescuentosVendedor = ref(null);
 
-    const abrir = () => {
-      vendedorSeleccionado.value = null;
-      fechaDescuento.value = "";
+    const esEdicion = ref(false);
+
+    const formularioFormateado = ref([]);
+
+    const buscando = ref(false);
+
+    const titulo = ref("");
+
+    const abrir = (descuento) => {
+      if (descuento) {
+        vendedorSeleccionado.value = {
+          label: descuento.nombreEmpleado,
+          value: {
+            numeroEmpleado: descuento.numeroEmpleado,
+            nombreEmpleado: descuento.nombreEmpleado,
+            claveDepartamento: descuento.claveDepartamento,
+          },
+        };
+
+        formularioFormateado.value = descuento.descuentos_vendedores.map(
+          (desc) => ({
+            idFormularioDescuentos: desc.idFormularioDescuentos,
+            nombreDescuento: desc.catalogoFormularioDescuento.nombreDescuento,
+            monto: desc.monto,
+            descripcion: desc.descripcion,
+          })
+        );
+
+        titulo.value = `Editar descuento de ${descuento.nombreEmpleado}`;
+        esEdicion.value = true;
+      } else {
+        titulo.value = "Nuevo descuento";
+        esEdicion.value = false;
+      }
 
       abrirModal.value = true;
     };
@@ -143,35 +185,39 @@ export default {
     const guardarDescuento = async () => {
       cargando.value = true;
 
-      const claveDepartamento =
-        departamentoSeleccionado.value.value.claveDepartamento;
-
-      await obtenerFormularioDescuento(claveDepartamento);
-
       const dataDescuento = {
-        no_empleado: vendedorSeleccionado.value.value
-          ? vendedorSeleccionado.value.value.numeroEmpleado
-          : vendedorSeleccionado.value.numeroEmpleado,
-        nombre: vendedorSeleccionado.value.value
-          ? vendedorSeleccionado.value.value.nombreEmpleado
-          : vendedorSeleccionado.value.nombreEmpleado,
-        fechaDescuento: formatearFechaGuiones(fechaDescuento.value),
-        claveDepartamento,
-        descuentos: formularioDescuento.value,
+        numeroEmpleado: vendedorSeleccionado.value.value.numeroEmpleado,
+        mes: obtenerNumeroMes(mesSeleccionado.value),
+        anio: anioSeleccionado.value,
+        usuario: usuarioAutenticado.value.usuario,
+        descuentos: formularioFormateado.value.map((form) => ({
+          idFormularioDescuentos: form.idFormularioDescuentos,
+          monto: form.monto,
+          descripcion: form.descripcion,
+        })),
       };
 
       await guardarNuevoDescuentoVendedor(dataDescuento);
 
-      // await obtenerDetalleDescuentoVendedor(
-      //   descuentoCreado.value.idDescuentoVendedor
-      // );
-
-      // await modalDescuentosVendedor.value.abrirModalDescuento("nuevo");
-
       vendedorSeleccionado.value = null;
-      fechaDescuento.value = "";
+      formularioFormateado.value = [];
       cargando.value = false;
       abrirModal.value = false;
+    };
+
+    const obtenerFormulario = async () => {
+      if (vendedorSeleccionado.value) {
+        buscando.value = true;
+
+        const claveDepartamento =
+          vendedorSeleccionado.value.value.claveDepartamento;
+
+        await obtenerFormularioByDepartamento(claveDepartamento);
+
+        formularioFormateado.value = formulario.value;
+
+        buscando.value = false;
+      }
     };
 
     return {
@@ -185,10 +231,14 @@ export default {
       modalDescuentosVendedor,
       departamentos,
       departamentoSeleccionado,
+      buscando,
+      titulo,
+      formularioFormateado,
       // Methods
       abrir,
       parametrosFiltradosVendedores,
       guardarDescuento,
+      obtenerFormulario,
     };
   },
 };

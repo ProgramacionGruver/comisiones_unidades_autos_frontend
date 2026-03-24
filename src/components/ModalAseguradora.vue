@@ -93,7 +93,12 @@ export default {
       if (desde === "nuevo") {
         origen.value = "nuevo";
       } else {
-        objAseguradora.value = dataAseguradora;
+        objAseguradora.value = {
+          id_catalogo_aseguradora: dataAseguradora.idAseguradora,
+          nombre_aseguradora: dataAseguradora.nombreAseguradora,
+          nombre_corto: dataAseguradora.nombreCorto,
+          estatus: dataAseguradora.estatus,
+        };
 
         origen.value = "editar";
       }

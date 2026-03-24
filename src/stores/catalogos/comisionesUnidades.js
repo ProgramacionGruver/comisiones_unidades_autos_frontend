@@ -11,7 +11,7 @@ export const useComisionesStore = defineStore("comisiones", () => {
   const obtenerComisionesUnidades = async (objComisiones) => {
     try {
       cargando.value = true;
-      const { data } = await api.post("/unidades/autos", objComisiones);
+      const { data } = await api.post("/facturas/unidades/sistema", objComisiones);
       comisionesUnidades.value = [...data];
     } catch (error) {
       console.log(error);
@@ -20,18 +20,19 @@ export const useComisionesStore = defineStore("comisiones", () => {
     }
   };
 
-  const guardarDescuentos = async (objDescuentos, departamento) => {
+  const guardarDescuentos = async (guardarObj) => {
     try {
-      if (departamento === "nuevas") {
-        const { data } = await api.post("/descuentos/autos", objDescuentos);
-        notificacion("positive", "Descuentos Agregados", data);
-      } else if (departamento === "seminuevos") {
-        const { data } = await api.post(
-          "/descuentos/seminuevos/autos",
-          objDescuentos
-        );
-        notificacion("positive", "Descuentos Agregados");
+      const { data } = await api.post("/facturas/unidades/descuentos", guardarObj);
+
+      const index = comisionesUnidades.value.findIndex(
+        (comision) => comision.idFactura === guardarObj.idFactura
+      );
+
+      if (index !== -1) {
+        comisionesUnidades.value[index] = data;
       }
+
+      notificacion("positive", "Descuento guardado correctamente");
     } catch (error) {
       console.log(error.response.data.message);
       notificacion("negative", error.response.data.message);

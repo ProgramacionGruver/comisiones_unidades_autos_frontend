@@ -8,7 +8,7 @@ export const usePvaStore = defineStore("pva", () => {
 
   const obtenerPvas = async (objPva) => {
     try {
-      const { data } = await api.post("/pvas/autos", objPva);
+      const { data } = await api.post("/pvas", objPva);
       pvas.value = [...data];
     } catch (error) {
       notificacion("negative", error.response.data.message);
@@ -17,7 +17,7 @@ export const usePvaStore = defineStore("pva", () => {
 
   const guardarPva = async (objPva) => {
     try {
-      const { data } = await api.post("/pva/autos", objPva);
+      const { data } = await api.post("/pva", objPva);
       pvas.value = [...pvas.value, data];
       notificacion("positive", "Pva Agregado", data);
     } catch (error) {
@@ -33,7 +33,7 @@ export const usePvaStore = defineStore("pva", () => {
       formData.append("usuario", busquedaObj.usuario);
       formData.append("excel", excel);
 
-      const { data } = await api.post("/pvas/garantias/autos", formData);
+      const { data } = await api.post("/garantias", formData);
 
       pvas.value = [...pvas.value, ...data];
       notificacion("positive", "Contratos registrados correctamente");

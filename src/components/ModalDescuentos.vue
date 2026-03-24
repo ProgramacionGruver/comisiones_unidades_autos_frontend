@@ -4,24 +4,29 @@
       <q-card-section class="bg-primary text-white row items-center q-pb-none">
         <h2 class="text-h4">Agregar Descuentos</h2>
         <q-space />
-        <q-btn icon="close" flat round dense v-close-popup />
+        <q-btn
+          icon="close"
+          flat
+          round
+          dense
+          v-close-popup
+          :disable="cargando"
+        />
       </q-card-section>
       <q-card-section>
         <q-form>
-          <div
-            style="display: grid; grid-template-columns: 1fr 1fr"
-            v-if="factura.condicion === 'nuevas'"
-          >
+          <div style="display: grid; grid-template-columns: 1fr 1fr">
             <div class="q-ma-md">
               <label>Agregar Previa.</label>
               <q-input
                 dense
                 filled
                 label="Previa"
-                v-model="factura.descuentosUnidades[0].previa"
+                v-model="factura.descuentos.previa"
                 type="number"
                 color="primary"
                 tabindex="1"
+                disable
               >
                 <template v-slot:prepend>
                   <q-icon name="paid" />
@@ -35,10 +40,11 @@
                 dense
                 filled
                 label="Traslado"
-                v-model="factura.descuentosUnidades[0].traslado"
+                v-model="factura.descuentos.traslado"
                 type="number"
                 color="primary"
-                tabindex="3"
+                tabindex="2"
+                :disable="cargando"
               >
                 <template v-slot:prepend>
                   <q-icon name="paid" />
@@ -52,10 +58,11 @@
                 dense
                 filled
                 label="Desc/Ventas"
-                v-model="factura.descuentosUnidades[0].descVentas"
+                v-model="factura.descuentos.descVentas"
                 type="number"
                 color="primary"
-                tabindex="5"
+                tabindex="3"
+                :disable="cargando"
               >
                 <template v-slot:prepend>
                   <q-icon name="paid" />
@@ -69,10 +76,11 @@
                 dense
                 filled
                 label="Cortesia"
-                v-model="factura.descuentosUnidades[0].cortesia"
+                v-model="factura.descuentos.cortesia"
                 type="number"
                 color="primary"
-                tabindex="2"
+                tabindex="4"
+                :disable="cargando"
               >
                 <template v-slot:prepend>
                   <q-icon name="paid" />
@@ -86,10 +94,11 @@
                 dense
                 filled
                 label="Gasolina"
-                v-model="factura.descuentosUnidades[0].gasolina"
+                v-model="factura.descuentos.gasolina"
                 type="number"
                 color="primary"
-                tabindex="4"
+                tabindex="5"
+                :disable="cargando"
               >
                 <template v-slot:prepend>
                   <q-icon name="paid" />
@@ -103,30 +112,11 @@
                 dense
                 filled
                 label="Bono U.B."
-                v-model="factura.descuentosUnidades[0].bonoub"
+                v-model="factura.descuentos.bonoub"
                 type="number"
                 color="primary"
                 tabindex="6"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="paid" />
-                </template>
-              </q-input>
-            </div>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr" v-else>
-            <div class="q-ma-md">
-              <label>Agregar Garantia Extendida.</label>
-              <q-input
-                dense
-                filled
-                label="Garantia Extendida"
-                v-model="
-                  factura.descuentosUnidadesSeminuevos[0].garantia_extendida
-                "
-                type="number"
-                color="primary"
-                tabindex="1"
+                :disable="cargando"
               >
                 <template v-slot:prepend>
                   <q-icon name="paid" />
@@ -135,17 +125,34 @@
             </div>
 
             <div class="q-ma-md">
-              <label>Agregar Acondicionamiento.</label>
+              <label>Agregar Garantía Extendida</label>
+              <q-input
+                dense
+                filled
+                label="Garantía Extendida"
+                v-model="factura.descuentos.garantia_extendida"
+                type="number"
+                color="primary"
+                tabindex="7"
+                :disable="cargando"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="paid" />
+                </template>
+              </q-input>
+            </div>
+
+            <div class="q-ma-md">
+              <label>Agregar Acondicionamiento</label>
               <q-input
                 dense
                 filled
                 label="Acondicionamiento"
-                v-model="
-                  factura.descuentosUnidadesSeminuevos[0].acondicionamiento
-                "
+                v-model="factura.descuentos.acondicionamiento"
                 type="number"
                 color="primary"
-                tabindex="2"
+                tabindex="8"
+                :disable="cargando"
               >
                 <template v-slot:prepend>
                   <q-icon name="paid" />
@@ -154,15 +161,16 @@
             </div>
 
             <div class="q-ma-md">
-              <label>Agregar Gestorias.</label>
+              <label>Agregar Gestorías</label>
               <q-input
                 dense
                 filled
-                label="Gestorias"
-                v-model="factura.descuentosUnidadesSeminuevos[0].gestorias"
+                label="Gestorías"
+                v-model="factura.descuentos.gestorias"
                 type="number"
                 color="primary"
-                tabindex="3"
+                tabindex="9"
+                :disable="cargando"
               >
                 <template v-slot:prepend>
                   <q-icon name="paid" />
@@ -171,15 +179,16 @@
             </div>
 
             <div class="q-ma-md">
-              <label>Agregar Toma Unidad.</label>
+              <label>Agregar Toma de unidad</label>
               <q-input
                 dense
                 filled
-                label="Toma Unidad"
-                v-model="factura.descuentosUnidadesSeminuevos[0].toma_unidad"
+                label="Toma de unidad"
+                v-model="factura.descuentos.toma_unidad"
                 type="number"
                 color="primary"
-                tabindex="4"
+                tabindex="10"
+                :disable="cargando"
               >
                 <template v-slot:prepend>
                   <q-icon name="paid" />
@@ -188,15 +197,16 @@
             </div>
 
             <div class="q-ma-md">
-              <label>Agregar Cortesia.</label>
+              <label>Agregar Cortesía</label>
               <q-input
                 dense
                 filled
-                label="Cortesia"
-                v-model="factura.descuentosUnidadesSeminuevos[0].cortesia"
+                label="Cortesía"
+                v-model="factura.descuentos.cortesia"
                 type="number"
                 color="primary"
-                tabindex="5"
+                tabindex="11"
+                :disable="cargando"
               >
                 <template v-slot:prepend>
                   <q-icon name="paid" />
@@ -205,15 +215,16 @@
             </div>
 
             <div class="q-ma-md">
-              <label>Agregar Bono U.B.</label>
+              <label>Agregar Gasto Financiero</label>
               <q-input
                 dense
                 filled
-                label="Bono U.B."
-                v-model="factura.descuentosUnidadesSeminuevos[0].bonoub"
+                label="Gasto Financiero"
+                v-model="factura.descuentos.gastoFinanciero"
                 type="number"
                 color="primary"
-                tabindex="6"
+                tabindex="12"
+                disable
               >
                 <template v-slot:prepend>
                   <q-icon name="paid" />
@@ -226,7 +237,9 @@
               icon-right="save"
               label="Guardar"
               color="primary"
-              @click="guardarDescuento()"
+              @click="guardarDescuento"
+              :disable="cargando"
+              :loading="cargando"
             >
               <template v-slot:loading>
                 <q-spinner-facebook />
@@ -256,116 +269,51 @@ export default {
     const modalDescuentos = ref(false);
     const factura = ref({});
 
+    const cargando = ref(false);
+
     const abrir = (objFactura) => {
-      try {
-        if (objFactura.condicion === "nuevas") {
-          if (objFactura.descuentosUnidades.length === 0) {
-            objFactura.descuentosUnidades = [
-              {
-                previa: 0,
-                traslado: 0,
-                cortesia: 0,
-                gasolina: 0,
-                descVentas: 0,
-                bonoub: 0,
-                garantia_extendida: 0,
-                acondicionamiento: 0,
-                gestorias: 0,
-                toma_unidad: 0,
-              },
-            ];
-          } else {
-            objFactura.descuentosUnidades = [
-              {
-                previa: objFactura.descuentosUnidades[0]?.previa ?? 0,
-                traslado: objFactura.descuentosUnidades[0]?.traslado ?? 0,
-                cortesia: objFactura.descuentosUnidades[0]?.cortesia ?? 0,
-                gasolina: objFactura.descuentosUnidades[0]?.gasolina ?? 0,
-                descVentas: objFactura.descuentosUnidades[0]?.descVentas ?? 0,
-                bonoub: objFactura.descuentosUnidades[0]?.bonoub ?? 0,
-                garantia_extendida:
-                  objFactura.descuentosUnidades[0]?.garantia_extendida ?? 0,
-                acondicionamiento:
-                  objFactura.descuentosUnidades[0]?.acondicionamiento ?? 0,
-                gestorias: objFactura.descuentosUnidades[0]?.gestorias ?? 0,
-                toma_unidad: objFactura.descuentosUnidades[0]?.toma_unidad ?? 0,
-              },
-            ];
-          }
-        } else {
-          if (objFactura.descuentosUnidadesSeminuevos.length === 0) {
-            objFactura.descuentosUnidadesSeminuevos = [
-              {
-                previa: 0,
-                traslado: 0,
-                cortesia: 0,
-                gasolina: 0,
-                descVentas: 0,
-                bonoub: 0,
-                garantia_extendida: 0,
-                acondicionamiento: 0,
-                gestorias: 0,
-                toma_unidad: 0,
-              },
-            ];
-          } else {
-            objFactura.descuentosUnidadesSeminuevos = [
-              {
-                previa: objFactura.descuentosUnidadesSeminuevos[0]?.previa ?? 0,
-                traslado: objFactura.descuentosUnidadesSeminuevos[0]?.traslado ?? 0,
-                cortesia: objFactura.descuentosUnidadesSeminuevos[0]?.cortesia ?? 0,
-                gasolina: objFactura.descuentosUnidadesSeminuevos[0]?.gasolina ?? 0,
-                descVentas: objFactura.descuentosUnidadesSeminuevos[0]?.descVentas ?? 0,
-                bonoub: objFactura.descuentosUnidadesSeminuevos[0]?.bonoub ?? 0,
-                garantia_extendida:
-                  objFactura.descuentosUnidadesSeminuevos[0]?.garantia_extendida ?? 0,
-                acondicionamiento:
-                  objFactura.descuentosUnidadesSeminuevos[0]?.acondicionamiento ?? 0,
-                gestorias: objFactura.descuentosUnidadesSeminuevos[0]?.gestorias ?? 0,
-                toma_unidad: objFactura.descuentosUnidadesSeminuevos[0]?.toma_unidad ?? 0,
-              },
-            ];
-          }
-        }
-  
-        factura.value = { ...objFactura };
-        modalDescuentos.value = true;
-      } catch (error) {
-        console.error(error);
-      }
+      factura.value = { ...objFactura };
+      modalDescuentos.value = true;
     };
 
     const guardarDescuento = async () => {
       try {
-        if (factura.value.condicion === "nuevas") {
-          factura.value.descuentosUnidades.forEach((descuento) => {
-            descuento.idFactura = factura.value.idFactura;
-            descuento.usuario = usuarioAutenticado.value.usuario;
-          });
-        } else {
-          factura.value.descuentosUnidadesSeminuevos.forEach((descuento) => {
-            descuento.idFactura = factura.value.idFactura;
-            descuento.usuario = usuarioAutenticado.value.usuario;
-          });
-        }
+        cargando.value = true;
 
-        await guardarDescuentos(
-          factura.value.condicion === "nuevas"
-            ? factura.value.descuentosUnidades[0]
-            : factura.value.descuentosUnidadesSeminuevos[0],
-          factura.value.condicion
-        );
+        const guardarObj = {
+          idFactura: factura.value.idFactura,
+          descuentos: {
+            previa: factura.value.descuentos.previa || 0,
+            traslado: factura.value.descuentos.traslado || 0,
+            descVentas: factura.value.descuentos.descVentas || 0,
+            cortesia: factura.value.descuentos.cortesia || 0,
+            gasolina: factura.value.descuentos.gasolina || 0,
+            bonoub: factura.value.descuentos.bonoub || 0,
+            garantia_extendida:
+              factura.value.descuentos.garantia_extendida || 0,
+            acondicionamiento: factura.value.descuentos.acondicionamiento || 0,
+            gestorias: factura.value.descuentos.gestorias || 0,
+            toma_unidad: factura.value.descuentos.toma_unidad || 0,
+            gastoFinanciero: factura.value.descuentos.gastoFinanciero || 0,
+          },
+          usuario: usuarioAutenticado.value.usuario,
+        };
+
+        await guardarDescuentos(guardarObj);
 
         modalDescuentos.value = false;
       } catch (error) {
         console.error(error);
+      } finally {
+        cargando.value = false;
       }
     };
 
     return {
-      abrir,
       factura,
       modalDescuentos,
+      cargando,
+      abrir,
       guardarDescuento,
     };
   },

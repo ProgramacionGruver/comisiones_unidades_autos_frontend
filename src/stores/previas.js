@@ -8,7 +8,7 @@ export const usePreviasStore = defineStore("previas", () => {
 
   const obtenerCatalogoPrevias = async () => {
     try {
-      const { data } = await api.get("/previas/catalogo");
+      const { data } = await api.get("/previas/unidades/autos");
 
       previas.value = data;
     } catch (error) {

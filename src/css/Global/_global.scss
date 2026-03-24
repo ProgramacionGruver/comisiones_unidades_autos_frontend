@@ -51,3 +51,24 @@ p {
 .label-negritas {
   font-weight: bold;
 }
+
+.contenedor-perfil {
+  position: relative;
+  background-image: url("https://backend.gruver.com.mx/componentes/navbar-19.webp");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  width: 100%;
+  color: white;
+}
+
+.botones--comision {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  column-gap: 1rem;
+
+  @include adaptar(768px) {
+    justify-content: flex-end;
+  }
+}

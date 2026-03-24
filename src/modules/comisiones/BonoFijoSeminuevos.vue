@@ -1,9 +1,7 @@
 <template>
   <q-layout>
     <div class="q-ma-md">
-      <div class="q-pa-md">
-        <h2>Bono fijo seminuevos</h2>
-      </div>
+      <h2>Bono fijo seminuevos</h2>
       <q-separator color="primary" class="q-my-md" />
       <q-table
         :columns="columns"
@@ -61,7 +59,7 @@
                 @click="agregarBonoFijo(props.row)"
                 :disable="habilitarBoton && !props.row.enviadaComision"
               >
-                <q-tooltip v-if="!habilitarBoton" class="text-h6">
+                <q-tooltip v-if="habilitarBoton" class="text-h6">
                   Este botón solo está habilitado en el periodo de comisiones
                   (Del 1 al 5 del mes)
                 </q-tooltip>
@@ -101,7 +99,7 @@ import { storeToRefs } from "pinia";
 import { formatearFecha } from "src/helpers/formatearFecha";
 import { formatearMonto } from "src/helpers/formatos";
 import { obtenerNumerosDeMes } from "src/constant/constantes";
-import { QSpinnerIos, useQuasar } from "quasar";
+import { useQuasar } from "quasar";
 
 export default {
   setup() {
